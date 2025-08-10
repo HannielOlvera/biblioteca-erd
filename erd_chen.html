@@ -1,243 +1,395 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <title>ERD (Chen) - Biblioteca</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: white;
-        }
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 30px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 2.5em;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-        .diagram-container {
-            background: white;
-            border-radius: 10px;
-            padding: 30px;
-            margin: 20px 0;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            overflow-x: auto;
-        }
-        .back-btn {
-            display: inline-block;
-            padding: 10px 20px;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            transition: all 0.3s ease;
-        }
-        .back-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: scale(1.05);
-        }
-        .description {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-    </style>
+<meta charset="UTF-8" />
+<title>ERD (Chen) - Biblioteca (basado en SQL, sin tablas N:M)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root{
+    --bg:#ffffff; --ink:#1f2937; --ink-soft:#374151; --panel:#f7f7f8; --panel-border:#e5e7eb;
+    --accent:#2563eb;
+  }
+  html,body{height:100%}
+  body{
+    margin:0; font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
+    color:var(--ink); background:var(--bg);
+    display:flex; flex-direction:column; min-height:100%;
+  }
+  header{
+    display:flex; align-items:center; gap:.75rem; padding:.75rem 1rem;
+    background:var(--panel); border-bottom:1px solid var(--panel-border);
+    position:sticky; top:0; z-index:10;
+  }
+  header h1{margin:0; font-size:16px; font-weight:600}
+  .controls{margin-left:auto; display:flex; gap:.5rem; flex-wrap:wrap}
+  button{
+    appearance:none; border:1px solid var(--panel-border); background:#fff; color:var(--ink);
+    padding:.45rem .7rem; border-radius:.5rem; cursor:pointer; font-size:13px; font-weight:500;
+  }
+  button.primary{background:var(--accent); color:#fff; border-color:var(--accent)}
+  main{flex:1; display:flex; min-height:0}
+  #graphWrap{flex:1; overflow:auto; position:relative}
+  #graph{min-width:1400px; min-height:800px; display:flex; align-items:center; justify-content:center}
+  .legend{
+    position:absolute; right:12px; bottom:12px; z-index:5;
+    background:rgba(255,255,255,.95); border:1px solid var(--panel-border); border-radius:.5rem;
+    padding:.5rem .7rem; font-size:12px; color:var(--ink-soft)
+  }
+  .legend ul{margin:.25rem 0 0 1rem; padding:0}
+</style>
 </head>
 <body>
-    <div class="container">
-        <a href="index.html" class="back-btn">← Volver al índice</a>
-        
-        <h1>📊 Diagrama Entidad-Relación (Notación Chen)</h1>
-        
-        <div class="description">
-            <h3>🎯 Modelo Conceptual - Sistema de Biblioteca</h3>
-            <p>Este diagrama utiliza la notación clásica de Peter Chen para representar el modelo conceptual de una biblioteca universitaria. Las entidades se muestran como rectángulos, los atributos como óvalos, y las relaciones como rombos.</p>
-        </div>
+<header>
+  <h1>ERD (Chen) – Biblioteca</h1>
+  <div class="controls">
+    <label style="display:flex;align-items:center;gap:.4rem;font-size:13px">
+      <input type="checkbox" id="simpleToggle" /> Modo simple (sin atributos)
+    </label>
+    <button id="relayoutBtn">Recalcular diseño</button>
+    <button id="exportSvgBtn">Exportar SVG</button>
+    <button id="exportPngBtn" class="primary">Exportar PNG</button>
+  </div>
+</header>
 
-        <div class="diagram-container">
-            <svg width="1300" height="800" xmlns="http://www.w3.org/2000/svg">
-                <!-- Entidad Usuario -->
-                <rect x="50" y="150" width="120" height="80" fill="#e8f4fd" stroke="#1976d2" stroke-width="2"/>
-                <text x="110" y="195" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold" fill="#1976d2">USUARIO</text>
-                
-                <!-- Atributos de Usuario -->
-                <ellipse cx="30" cy="80" rx="40" ry="20" fill="#fff3e0" stroke="#f57c00"/>
-                <text x="30" y="85" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">id_usuario</text>
-                <line x1="50" y1="95" x2="80" y2="150" stroke="#333" stroke-width="1"/>
-                
-                <ellipse cx="110" cy="60" rx="30" ry="20" fill="#fff3e0" stroke="#f57c00"/>
-                <text x="110" y="65" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">nombre</text>
-                <line x1="110" y1="80" x2="110" y2="150" stroke="#333" stroke-width="1"/>
-                
-                <ellipse cx="190" cy="80" rx="30" ry="20" fill="#fff3e0" stroke="#f57c00"/>
-                <text x="190" y="85" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">email</text>
-                <line x1="170" y1="95" x2="140" y2="150" stroke="#333" stroke-width="1"/>
-                
-                <ellipse cx="30" cy="280" rx="30" ry="20" fill="#fff3e0" stroke="#f57c00"/>
-                <text x="30" y="285" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">teléfono</text>
-                <line x1="50" y1="265" x2="80" y2="230" stroke="#333" stroke-width="1"/>
-                
-                <ellipse cx="190" cy="280" rx="30" ry="20" fill="#fff3e0" stroke="#f57c00"/>
-                <text x="190" y="285" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">tipo</text>
-                <line x1="170" y1="265" x2="140" y2="230" stroke="#333" stroke-width="1"/>
-
-                <!-- Entidad Libro -->
-                <rect x="650" y="150" width="120" height="80" fill="#e8f5e8" stroke="#388e3c" stroke-width="2"/>
-                <text x="710" y="195" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold" fill="#388e3c">LIBRO</text>
-                
-                <!-- Atributos de Libro -->
-                <ellipse cx="630" cy="80" rx="30" ry="20" fill="#fff3e0" stroke="#f57c00"/>
-                <text x="630" y="85" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">ISBN</text>
-                <line x1="650" y1="95" x2="680" y2="150" stroke="#333" stroke-width="1"/>
-                
-                <ellipse cx="710" cy="60" rx="30" ry="20" fill="#fff3e0" stroke="#f57c00"/>
-                <text x="710" y="65" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">título</text>
-                <line x1="710" y1="80" x2="710" y2="150" stroke="#333" stroke-width="1"/>
-                
-                <ellipse cx="790" cy="80" rx="40" ry="20" fill="#fff3e0" stroke="#f57c00"/>
-                <text x="790" y="85" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">año_public</text>
-                <line x1="770" y1="95" x2="740" y2="150" stroke="#333" stroke-width="1"/>
-                
-                <ellipse cx="630" cy="280" rx="40" ry="20" fill="#fff3e0" stroke="#f57c00"/>
-                <text x="630" y="285" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">disponibles</text>
-                <line x1="650" y1="265" x2="680" y2="230" stroke="#333" stroke-width="1"/>
-                
-                <ellipse cx="790" cy="280" rx="30" ry="20" fill="#fff3e0" stroke="#f57c00"/>
-                <text x="790" y="285" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">editorial</text>
-                <line x1="770" y1="265" x2="740" y2="230" stroke="#333" stroke-width="1"/>
-
-                <!-- Relación Realiza -->
-                <polygon points="350,180 400,160 450,180 400,200" fill="#ffebee" stroke="#d32f2f" stroke-width="2"/>
-                <text x="400" y="185" text-anchor="middle" font-family="Arial" font-size="12" font-weight="bold" fill="#d32f2f">REALIZA</text>
-                
-                <!-- Líneas de relación Realiza -->
-                <line x1="170" y1="190" x2="350" y2="180" stroke="#333" stroke-width="2"/>
-                <line x1="450" y1="180" x2="500" y2="180" stroke="#333" stroke-width="2"/>
-                
-                <!-- Cardinalidades Realiza -->
-                <text x="200" y="175" font-family="Arial" font-size="12" fill="#d32f2f">1</text>
-                <text x="480" y="175" font-family="Arial" font-size="12" fill="#d32f2f">N</text>
-
-                <!-- Entidad Préstamo -->
-                <rect x="440" y="150" width="120" height="80" fill="#f3e5f5" stroke="#7b1fa2" stroke-width="2"/>
-                <text x="500" y="195" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold" fill="#7b1fa2">PRÉSTAMO</text>
-                
-                <!-- Atributos de Préstamo -->
-                <ellipse cx="420" cy="80" rx="40" ry="20" fill="#fff3e0" stroke="#f57c00"/>
-                <text x="420" y="85" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">id_prestamo</text>
-                <line x1="440" y1="95" x2="470" y2="150" stroke="#333" stroke-width="1"/>
-                
-                <ellipse cx="520" cy="60" rx="40" ry="20" fill="#fff3e0" stroke="#f57c00"/>
-                <text x="520" y="65" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">fecha_prest</text>
-                <line x1="520" y1="80" x2="520" y2="150" stroke="#333" stroke-width="1"/>
-                
-                <ellipse cx="420" cy="280" rx="40" ry="20" fill="#fff3e0" stroke="#f57c00"/>
-                <text x="420" y="285" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">fecha_dev</text>
-                <line x1="440" y1="265" x2="470" y2="230" stroke="#333" stroke-width="1"/>
-                
-                <ellipse cx="580" cy="280" rx="30" ry="20" fill="#fff3e0" stroke="#f57c00"/>
-                <text x="580" y="285" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">multa</text>
-                <line x1="560" y1="265" x2="530" y2="230" stroke="#333" stroke-width="1"/>
-
-                <!-- Relación Contiene -->
-                <polygon points="550,180 600,160 650,180 600,200" fill="#ffebee" stroke="#d32f2f" stroke-width="2"/>
-                <text x="600" y="185" text-anchor="middle" font-family="Arial" font-size="12" font-weight="bold" fill="#d32f2f">CONTIENE</text>
-                
-                <!-- Líneas de relación Contiene -->
-                <line x1="560" y1="190" x2="550" y2="180" stroke="#333" stroke-width="2"/>
-                <line x1="650" y1="180" x2="650" y2="190" stroke="#333" stroke-width="2"/>
-                
-                <!-- Cardinalidades Contiene -->
-                <text x="570" y="175" font-family="Arial" font-size="12" fill="#d32f2f">1</text>
-                <text x="630" y="175" font-family="Arial" font-size="12" fill="#d32f2f">N</text>
-
-                <!-- Entidad Autor -->
-                <rect x="900" y="350" width="120" height="80" fill="#fff8e1" stroke="#fbc02d" stroke-width="2"/>
-                <text x="960" y="395" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold" fill="#fbc02d">AUTOR</text>
-                
-                <!-- Atributos de Autor -->
-                <ellipse cx="880" cy="280" rx="40" ry="20" fill="#fff3e0" stroke="#f57c00"/>
-                <text x="880" y="285" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">id_autor</text>
-                <line x1="900" y1="295" x2="930" y2="350" stroke="#333" stroke-width="1"/>
-                
-                <ellipse cx="960" cy="260" rx="30" ry="20" fill="#fff3e0" stroke="#f57c00"/>
-                <text x="960" y="265" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">nombre</text>
-                <line x1="960" y1="280" x2="960" y2="350" stroke="#333" stroke-width="1"/>
-                
-                <ellipse cx="1040" cy="280" rx="30" ry="20" fill="#fff3e0" stroke="#f57c00"/>
-                <text x="1040" y="285" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">apellido</text>
-                <line x1="1020" y1="295" x2="990" y2="350" stroke="#333" stroke-width="1"/>
-                
-                <ellipse cx="1040" cy="480" rx="30" ry="20" fill="#fff3e0" stroke="#f57c00"/>
-                <text x="1040" y="485" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">país</text>
-                <line x1="1020" y1="465" x2="990" y2="430" stroke="#333" stroke-width="1"/>
-
-                <!-- Relación Escribe -->
-                <polygon points="800,280 850,260 900,280 850,300" fill="#ffebee" stroke="#d32f2f" stroke-width="2"/>
-                <text x="850" y="285" text-anchor="middle" font-family="Arial" font-size="12" font-weight="bold" fill="#d32f2f">ESCRIBE</text>
-                
-                <!-- Líneas de relación Escribe -->
-                <line x1="770" y1="215" x2="800" y2="280" stroke="#333" stroke-width="2"/>
-                <line x1="900" y1="280" x2="930" y2="370" stroke="#333" stroke-width="2"/>
-                
-                <!-- Cardinalidades Escribe -->
-                <text x="780" y="240" font-family="Arial" font-size="12" fill="#d32f2f">N</text>
-                <text x="910" y="340" font-family="Arial" font-size="12" fill="#d32f2f">M</text>
-
-                <!-- Leyenda -->
-                <rect x="50" y="500" width="400" height="250" fill="rgba(255,255,255,0.1)" stroke="#333" stroke-width="1" rx="10"/>
-                <text x="250" y="525" text-anchor="middle" font-family="Arial" font-size="16" font-weight="bold" fill="#333">LEYENDA</text>
-                
-                <rect x="80" y="540" width="60" height="30" fill="#e8f4fd" stroke="#1976d2" stroke-width="2"/>
-                <text x="250" y="558" font-family="Arial" font-size="12" fill="#333">Entidad</text>
-                
-                <ellipse cx="110" cy="590" rx="30" ry="15" fill="#fff3e0" stroke="#f57c00"/>
-                <text x="250" y="595" font-family="Arial" font-size="12" fill="#333">Atributo</text>
-                
-                <polygon points="80,620 110,610 140,620 110,630" fill="#ffebee" stroke="#d32f2f" stroke-width="2"/>
-                <text x="250" y="625" font-family="Arial" font-size="12" fill="#333">Relación</text>
-                
-                <line x1="80" y1="650" x2="140" y2="650" stroke="#333" stroke-width="2"/>
-                <text x="250" y="655" font-family="Arial" font-size="12" fill="#333">Conexión</text>
-                
-                <text x="80" y="685" font-family="Arial" font-size="12" fill="#333">Cardinalidades:</text>
-                <text x="80" y="705" font-family="Arial" font-size="11" fill="#333">• 1 = Uno</text>
-                <text x="80" y="720" font-family="Arial" font-size="11" fill="#333">• N = Muchos</text>
-                <text x="80" y="735" font-family="Arial" font-size="11" fill="#333">• M = Muchos (relación M:N)</text>
-            </svg>
-        </div>
-        
-        <div class="description">
-            <h3>📋 Descripción de las Entidades</h3>
-            <ul>
-                <li><strong>USUARIO:</strong> Representa a estudiantes y profesores que pueden solicitar préstamos</li>
-                <li><strong>LIBRO:</strong> Catálogo de libros disponibles en la biblioteca</li>
-                <li><strong>PRÉSTAMO:</strong> Registro de transacciones de préstamo de libros</li>
-                <li><strong>AUTOR:</strong> Información de los autores de los libros</li>
-            </ul>
-            
-            <h3>🔗 Relaciones del Sistema</h3>
-            <ul>
-                <li><strong>REALIZA (1:N):</strong> Un usuario puede realizar muchos préstamos</li>
-                <li><strong>CONTIENE (1:N):</strong> Un préstamo puede contener varios libros</li>
-                <li><strong>ESCRIBE (N:M):</strong> Un autor puede escribir varios libros, un libro puede tener varios autores</li>
-            </ul>
-        </div>
+<main>
+  <div id="graphWrap">
+    <div id="graph"></div>
+    <div class="legend">
+      Basado en el SQL físico (sin tablas N:M).<br/>
+      Notación Chen:
+      <ul>
+        <li>Entidad: rectángulo</li>
+        <li>Relación: rombo</li>
+        <li>Atributo: óvalo (PK marcado)</li>
+        <li>Cardinalidad: 1, N en los lados</li>
+      </ul>
+      <div style="font-size:12px;color:#6b7280;margin-top:.25rem">Tip: Usa “Modo simple” para cero cruces.</div>
     </div>
+  </div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/viz.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/full.render.js"></script>
+<script>
+const baseGraphAttrs = `
+  graph [
+    rankdir=LR, splines=ortho, overlap=false,
+    pad="0.3", nodesep="0.45", ranksep="0.9",
+    compound=true, concentrate=true, bgcolor="white"
+  ];
+  node  [fontname="Arial", fontsize=12, color="#0f172a", style=filled, fillcolor="white", penwidth=1.2];
+  edge  [fontname="Arial", fontsize=11, color="#334155", penwidth=1.1];
+`;
+
+/* ENTIDADES (solo tablas del SQL que no son N:M) */
+const entities = `
+  // Usuarios y geografía
+  Usuario   [shape=box, label="Usuario",   fillcolor="#e7f0ff"];
+  Tipo_Usuario [shape=box, label="Tipo_Usuario", fillcolor="#e7f0ff"];
+  Direccion [shape=box, label="Direccion", fillcolor="#e7f0ff"];
+  Colonia   [shape=box, label="Colonia",   fillcolor="#e7f0ff"];
+  Ciudad    [shape=box, label="Ciudad",    fillcolor="#e7f0ff"];
+  Estado    [shape=box, label="Estado",    fillcolor="#e7f0ff"];
+
+  // Catálogo y obras
+  Editorial [shape=box, label="Editorial", fillcolor="#e7f0ff"];
+  Tipo_Libro[shape=box, label="Tipo_Libro",fillcolor="#e7f0ff"];
+  Idioma    [shape=box, label="Idioma",    fillcolor="#e7f0ff"];
+  Genero    [shape=box, label="Genero",    fillcolor="#e7f0ff"];
+  Autor     [shape=box, label="Autor",     fillcolor="#e7f0ff"];
+  Libro     [shape=box, label="Libro",     fillcolor="#e7f0ff"];
+
+  // Inventario y préstamos
+  Ejemplar  [shape=box, label="Ejemplar",  fillcolor="#e7f0ff"];
+  Prestamo  [shape=box, label="Prestamo",  fillcolor="#e7f0ff"];
+`;
+
+/* RELACIONES (incluyendo N:M como rombos, sin mostrar tablas de unión) */
+const relationships = `
+  R_Usuario_Tipo   [shape=diamond, label="es_de",        fillcolor="#fff3cd"];
+  R_Usuario_Dir    [shape=diamond, label="vive_en",      fillcolor="#fff3cd"];
+  R_Dir_Col        [shape=diamond, label="pertenece",    fillcolor="#fff3cd"];
+  R_Col_Ciu        [shape=diamond, label="pertenece",    fillcolor="#fff3cd"];
+  R_Ciu_Est        [shape=diamond, label="pertenece",    fillcolor="#fff3cd"];
+
+  R_Lib_Editorial  [shape=diamond, label="publicado_por",fillcolor="#fff3cd"];
+  R_Lib_Tipo       [shape=diamond, label="es_tipo",      fillcolor="#fff3cd"];
+  R_Lib_Idioma     [shape=diamond, label="en_idioma",    fillcolor="#fff3cd"];
+
+  R_Lib_Autor      [shape=diamond, label="escribe",      fillcolor="#fff3cd"];   // N:M
+  R_Lib_Genero     [shape=diamond, label="clasifica",    fillcolor="#fff3cd"];   // N:M
+
+  R_Lib_Ejemplar   [shape=diamond, label="tiene",        fillcolor="#fff3cd"];   // 1:N
+  R_Prestamo_Usuario [shape=diamond, label="realiza",    fillcolor="#fff3cd"];   // 1:N
+  R_Prestamo_Ejemplar[shape=diamond, label="contiene",   fillcolor="#fff3cd"];   // N:M según SQL
+`;
+
+/* ATRIBUTOS (PK y esenciales). Para evitar “encimados”, los edges no afectan el layout (constraint=false) */
+const attributesFull = `
+  // Usuario
+  a_u_pk [shape=ellipse, label="PK ID_usu", fillcolor="#eafaf1"];
+  a_u_nom [shape=ellipse, label="Nombre", fillcolor="#eafaf1"];
+  a_u_ape [shape=ellipse, label="Apellido", fillcolor="#eafaf1"];
+  a_u_fn [shape=ellipse, label="FechaNac", fillcolor="#eafaf1"];
+  a_u_email [shape=ellipse, label="Email", fillcolor="#eafaf1"];
+  a_u_tel [shape=ellipse, label="Telefono", fillcolor="#eafaf1"];
+  a_u_gen [shape=ellipse, label="Genero", fillcolor="#eafaf1"];
+
+  // Tipo_Usuario
+  a_tu_pk [shape=ellipse, label="PK ID_tipousu", fillcolor="#eafaf1"];
+  a_tu_desc [shape=ellipse, label="Descripcion", fillcolor="#eafaf1"];
+
+  // Direccion
+  a_dir_pk [shape=ellipse, label="PK ID_direccion", fillcolor="#eafaf1"];
+  a_dir_calle [shape=ellipse, label="Calle", fillcolor="#eafaf1"];
+  a_dir_ne [shape=ellipse, label="NumeroExterior", fillcolor="#eafaf1"];
+  a_dir_ni [shape=ellipse, label="NumeroInterior", fillcolor="#eafaf1"];
+  a_dir_ref [shape=ellipse, label="Referencia", fillcolor="#eafaf1"];
+
+  // Colonia
+  a_col_pk [shape=ellipse, label="PK ID_colonia", fillcolor="#eafaf1"];
+  a_col_nom [shape=ellipse, label="Nombre", fillcolor="#eafaf1"];
+  a_col_cp [shape=ellipse, label="CP", fillcolor="#eafaf1"];
+
+  // Ciudad
+  a_ciu_pk [shape=ellipse, label="PK ID_ciudad", fillcolor="#eafaf1"];
+  a_ciu_nom [shape=ellipse, label="Nombre", fillcolor="#eafaf1"];
+
+  // Estado
+  a_est_pk [shape=ellipse, label="PK ID_estado", fillcolor="#eafaf1"];
+  a_est_nom [shape=ellipse, label="Nombre", fillcolor="#eafaf1"];
+
+  // Editorial
+  a_ed_pk [shape=ellipse, label="PK ID_editorial", fillcolor="#eafaf1"];
+  a_ed_nom [shape=ellipse, label="Nombre", fillcolor="#eafaf1"];
+
+  // Tipo_Libro
+  a_tl_pk [shape=ellipse, label="PK ID_tipolibro", fillcolor="#eafaf1"];
+  a_tl_desc [shape=ellipse, label="Descripcion", fillcolor="#eafaf1"];
+
+  // Idioma
+  a_idi_pk [shape=ellipse, label="PK ID_idioma", fillcolor="#eafaf1"];
+  a_idi_desc [shape=ellipse, label="Descripcion", fillcolor="#eafaf1"];
+
+  // Genero
+  a_gen_pk [shape=ellipse, label="PK ID_genero", fillcolor="#eafaf1"];
+  a_gen_desc [shape=ellipse, label="Descripcion", fillcolor="#eafaf1"];
+
+  // Autor
+  a_aut_pk [shape=ellipse, label="PK ID_autor", fillcolor="#eafaf1"];
+  a_aut_nom [shape=ellipse, label="Nombre", fillcolor="#eafaf1"];
+  a_aut_ape [shape=ellipse, label="Apellido", fillcolor="#eafaf1"];
+
+  // Libro
+  a_lib_pk [shape=ellipse, label="PK ID_libro", fillcolor="#eafaf1"];
+  a_lib_tit [shape=ellipse, label="Titulo", fillcolor="#eafaf1"];
+  a_lib_sub [shape=ellipse, label="Subtitulo", fillcolor="#eafaf1"];
+  a_lib_isbn13 [shape=ellipse, label="ISBN13", fillcolor="#eafaf1"];
+  a_lib_isbn10 [shape=ellipse, label="ISBN10", fillcolor="#eafaf1"];
+  a_lib_ed [shape=ellipse, label="Edicion", fillcolor="#eafaf1"];
+  a_lib_anio [shape=ellipse, label="AnioPublicacion", fillcolor="#eafaf1"];
+
+  // Ejemplar
+  a_ej_pk [shape=ellipse, label="PK ID_ejemplar", fillcolor="#eafaf1"];
+  a_ej_cb [shape=ellipse, label="CodigoBarras", fillcolor="#eafaf1"];
+  a_ej_ubi [shape=ellipse, label="Ubicacion", fillcolor="#eafaf1"];
+  a_ej_estado [shape=ellipse, label="EstadoEjemplar", fillcolor="#eafaf1"];
+
+  // Prestamo
+  a_pre_pk [shape=ellipse, label="PK ID_prestamo", fillcolor="#eafaf1"];
+  a_pre_fp [shape=ellipse, label="FechaPrestamo", fillcolor="#eafaf1"];
+  a_pre_fde [shape=ellipse, label="FechaDevolucionEsperada", fillcolor="#eafaf1"];
+  a_pre_fdr [shape=ellipse, label="FechaDevolucionReal", fillcolor="#eafaf1"];
+  a_pre_status [shape=ellipse, label="Status", fillcolor="#eafaf1"];
+`;
+
+/* Edges de atributos sin influir el layout (constraint=false) para evitar encimados */
+const attributeEdges = `
+  edge [arrowhead=none, constraint=false];
+
+  Usuario -> a_u_pk; Usuario -> a_u_nom; Usuario -> a_u_ape; Usuario -> a_u_fn; Usuario -> a_u_email; Usuario -> a_u_tel; Usuario -> a_u_gen;
+
+  Tipo_Usuario -> a_tu_pk; Tipo_Usuario -> a_tu_desc;
+
+  Direccion -> a_dir_pk; Direccion -> a_dir_calle; Direccion -> a_dir_ne; Direccion -> a_dir_ni; Direccion -> a_dir_ref;
+
+  Colonia -> a_col_pk; Colonia -> a_col_nom; Colonia -> a_col_cp;
+
+  Ciudad -> a_ciu_pk; Ciudad -> a_ciu_nom;
+
+  Estado -> a_est_pk; Estado -> a_est_nom;
+
+  Editorial -> a_ed_pk; Editorial -> a_ed_nom;
+
+  Tipo_Libro -> a_tl_pk; Tipo_Libro -> a_tl_desc;
+
+  Idioma -> a_idi_pk; Idioma -> a_idi_desc;
+
+  Genero -> a_gen_pk; Genero -> a_gen_desc;
+
+  Autor -> a_aut_pk; Autor -> a_aut_nom; Autor -> a_aut_ape;
+
+  Libro -> a_lib_pk; Libro -> a_lib_tit; Libro -> a_lib_sub; Libro -> a_lib_isbn13; Libro -> a_lib_isbn10; Libro -> a_lib_ed; Libro -> a_lib_anio;
+
+  Ejemplar -> a_ej_pk; Ejemplar -> a_ej_cb; Ejemplar -> a_ej_ubi; Ejemplar -> a_ej_estado;
+
+  Prestamo -> a_pre_pk; Prestamo -> a_pre_fp; Prestamo -> a_pre_fde; Prestamo -> a_pre_fdr; Prestamo -> a_pre_status;
+`;
+
+/* Relaciones con cardinalidad. Los diamonds están colocados entre clusters para reducir cruces */
+const relationshipEdges = `
+  edge [dir=none];
+
+  Usuario -> R_Usuario_Tipo   [taillabel="N", labeldistance=1.5, headlabel="1"];
+  R_Usuario_Tipo -> Tipo_Usuario;
+
+  Usuario -> R_Usuario_Dir    [taillabel="N", labeldistance=1.5, headlabel="1"];
+  R_Usuario_Dir -> Direccion;
+
+  Direccion -> R_Dir_Col      [taillabel="N", labeldistance=1.5, headlabel="1"];
+  R_Dir_Col -> Colonia;
+
+  Colonia -> R_Col_Ciu        [taillabel="N", labeldistance=1.5, headlabel="1"];
+  R_Col_Ciu -> Ciudad;
+
+  Ciudad -> R_Ciu_Est         [taillabel="N", labeldistance=1.5, headlabel="1"];
+  R_Ciu_Est -> Estado;
+
+  Libro -> R_Lib_Editorial    [taillabel="N", labeldistance=1.5, headlabel="1"];
+  R_Lib_Editorial -> Editorial;
+
+  Libro -> R_Lib_Tipo         [taillabel="N", labeldistance=1.5, headlabel="1"];
+  R_Lib_Tipo -> Tipo_Libro;
+
+  Libro -> R_Lib_Idioma       [taillabel="N", labeldistance=1.5, headlabel="1"];
+  R_Lib_Idioma -> Idioma;
+
+  Libro -> R_Lib_Autor        [taillabel="N", labeldistance=1.5, headlabel="N"];
+  R_Lib_Autor -> Autor;
+
+  Libro -> R_Lib_Genero       [taillabel="N", labeldistance=1.5, headlabel="N"];
+  R_Lib_Genero -> Genero;
+
+  Libro -> R_Lib_Ejemplar     [taillabel="1", labeldistance=1.3, headlabel="N"];
+  R_Lib_Ejemplar -> Ejemplar;
+
+  Usuario -> R_Prestamo_Usuario [taillabel="1", labeldistance=1.3, headlabel="N"];
+  R_Prestamo_Usuario -> Prestamo;
+
+  Prestamo -> R_Prestamo_Ejemplar [taillabel="N", labeldistance=1.5, headlabel="N"];
+  R_Prestamo_Ejemplar -> Ejemplar;
+`;
+
+/* Clústeres y rangos para minimizar cruces y “encimados” */
+const clusters = `
+  subgraph cluster_geo { label="Geografía"; color="#e5e7eb";
+    Estado; Ciudad; Colonia; Direccion; R_Ciu_Est; R_Col_Ciu; R_Dir_Col;
+  }
+  subgraph cluster_users { label="Usuarios"; color="#e5e7eb";
+    Usuario; Tipo_Usuario; R_Usuario_Tipo; R_Usuario_Dir;
+  }
+  subgraph cluster_catalogo { label="Catálogo"; color="#e5e7eb";
+    Editorial; Tipo_Libro; Idioma; Genero; Autor;
+    R_Lib_Editorial; R_Lib_Tipo; R_Lib_Idioma; R_Lib_Autor; R_Lib_Genero;
+  }
+  subgraph cluster_obras { label="Obras"; color="#e5e7eb";
+    Libro; R_Lib_Ejemplar;
+  }
+  subgraph cluster_inv { label="Inventario"; color="#e5e7eb";
+    Ejemplar;
+  }
+  subgraph cluster_prestamo { label="Préstamos"; color="#e5e7eb";
+    Prestamo; R_Prestamo_Usuario; R_Prestamo_Ejemplar;
+  }
+
+  // Alineaciones horizontales para lectura
+  { rank=same; Estado; Ciudad; Colonia; Direccion; }
+  { rank=same; Tipo_Usuario; Usuario; Prestamo; }
+  { rank=same; Editorial; Tipo_Libro; Idioma; Libro; Autor; Genero; Ejemplar; }
+`;
+
+/* Diagramas: completo (con atributos) y simple (solo entidades + relaciones) */
+function buildFullDot(){
+  return `
+digraph G {
+  ${baseGraphAttrs}
+  ${entities}
+  ${relationships}
+  ${clusters}
+  ${attributesFull}
+  ${attributeEdges}
+  ${relationshipEdges}
+}
+`; }
+
+function buildSimpleDot(){
+  return `
+digraph G {
+  ${baseGraphAttrs}
+  ${entities}
+  ${relationships}
+  ${clusters}
+  ${relationshipEdges}
+}
+`; }
+
+let viz;
+async function render(dot){
+  if(!viz) viz = new Viz();
+  const el = document.getElementById('graph');
+  el.innerHTML = '';
+  try{
+    const svg = await viz.renderSVGElement(dot);
+    svg.removeAttribute('width'); svg.removeAttribute('height');
+    svg.style.width = '1400px'; svg.style.height = 'auto';
+    el.appendChild(svg);
+  }catch(err){
+    el.innerHTML = '<pre style="padding:1rem;color:#b91c1c;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;max-width:900px;overflow:auto">'
+      + (err.message || String(err)) + '</pre>';
+  }
+}
+
+function getSVGString(){
+  const svg = document.querySelector('#graph svg');
+  if(!svg) return null;
+  const clone = svg.cloneNode(true);
+  clone.style.background = '#ffffff';
+  return '<?xml version="1.0" encoding="UTF-8"?>\\n' + new XMLSerializer().serializeToString(clone);
+}
+function download(name, blob){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = name;
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 0);
+}
+function exportSVG(){
+  const s = getSVGString(); if(!s) return;
+  download('ERD_Biblioteca.svg', new Blob([s], {type:'image/svg+xml'}));
+}
+function exportPNG(){
+  const s = getSVGString(); if(!s) return;
+  const img = new Image();
+  const blob = new Blob([s], {type:'image/svg+xml;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  img.onload = function(){
+    const scale = 2, w = img.width * scale, h = img.height * scale;
+    const canvas = document.createElement('canvas'); canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0,0,w,h);
+    ctx.drawImage(img, 0, 0, w, h);
+    canvas.toBlob(b => { download('ERD_Biblioteca.png', b); URL.revokeObjectURL(url); }, 'image/png', 1.0);
+  };
+  img.onerror = function(){ URL.revokeObjectURL(url); alert('No se pudo convertir el SVG a PNG.'); };
+  img.src = url;
+}
+
+const simpleToggle = document.getElementById('simpleToggle');
+document.getElementById('exportSvgBtn').onclick = exportSVG;
+document.getElementById('exportPngBtn').onclick = exportPNG;
+document.getElementById('relayoutBtn').onclick = ()=> render(simpleToggle.checked ? buildSimpleDot() : buildFullDot());
+simpleToggle.onchange = ()=> render(simpleToggle.checked ? buildSimpleDot() : buildFullDot());
+
+// Render inicial
+render(buildFullDot());
+</script>
 </body>
 </html>
