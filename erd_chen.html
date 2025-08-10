@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>ERD (Chen) - Biblioteca</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .diagram-container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+        .back-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+        .description {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-btn">← Volver al índice</a>
+        
+        <h1>📊 Diagrama Entidad-Relación (Notación Chen)</h1>
+        
+        <div class="description">
+            <h3>🎯 Modelo Conceptual - Sistema de Biblioteca</h3>
+            <p>Este diagrama utiliza la notación clásica de Peter Chen para representar el modelo conceptual de una biblioteca universitaria. Las entidades se muestran como rectángulos, los atributos como óvalos, y las relaciones como rombos.</p>
+        </div>
+
+        <div class="diagram-container">
+            <svg width="1300" height="800" xmlns="http://www.w3.org/2000/svg">
+                <!-- Entidad Usuario -->
+                <rect x="50" y="150" width="120" height="80" fill="#e8f4fd" stroke="#1976d2" stroke-width="2"/>
+                <text x="110" y="195" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold" fill="#1976d2">USUARIO</text>
+                
+                <!-- Atributos de Usuario -->
+                <ellipse cx="30" cy="80" rx="40" ry="20" fill="#fff3e0" stroke="#f57c00"/>
+                <text x="30" y="85" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">id_usuario</text>
+                <line x1="50" y1="95" x2="80" y2="150" stroke="#333" stroke-width="1"/>
+                
+                <ellipse cx="110" cy="60" rx="30" ry="20" fill="#fff3e0" stroke="#f57c00"/>
+                <text x="110" y="65" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">nombre</text>
+                <line x1="110" y1="80" x2="110" y2="150" stroke="#333" stroke-width="1"/>
+                
+                <ellipse cx="190" cy="80" rx="30" ry="20" fill="#fff3e0" stroke="#f57c00"/>
+                <text x="190" y="85" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">email</text>
+                <line x1="170" y1="95" x2="140" y2="150" stroke="#333" stroke-width="1"/>
+                
+                <ellipse cx="30" cy="280" rx="30" ry="20" fill="#fff3e0" stroke="#f57c00"/>
+                <text x="30" y="285" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">teléfono</text>
+                <line x1="50" y1="265" x2="80" y2="230" stroke="#333" stroke-width="1"/>
+                
+                <ellipse cx="190" cy="280" rx="30" ry="20" fill="#fff3e0" stroke="#f57c00"/>
+                <text x="190" y="285" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">tipo</text>
+                <line x1="170" y1="265" x2="140" y2="230" stroke="#333" stroke-width="1"/>
+
+                <!-- Entidad Libro -->
+                <rect x="650" y="150" width="120" height="80" fill="#e8f5e8" stroke="#388e3c" stroke-width="2"/>
+                <text x="710" y="195" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold" fill="#388e3c">LIBRO</text>
+                
+                <!-- Atributos de Libro -->
+                <ellipse cx="630" cy="80" rx="30" ry="20" fill="#fff3e0" stroke="#f57c00"/>
+                <text x="630" y="85" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">ISBN</text>
+                <line x1="650" y1="95" x2="680" y2="150" stroke="#333" stroke-width="1"/>
+                
+                <ellipse cx="710" cy="60" rx="30" ry="20" fill="#fff3e0" stroke="#f57c00"/>
+                <text x="710" y="65" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">título</text>
+                <line x1="710" y1="80" x2="710" y2="150" stroke="#333" stroke-width="1"/>
+                
+                <ellipse cx="790" cy="80" rx="40" ry="20" fill="#fff3e0" stroke="#f57c00"/>
+                <text x="790" y="85" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">año_public</text>
+                <line x1="770" y1="95" x2="740" y2="150" stroke="#333" stroke-width="1"/>
+                
+                <ellipse cx="630" cy="280" rx="40" ry="20" fill="#fff3e0" stroke="#f57c00"/>
+                <text x="630" y="285" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">disponibles</text>
+                <line x1="650" y1="265" x2="680" y2="230" stroke="#333" stroke-width="1"/>
+                
+                <ellipse cx="790" cy="280" rx="30" ry="20" fill="#fff3e0" stroke="#f57c00"/>
+                <text x="790" y="285" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">editorial</text>
+                <line x1="770" y1="265" x2="740" y2="230" stroke="#333" stroke-width="1"/>
+
+                <!-- Relación Realiza -->
+                <polygon points="350,180 400,160 450,180 400,200" fill="#ffebee" stroke="#d32f2f" stroke-width="2"/>
+                <text x="400" y="185" text-anchor="middle" font-family="Arial" font-size="12" font-weight="bold" fill="#d32f2f">REALIZA</text>
+                
+                <!-- Líneas de relación Realiza -->
+                <line x1="170" y1="190" x2="350" y2="180" stroke="#333" stroke-width="2"/>
+                <line x1="450" y1="180" x2="500" y2="180" stroke="#333" stroke-width="2"/>
+                
+                <!-- Cardinalidades Realiza -->
+                <text x="200" y="175" font-family="Arial" font-size="12" fill="#d32f2f">1</text>
+                <text x="480" y="175" font-family="Arial" font-size="12" fill="#d32f2f">N</text>
+
+                <!-- Entidad Préstamo -->
+                <rect x="440" y="150" width="120" height="80" fill="#f3e5f5" stroke="#7b1fa2" stroke-width="2"/>
+                <text x="500" y="195" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold" fill="#7b1fa2">PRÉSTAMO</text>
+                
+                <!-- Atributos de Préstamo -->
+                <ellipse cx="420" cy="80" rx="40" ry="20" fill="#fff3e0" stroke="#f57c00"/>
+                <text x="420" y="85" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">id_prestamo</text>
+                <line x1="440" y1="95" x2="470" y2="150" stroke="#333" stroke-width="1"/>
+                
+                <ellipse cx="520" cy="60" rx="40" ry="20" fill="#fff3e0" stroke="#f57c00"/>
+                <text x="520" y="65" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">fecha_prest</text>
+                <line x1="520" y1="80" x2="520" y2="150" stroke="#333" stroke-width="1"/>
+                
+                <ellipse cx="420" cy="280" rx="40" ry="20" fill="#fff3e0" stroke="#f57c00"/>
+                <text x="420" y="285" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">fecha_dev</text>
+                <line x1="440" y1="265" x2="470" y2="230" stroke="#333" stroke-width="1"/>
+                
+                <ellipse cx="580" cy="280" rx="30" ry="20" fill="#fff3e0" stroke="#f57c00"/>
+                <text x="580" y="285" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">multa</text>
+                <line x1="560" y1="265" x2="530" y2="230" stroke="#333" stroke-width="1"/>
+
+                <!-- Relación Contiene -->
+                <polygon points="550,180 600,160 650,180 600,200" fill="#ffebee" stroke="#d32f2f" stroke-width="2"/>
+                <text x="600" y="185" text-anchor="middle" font-family="Arial" font-size="12" font-weight="bold" fill="#d32f2f">CONTIENE</text>
+                
+                <!-- Líneas de relación Contiene -->
+                <line x1="560" y1="190" x2="550" y2="180" stroke="#333" stroke-width="2"/>
+                <line x1="650" y1="180" x2="650" y2="190" stroke="#333" stroke-width="2"/>
+                
+                <!-- Cardinalidades Contiene -->
+                <text x="570" y="175" font-family="Arial" font-size="12" fill="#d32f2f">1</text>
+                <text x="630" y="175" font-family="Arial" font-size="12" fill="#d32f2f">N</text>
+
+                <!-- Entidad Autor -->
+                <rect x="900" y="350" width="120" height="80" fill="#fff8e1" stroke="#fbc02d" stroke-width="2"/>
+                <text x="960" y="395" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold" fill="#fbc02d">AUTOR</text>
+                
+                <!-- Atributos de Autor -->
+                <ellipse cx="880" cy="280" rx="40" ry="20" fill="#fff3e0" stroke="#f57c00"/>
+                <text x="880" y="285" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">id_autor</text>
+                <line x1="900" y1="295" x2="930" y2="350" stroke="#333" stroke-width="1"/>
+                
+                <ellipse cx="960" cy="260" rx="30" ry="20" fill="#fff3e0" stroke="#f57c00"/>
+                <text x="960" y="265" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">nombre</text>
+                <line x1="960" y1="280" x2="960" y2="350" stroke="#333" stroke-width="1"/>
+                
+                <ellipse cx="1040" cy="280" rx="30" ry="20" fill="#fff3e0" stroke="#f57c00"/>
+                <text x="1040" y="285" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">apellido</text>
+                <line x1="1020" y1="295" x2="990" y2="350" stroke="#333" stroke-width="1"/>
+                
+                <ellipse cx="1040" cy="480" rx="30" ry="20" fill="#fff3e0" stroke="#f57c00"/>
+                <text x="1040" y="485" text-anchor="middle" font-family="Arial" font-size="10" fill="#f57c00">país</text>
+                <line x1="1020" y1="465" x2="990" y2="430" stroke="#333" stroke-width="1"/>
+
+                <!-- Relación Escribe -->
+                <polygon points="800,280 850,260 900,280 850,300" fill="#ffebee" stroke="#d32f2f" stroke-width="2"/>
+                <text x="850" y="285" text-anchor="middle" font-family="Arial" font-size="12" font-weight="bold" fill="#d32f2f">ESCRIBE</text>
+                
+                <!-- Líneas de relación Escribe -->
+                <line x1="770" y1="215" x2="800" y2="280" stroke="#333" stroke-width="2"/>
+                <line x1="900" y1="280" x2="930" y2="370" stroke="#333" stroke-width="2"/>
+                
+                <!-- Cardinalidades Escribe -->
+                <text x="780" y="240" font-family="Arial" font-size="12" fill="#d32f2f">N</text>
+                <text x="910" y="340" font-family="Arial" font-size="12" fill="#d32f2f">M</text>
+
+                <!-- Leyenda -->
+                <rect x="50" y="500" width="400" height="250" fill="rgba(255,255,255,0.1)" stroke="#333" stroke-width="1" rx="10"/>
+                <text x="250" y="525" text-anchor="middle" font-family="Arial" font-size="16" font-weight="bold" fill="#333">LEYENDA</text>
+                
+                <rect x="80" y="540" width="60" height="30" fill="#e8f4fd" stroke="#1976d2" stroke-width="2"/>
+                <text x="250" y="558" font-family="Arial" font-size="12" fill="#333">Entidad</text>
+                
+                <ellipse cx="110" cy="590" rx="30" ry="15" fill="#fff3e0" stroke="#f57c00"/>
+                <text x="250" y="595" font-family="Arial" font-size="12" fill="#333">Atributo</text>
+                
+                <polygon points="80,620 110,610 140,620 110,630" fill="#ffebee" stroke="#d32f2f" stroke-width="2"/>
+                <text x="250" y="625" font-family="Arial" font-size="12" fill="#333">Relación</text>
+                
+                <line x1="80" y1="650" x2="140" y2="650" stroke="#333" stroke-width="2"/>
+                <text x="250" y="655" font-family="Arial" font-size="12" fill="#333">Conexión</text>
+                
+                <text x="80" y="685" font-family="Arial" font-size="12" fill="#333">Cardinalidades:</text>
+                <text x="80" y="705" font-family="Arial" font-size="11" fill="#333">• 1 = Uno</text>
+                <text x="80" y="720" font-family="Arial" font-size="11" fill="#333">• N = Muchos</text>
+                <text x="80" y="735" font-family="Arial" font-size="11" fill="#333">• M = Muchos (relación M:N)</text>
+            </svg>
+        </div>
+        
+        <div class="description">
+            <h3>📋 Descripción de las Entidades</h3>
+            <ul>
+                <li><strong>USUARIO:</strong> Representa a estudiantes y profesores que pueden solicitar préstamos</li>
+                <li><strong>LIBRO:</strong> Catálogo de libros disponibles en la biblioteca</li>
+                <li><strong>PRÉSTAMO:</strong> Registro de transacciones de préstamo de libros</li>
+                <li><strong>AUTOR:</strong> Información de los autores de los libros</li>
+            </ul>
+            
+            <h3>🔗 Relaciones del Sistema</h3>
+            <ul>
+                <li><strong>REALIZA (1:N):</strong> Un usuario puede realizar muchos préstamos</li>
+                <li><strong>CONTIENE (1:N):</strong> Un préstamo puede contener varios libros</li>
+                <li><strong>ESCRIBE (N:M):</strong> Un autor puede escribir varios libros, un libro puede tener varios autores</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

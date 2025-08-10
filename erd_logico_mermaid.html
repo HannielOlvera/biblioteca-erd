@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>ERD Lógico (Crow's Foot) - Biblioteca</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .diagram-container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+        .back-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+        .description {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .mermaid {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-btn">← Volver al índice</a>
+        
+        <h1>🔗 Diagrama Lógico (Crow's Foot)</h1>
+        
+        <div class="description">
+            <h3>🎯 Modelo Lógico - Sistema de Biblioteca</h3>
+            <p>Este diagrama utiliza la notación Crow's Foot para mostrar el modelo lógico de la base de datos. Incluye llaves primarias (PK), llaves foráneas (FK) y especifica las cardinalidades exactas de las relaciones.</p>
+        </div>
+
+        <div class="diagram-container">
+            <div class="mermaid">
+erDiagram
+    USUARIO {
+        int id_usuario PK
+        string nombre
+        string apellido
+        date fecha_nacimiento
+        string email
+        string telefono
+        enum genero
+        string direccion
+        int id_tipo_usuario FK
+    }
+    
+    TIPO_USUARIO {
+        int id_tipo_usuario PK
+        string descripcion
+        int limite_prestamos
+        int dias_prestamo
+    }
+    
+    LIBRO {
+        int id_libro PK
+        string titulo
+        string subtitulo
+        string isbn13
+        string isbn10
+        int edicion
+        int anio_publicacion
+        int id_editorial FK
+        int id_idioma FK
+        int id_tipo_libro FK
+    }
+    
+    EDITORIAL {
+        int id_editorial PK
+        string nombre
+        string pais
+        string sitio_web
+    }
+    
+    IDIOMA {
+        int id_idioma PK
+        string nombre
+        string codigo_iso
+    }
+    
+    TIPO_LIBRO {
+        int id_tipo_libro PK
+        string descripcion
+        int dias_prestamo_max
+    }
+    
+    AUTOR {
+        int id_autor PK
+        string nombre
+        string apellido
+        string nacionalidad
+        date fecha_nacimiento
+        date fecha_muerte
+    }
+    
+    LIBRO_AUTOR {
+        int id_libro FK
+        int id_autor FK
+        string rol
+    }
+    
+    GENERO {
+        int id_genero PK
+        string nombre
+        string descripcion
+    }
+    
+    LIBRO_GENERO {
+        int id_libro FK
+        int id_genero FK
+    }
+    
+    EJEMPLAR {
+        int id_ejemplar PK
+        int id_libro FK
+        string codigo_barras
+        string ubicacion
+        enum estado_ejemplar
+        date fecha_adquisicion
+        decimal precio_adquisicion
+    }
+    
+    PRESTAMO {
+        int id_prestamo PK
+        int id_usuario FK
+        date fecha_prestamo
+        date fecha_devolucion_esperada
+        date fecha_devolucion_real
+        enum status
+        decimal multa
+        string observaciones
+    }
+    
+    DETALLE_PRESTAMO {
+        int id_prestamo FK
+        int id_ejemplar FK
+        date fecha_devolucion_ejemplar
+        enum estado_devolucion
+    }
+    
+    MULTA {
+        int id_multa PK
+        int id_prestamo FK
+        decimal monto
+        string motivo
+        date fecha_generacion
+        date fecha_pago
+        enum estado_multa
+    }
+
+    %% Relaciones principales
+    USUARIO ||--o{ PRESTAMO : "realiza"
+    TIPO_USUARIO ||--o{ USUARIO : "clasifica"
+    
+    LIBRO ||--o{ EJEMPLAR : "tiene"
+    EDITORIAL ||--o{ LIBRO : "publica"
+    IDIOMA ||--o{ LIBRO : "escrito_en"
+    TIPO_LIBRO ||--o{ LIBRO : "categoriza"
+    
+    LIBRO ||--o{ LIBRO_AUTOR : "tiene"
+    AUTOR ||--o{ LIBRO_AUTOR : "escribe"
+    
+    LIBRO ||--o{ LIBRO_GENERO : "pertenece"
+    GENERO ||--o{ LIBRO_GENERO : "clasifica"
+    
+    PRESTAMO ||--o{ DETALLE_PRESTAMO : "contiene"
+    EJEMPLAR ||--o{ DETALLE_PRESTAMO : "prestado_en"
+    
+    PRESTAMO ||--o{ MULTA : "genera"
+            </div>
+        </div>
+        
+        <div class="description">
+            <h3>📋 Estructura de la Base de Datos</h3>
+            <ul>
+                <li><strong>Tablas Principales:</strong> Usuario, Libro, Ejemplar, Préstamo</li>
+                <li><strong>Tablas de Catálogo:</strong> Editorial, Idioma, Tipo_Libro, Autor, Género</li>
+                <li><strong>Tablas de Relación:</strong> Libro_Autor, Libro_Género, Detalle_Préstamo</li>
+                <li><strong>Tablas de Control:</strong> Tipo_Usuario, Multa</li>
+            </ul>
+            
+            <h3>🔑 Características del Modelo Lógico</h3>
+            <ul>
+                <li><strong>Llaves Primarias (PK):</strong> Identificadores únicos para cada tabla</li>
+                <li><strong>Llaves Foráneas (FK):</strong> Referencias entre tablas relacionadas</li>
+                <li><strong>Relaciones N:M:</strong> Resueltas con tablas intermedias (Libro_Autor, Libro_Género)</li>
+                <li><strong>Cardinalidades:</strong> Especifican exactamente cuántos registros pueden relacionarse</li>
+            </ul>
+            
+            <h3>📊 Cardinalidades del Sistema</h3>
+            <ul>
+                <li><strong>Usuario - Préstamo:</strong> Un usuario puede tener muchos préstamos (1:N)</li>
+                <li><strong>Libro - Ejemplar:</strong> Un libro puede tener múltiples ejemplares (1:N)</li>
+                <li><strong>Libro - Autor:</strong> Relación muchos a muchos (N:M)</li>
+                <li><strong>Préstamo - Ejemplar:</strong> Un préstamo puede incluir varios ejemplares (N:M)</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#e7f0ff',
+                primaryTextColor: '#1976d2',
+                primaryBorderColor: '#1976d2',
+                lineColor: '#374151',
+                sectionBkgColor: '#f8fafc',
+                altSectionBkgColor: '#ffffff',
+                gridColor: '#e5e7eb',
+                secondaryColor: '#fff3e0',
+                tertiaryColor: '#f3e5f5'
+            }
+        });
+    </script>
+</body>
+</html>
