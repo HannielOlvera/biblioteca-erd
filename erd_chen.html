@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
-<title>ERD (Chen) - Biblioteca (basado en SQL, sin tablas N:M)</title>
+<title>ERD (Chen) - Biblioteca (basado en SQL, con fallback)</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
   :root{
@@ -22,6 +22,7 @@
   }
   header h1{margin:0; font-size:16px; font-weight:600}
   .controls{margin-left:auto; display:flex; gap:.5rem; flex-wrap:wrap}
+  .badge{display:none; padding:.2rem .5rem; border-radius:.4rem; font-size:12px; background:#fee2e2; color:#991b1b; border:1px solid #fecaca}
   button{
     appearance:none; border:1px solid var(--panel-border); background:#fff; color:var(--ink);
     padding:.45rem .7rem; border-radius:.5rem; cursor:pointer; font-size:13px; font-weight:500;
@@ -41,6 +42,7 @@
 <body>
 <header>
   <h1>ERD (Chen) – Biblioteca</h1>
+  <span id="safeBadge" class="badge">Modo seguro (sin ortho)</span>
   <div class="controls">
     <label style="display:flex;align-items:center;gap:.4rem;font-size:13px">
       <input type="checkbox" id="simpleToggle" /> Modo simple (sin atributos)
@@ -63,7 +65,7 @@
         <li>Atributo: óvalo (PK marcado)</li>
         <li>Cardinalidad: 1, N en los lados</li>
       </ul>
-      <div style="font-size:12px;color:#6b7280;margin-top:.25rem">Tip: Usa “Modo simple” para cero cruces.</div>
+      <div style="font-size:12px;color:#6b7280;margin-top:.25rem">Si hay error de Graphviz, se activa “Modo seguro”.</div>
     </div>
   </div>
 </main>
@@ -71,36 +73,47 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/viz.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/full.render.js"></script>
 <script>
-const baseGraphAttrs = `
-  graph [
-    rankdir=LR, splines=ortho, overlap=false,
-    pad="0.3", nodesep="0.45", ranksep="0.9",
-    compound=true, concentrate=true, bgcolor="white"
-  ];
-  node  [fontname="Arial", fontsize=12, color="#0f172a", style=filled, fillcolor="white", penwidth=1.2];
-  edge  [fontname="Arial", fontsize=11, color="#334155", penwidth=1.1];
-`;
+// Base attrs en dos variantes:
+// - ortho: puede fallar con "maze.c, chkSgraph"
+// - safe: polyline + sin concentrate/compound (evita el crash)
+function graphAttrs({ortho}) {
+  if (ortho) {
+    return `
+      graph [
+        rankdir=LR, splines=ortho, overlap=false,
+        pad="0.3", nodesep="0.45", ranksep="0.9",
+        compound=false, concentrate=false, bgcolor="white"
+      ];
+      node  [fontname="Arial", fontsize=12, color="#0f172a", style=filled, fillcolor="white", penwidth=1.2];
+      edge  [fontname="Arial", fontsize=11, color="#334155", penwidth=1.1];
+    `;
+  } else {
+    return `
+      graph [
+        rankdir=LR, splines=polyline, overlap=false,
+        pad="0.3", nodesep="0.5", ranksep="1.0",
+        compound=false, concentrate=false, bgcolor="white"
+      ];
+      node  [fontname="Arial", fontsize=12, color="#0f172a", style=filled, fillcolor="white", penwidth=1.2];
+      edge  [fontname="Arial", fontsize=11, color="#334155", penwidth=1.1];
+    `;
+  }
+}
 
 /* ENTIDADES (solo tablas del SQL que no son N:M) */
 const entities = `
-  // Usuarios y geografía
   Usuario   [shape=box, label="Usuario",   fillcolor="#e7f0ff"];
   Tipo_Usuario [shape=box, label="Tipo_Usuario", fillcolor="#e7f0ff"];
   Direccion [shape=box, label="Direccion", fillcolor="#e7f0ff"];
   Colonia   [shape=box, label="Colonia",   fillcolor="#e7f0ff"];
   Ciudad    [shape=box, label="Ciudad",    fillcolor="#e7f0ff"];
   Estado    [shape=box, label="Estado",    fillcolor="#e7f0ff"];
-
-  // Catálogo y obras
   Editorial [shape=box, label="Editorial", fillcolor="#e7f0ff"];
   Tipo_Libro[shape=box, label="Tipo_Libro",fillcolor="#e7f0ff"];
   Idioma    [shape=box, label="Idioma",    fillcolor="#e7f0ff"];
   Genero    [shape=box, label="Genero",    fillcolor="#e7f0ff"];
   Autor     [shape=box, label="Autor",     fillcolor="#e7f0ff"];
   Libro     [shape=box, label="Libro",     fillcolor="#e7f0ff"];
-
-  // Inventario y préstamos
-  Ejemplar  [shape=box, label="Ejemplar",  fillcolor="#e7f0ff"];
   Prestamo  [shape=box, label="Prestamo",  fillcolor="#e7f0ff"];
 `;
 
@@ -119,14 +132,12 @@ const relationships = `
   R_Lib_Autor      [shape=diamond, label="escribe",      fillcolor="#fff3cd"];   // N:M
   R_Lib_Genero     [shape=diamond, label="clasifica",    fillcolor="#fff3cd"];   // N:M
 
-  R_Lib_Ejemplar   [shape=diamond, label="tiene",        fillcolor="#fff3cd"];   // 1:N
   R_Prestamo_Usuario [shape=diamond, label="realiza",    fillcolor="#fff3cd"];   // 1:N
-  R_Prestamo_Ejemplar[shape=diamond, label="contiene",   fillcolor="#fff3cd"];   // N:M según SQL
+  R_Prestamo_Libro   [shape=diamond, label="contiene",   fillcolor="#fff3cd"];   // N:M conceptual
 `;
 
-/* ATRIBUTOS (PK y esenciales). Para evitar “encimados”, los edges no afectan el layout (constraint=false) */
+/* ATRIBUTOS (PK y esenciales) con constraint=false para no distorsionar layout */
 const attributesFull = `
-  // Usuario
   a_u_pk [shape=ellipse, label="PK ID_usu", fillcolor="#eafaf1"];
   a_u_nom [shape=ellipse, label="Nombre", fillcolor="#eafaf1"];
   a_u_ape [shape=ellipse, label="Apellido", fillcolor="#eafaf1"];
@@ -134,53 +145,31 @@ const attributesFull = `
   a_u_email [shape=ellipse, label="Email", fillcolor="#eafaf1"];
   a_u_tel [shape=ellipse, label="Telefono", fillcolor="#eafaf1"];
   a_u_gen [shape=ellipse, label="Genero", fillcolor="#eafaf1"];
-
-  // Tipo_Usuario
   a_tu_pk [shape=ellipse, label="PK ID_tipousu", fillcolor="#eafaf1"];
   a_tu_desc [shape=ellipse, label="Descripcion", fillcolor="#eafaf1"];
-
-  // Direccion
   a_dir_pk [shape=ellipse, label="PK ID_direccion", fillcolor="#eafaf1"];
   a_dir_calle [shape=ellipse, label="Calle", fillcolor="#eafaf1"];
   a_dir_ne [shape=ellipse, label="NumeroExterior", fillcolor="#eafaf1"];
   a_dir_ni [shape=ellipse, label="NumeroInterior", fillcolor="#eafaf1"];
   a_dir_ref [shape=ellipse, label="Referencia", fillcolor="#eafaf1"];
-
-  // Colonia
   a_col_pk [shape=ellipse, label="PK ID_colonia", fillcolor="#eafaf1"];
   a_col_nom [shape=ellipse, label="Nombre", fillcolor="#eafaf1"];
   a_col_cp [shape=ellipse, label="CP", fillcolor="#eafaf1"];
-
-  // Ciudad
   a_ciu_pk [shape=ellipse, label="PK ID_ciudad", fillcolor="#eafaf1"];
   a_ciu_nom [shape=ellipse, label="Nombre", fillcolor="#eafaf1"];
-
-  // Estado
   a_est_pk [shape=ellipse, label="PK ID_estado", fillcolor="#eafaf1"];
   a_est_nom [shape=ellipse, label="Nombre", fillcolor="#eafaf1"];
-
-  // Editorial
   a_ed_pk [shape=ellipse, label="PK ID_editorial", fillcolor="#eafaf1"];
   a_ed_nom [shape=ellipse, label="Nombre", fillcolor="#eafaf1"];
-
-  // Tipo_Libro
   a_tl_pk [shape=ellipse, label="PK ID_tipolibro", fillcolor="#eafaf1"];
   a_tl_desc [shape=ellipse, label="Descripcion", fillcolor="#eafaf1"];
-
-  // Idioma
   a_idi_pk [shape=ellipse, label="PK ID_idioma", fillcolor="#eafaf1"];
   a_idi_desc [shape=ellipse, label="Descripcion", fillcolor="#eafaf1"];
-
-  // Genero
   a_gen_pk [shape=ellipse, label="PK ID_genero", fillcolor="#eafaf1"];
   a_gen_desc [shape=ellipse, label="Descripcion", fillcolor="#eafaf1"];
-
-  // Autor
   a_aut_pk [shape=ellipse, label="PK ID_autor", fillcolor="#eafaf1"];
   a_aut_nom [shape=ellipse, label="Nombre", fillcolor="#eafaf1"];
   a_aut_ape [shape=ellipse, label="Apellido", fillcolor="#eafaf1"];
-
-  // Libro
   a_lib_pk [shape=ellipse, label="PK ID_libro", fillcolor="#eafaf1"];
   a_lib_tit [shape=ellipse, label="Titulo", fillcolor="#eafaf1"];
   a_lib_sub [shape=ellipse, label="Subtitulo", fillcolor="#eafaf1"];
@@ -188,14 +177,6 @@ const attributesFull = `
   a_lib_isbn10 [shape=ellipse, label="ISBN10", fillcolor="#eafaf1"];
   a_lib_ed [shape=ellipse, label="Edicion", fillcolor="#eafaf1"];
   a_lib_anio [shape=ellipse, label="AnioPublicacion", fillcolor="#eafaf1"];
-
-  // Ejemplar
-  a_ej_pk [shape=ellipse, label="PK ID_ejemplar", fillcolor="#eafaf1"];
-  a_ej_cb [shape=ellipse, label="CodigoBarras", fillcolor="#eafaf1"];
-  a_ej_ubi [shape=ellipse, label="Ubicacion", fillcolor="#eafaf1"];
-  a_ej_estado [shape=ellipse, label="EstadoEjemplar", fillcolor="#eafaf1"];
-
-  // Prestamo
   a_pre_pk [shape=ellipse, label="PK ID_prestamo", fillcolor="#eafaf1"];
   a_pre_fp [shape=ellipse, label="FechaPrestamo", fillcolor="#eafaf1"];
   a_pre_fde [shape=ellipse, label="FechaDevolucionEsperada", fillcolor="#eafaf1"];
@@ -203,84 +184,64 @@ const attributesFull = `
   a_pre_status [shape=ellipse, label="Status", fillcolor="#eafaf1"];
 `;
 
-/* Edges de atributos sin influir el layout (constraint=false) para evitar encimados */
+// Conexiones de atributos (constraint=false)
 const attributeEdges = `
   edge [arrowhead=none, constraint=false];
-
   Usuario -> a_u_pk; Usuario -> a_u_nom; Usuario -> a_u_ape; Usuario -> a_u_fn; Usuario -> a_u_email; Usuario -> a_u_tel; Usuario -> a_u_gen;
-
   Tipo_Usuario -> a_tu_pk; Tipo_Usuario -> a_tu_desc;
-
   Direccion -> a_dir_pk; Direccion -> a_dir_calle; Direccion -> a_dir_ne; Direccion -> a_dir_ni; Direccion -> a_dir_ref;
-
   Colonia -> a_col_pk; Colonia -> a_col_nom; Colonia -> a_col_cp;
-
   Ciudad -> a_ciu_pk; Ciudad -> a_ciu_nom;
-
   Estado -> a_est_pk; Estado -> a_est_nom;
-
   Editorial -> a_ed_pk; Editorial -> a_ed_nom;
-
   Tipo_Libro -> a_tl_pk; Tipo_Libro -> a_tl_desc;
-
   Idioma -> a_idi_pk; Idioma -> a_idi_desc;
-
   Genero -> a_gen_pk; Genero -> a_gen_desc;
-
   Autor -> a_aut_pk; Autor -> a_aut_nom; Autor -> a_aut_ape;
-
   Libro -> a_lib_pk; Libro -> a_lib_tit; Libro -> a_lib_sub; Libro -> a_lib_isbn13; Libro -> a_lib_isbn10; Libro -> a_lib_ed; Libro -> a_lib_anio;
-
-  Ejemplar -> a_ej_pk; Ejemplar -> a_ej_cb; Ejemplar -> a_ej_ubi; Ejemplar -> a_ej_estado;
-
   Prestamo -> a_pre_pk; Prestamo -> a_pre_fp; Prestamo -> a_pre_fde; Prestamo -> a_pre_fdr; Prestamo -> a_pre_status;
 `;
 
-/* Relaciones con cardinalidad. Los diamonds están colocados entre clusters para reducir cruces */
+// Relaciones y clusters
 const relationshipEdges = `
   edge [dir=none];
-
-  Usuario -> R_Usuario_Tipo   [taillabel="N", labeldistance=1.5, headlabel="1"];
+  Usuario -> R_Usuario_Tipo [taillabel="N", labeldistance=1.5, headlabel="1"];
   R_Usuario_Tipo -> Tipo_Usuario;
 
-  Usuario -> R_Usuario_Dir    [taillabel="N", labeldistance=1.5, headlabel="1"];
+  Usuario -> R_Usuario_Dir [taillabel="N", labeldistance=1.5, headlabel="1"];
   R_Usuario_Dir -> Direccion;
 
-  Direccion -> R_Dir_Col      [taillabel="N", labeldistance=1.5, headlabel="1"];
+  Direccion -> R_Dir_Col [taillabel="N", labeldistance=1.5, headlabel="1"];
   R_Dir_Col -> Colonia;
 
-  Colonia -> R_Col_Ciu        [taillabel="N", labeldistance=1.5, headlabel="1"];
+  Colonia -> R_Col_Ciu [taillabel="N", labeldistance=1.5, headlabel="1"];
   R_Col_Ciu -> Ciudad;
 
-  Ciudad -> R_Ciu_Est         [taillabel="N", labeldistance=1.5, headlabel="1"];
+  Ciudad -> R_Ciu_Est [taillabel="N", labeldistance=1.5, headlabel="1"];
   R_Ciu_Est -> Estado;
 
-  Libro -> R_Lib_Editorial    [taillabel="N", labeldistance=1.5, headlabel="1"];
+  Libro -> R_Lib_Editorial [taillabel="N", labeldistance=1.5, headlabel="1"];
   R_Lib_Editorial -> Editorial;
 
-  Libro -> R_Lib_Tipo         [taillabel="N", labeldistance=1.5, headlabel="1"];
+  Libro -> R_Lib_Tipo [taillabel="N", labeldistance=1.5, headlabel="1"];
   R_Lib_Tipo -> Tipo_Libro;
 
-  Libro -> R_Lib_Idioma       [taillabel="N", labeldistance=1.5, headlabel="1"];
+  Libro -> R_Lib_Idioma [taillabel="N", labeldistance=1.5, headlabel="1"];
   R_Lib_Idioma -> Idioma;
 
-  Libro -> R_Lib_Autor        [taillabel="N", labeldistance=1.5, headlabel="N"];
+  Libro -> R_Lib_Autor [taillabel="N", labeldistance=1.5, headlabel="N"];
   R_Lib_Autor -> Autor;
 
-  Libro -> R_Lib_Genero       [taillabel="N", labeldistance=1.5, headlabel="N"];
+  Libro -> R_Lib_Genero [taillabel="N", labeldistance=1.5, headlabel="N"];
   R_Lib_Genero -> Genero;
-
-  Libro -> R_Lib_Ejemplar     [taillabel="1", labeldistance=1.3, headlabel="N"];
-  R_Lib_Ejemplar -> Ejemplar;
 
   Usuario -> R_Prestamo_Usuario [taillabel="1", labeldistance=1.3, headlabel="N"];
   R_Prestamo_Usuario -> Prestamo;
 
-  Prestamo -> R_Prestamo_Ejemplar [taillabel="N", labeldistance=1.5, headlabel="N"];
-  R_Prestamo_Ejemplar -> Ejemplar;
+  Prestamo -> R_Prestamo_Libro [taillabel="N", labeldistance=1.5, headlabel="N"];
+  R_Prestamo_Libro -> Libro;
 `;
 
-/* Clústeres y rangos para minimizar cruces y “encimados” */
 const clusters = `
   subgraph cluster_geo { label="Geografía"; color="#e5e7eb";
     Estado; Ciudad; Colonia; Direccion; R_Ciu_Est; R_Col_Ciu; R_Dir_Col;
@@ -293,62 +254,68 @@ const clusters = `
     R_Lib_Editorial; R_Lib_Tipo; R_Lib_Idioma; R_Lib_Autor; R_Lib_Genero;
   }
   subgraph cluster_obras { label="Obras"; color="#e5e7eb";
-    Libro; R_Lib_Ejemplar;
-  }
-  subgraph cluster_inv { label="Inventario"; color="#e5e7eb";
-    Ejemplar;
+    Libro;
   }
   subgraph cluster_prestamo { label="Préstamos"; color="#e5e7eb";
-    Prestamo; R_Prestamo_Usuario; R_Prestamo_Ejemplar;
+    Prestamo; R_Prestamo_Usuario; R_Prestamo_Libro;
   }
 
-  // Alineaciones horizontales para lectura
   { rank=same; Estado; Ciudad; Colonia; Direccion; }
   { rank=same; Tipo_Usuario; Usuario; Prestamo; }
-  { rank=same; Editorial; Tipo_Libro; Idioma; Libro; Autor; Genero; Ejemplar; }
+  { rank=same; Editorial; Tipo_Libro; Idioma; Libro; Autor; Genero; }
 `;
 
-/* Diagramas: completo (con atributos) y simple (solo entidades + relaciones) */
-function buildFullDot(){
+// Builders
+function buildDot({simple=false, ortho=true} = {}){
   return `
 digraph G {
-  ${baseGraphAttrs}
+  ${graphAttrs({ortho})}
   ${entities}
   ${relationships}
   ${clusters}
-  ${attributesFull}
-  ${attributeEdges}
+  ${simple ? '' : attributesFull}
+  ${simple ? '' : attributeEdges}
   ${relationshipEdges}
 }
-`; }
+`;}
 
-function buildSimpleDot(){
-  return `
-digraph G {
-  ${baseGraphAttrs}
-  ${entities}
-  ${relationships}
-  ${clusters}
-  ${relationshipEdges}
-}
-`; }
-
+// Render con fallback automático
 let viz;
-async function render(dot){
+let lastTriedOrtho = true;
+async function render({simple=false, ortho=true} = {}){
   if(!viz) viz = new Viz();
   const el = document.getElementById('graph');
+  const badge = document.getElementById('safeBadge');
   el.innerHTML = '';
   try{
+    const dot = buildDot({simple, ortho});
     const svg = await viz.renderSVGElement(dot);
     svg.removeAttribute('width'); svg.removeAttribute('height');
     svg.style.width = '1400px'; svg.style.height = 'auto';
     el.appendChild(svg);
+    badge.style.display = ortho ? 'none' : 'inline-block';
+    lastTriedOrtho = ortho;
   }catch(err){
-    el.innerHTML = '<pre style="padding:1rem;color:#b91c1c;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;max-width:900px;overflow:auto">'
-      + (err.message || String(err)) + '</pre>';
+    // Si falla con ortho, reintentar en modo seguro (polyline)
+    if (ortho) {
+      badge.style.display = 'inline-block';
+      // Re-crear instancia para limpiar estado interno
+      viz = new Viz();
+      render({simple, ortho:false});
+    } else {
+      el.innerHTML = '<pre style="padding:1rem;color:#b91c1c;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;max-width:900px;overflow:auto">'
+        + 'No se pudo renderizar el diagrama.\\n' + (err && err.message ? err.message : String(err)) + '</pre>';
+    }
   }
 }
 
+const simpleToggle = document.getElementById('simpleToggle');
+document.getElementById('exportSvgBtn').onclick = exportSVG;
+document.getElementById('exportPngBtn').onclick = exportPNG;
+document.getElementById('relayoutBtn').onclick = ()=> render({simple: simpleToggle.checked, ortho: lastTriedOrtho});
+simpleToggle.onchange = ()=> render({simple: simpleToggle.checked, ortho: lastTriedOrtho});
+
+// Export helpers
 function getSVGString(){
   const svg = document.querySelector('#graph svg');
   if(!svg) return null;
@@ -382,14 +349,8 @@ function exportPNG(){
   img.src = url;
 }
 
-const simpleToggle = document.getElementById('simpleToggle');
-document.getElementById('exportSvgBtn').onclick = exportSVG;
-document.getElementById('exportPngBtn').onclick = exportPNG;
-document.getElementById('relayoutBtn').onclick = ()=> render(simpleToggle.checked ? buildSimpleDot() : buildFullDot());
-simpleToggle.onchange = ()=> render(simpleToggle.checked ? buildSimpleDot() : buildFullDot());
-
-// Render inicial
-render(buildFullDot());
+// Render inicial: intentamos con ortho y si falla hacemos fallback
+render({simple:false, ortho:true});
 </script>
 </body>
 </html>
