@@ -83,18 +83,23 @@ const baseGraphAttrs = `
 
 /* ENTIDADES (solo tablas del SQL que no son N:M) */
 const entities = `
+  // Usuarios y geografía
   Usuario   [shape=box, label="Usuario",   fillcolor="#e7f0ff"];
   Tipo_Usuario [shape=box, label="Tipo_Usuario", fillcolor="#e7f0ff"];
   Direccion [shape=box, label="Direccion", fillcolor="#e7f0ff"];
   Colonia   [shape=box, label="Colonia",   fillcolor="#e7f0ff"];
   Ciudad    [shape=box, label="Ciudad",    fillcolor="#e7f0ff"];
   Estado    [shape=box, label="Estado",    fillcolor="#e7f0ff"];
+
+  // Catálogo y obras
   Editorial [shape=box, label="Editorial", fillcolor="#e7f0ff"];
   Tipo_Libro[shape=box, label="Tipo_Libro",fillcolor="#e7f0ff"];
   Idioma    [shape=box, label="Idioma",    fillcolor="#e7f0ff"];
   Genero    [shape=box, label="Genero",    fillcolor="#e7f0ff"];
   Autor     [shape=box, label="Autor",     fillcolor="#e7f0ff"];
   Libro     [shape=box, label="Libro",     fillcolor="#e7f0ff"];
+
+  // Inventario y préstamos
   Ejemplar  [shape=box, label="Ejemplar",  fillcolor="#e7f0ff"];
   Prestamo  [shape=box, label="Prestamo",  fillcolor="#e7f0ff"];
 `;
@@ -106,14 +111,17 @@ const relationships = `
   R_Dir_Col        [shape=diamond, label="pertenece",    fillcolor="#fff3cd"];
   R_Col_Ciu        [shape=diamond, label="pertenece",    fillcolor="#fff3cd"];
   R_Ciu_Est        [shape=diamond, label="pertenece",    fillcolor="#fff3cd"];
+
   R_Lib_Editorial  [shape=diamond, label="publicado_por",fillcolor="#fff3cd"];
   R_Lib_Tipo       [shape=diamond, label="es_tipo",      fillcolor="#fff3cd"];
   R_Lib_Idioma     [shape=diamond, label="en_idioma",    fillcolor="#fff3cd"];
-  R_Lib_Autor      [shape=diamond, label="escribe",      fillcolor="#fff3cd"];
-  R_Lib_Genero     [shape=diamond, label="clasifica",    fillcolor="#fff3cd"];
-  R_Lib_Ejemplar   [shape=diamond, label="tiene",        fillcolor="#fff3cd"];
-  R_Prestamo_Usuario [shape=diamond, label="realiza",    fillcolor="#fff3cd"];
-  R_Prestamo_Ejemplar[shape=diamond, label="contiene",   fillcolor="#fff3cd"];
+
+  R_Lib_Autor      [shape=diamond, label="escribe",      fillcolor="#fff3cd"];   // N:M
+  R_Lib_Genero     [shape=diamond, label="clasifica",    fillcolor="#fff3cd"];   // N:M
+
+  R_Lib_Ejemplar   [shape=diamond, label="tiene",        fillcolor="#fff3cd"];   // 1:N
+  R_Prestamo_Usuario [shape=diamond, label="realiza",    fillcolor="#fff3cd"];   // 1:N
+  R_Prestamo_Ejemplar[shape=diamond, label="contiene",   fillcolor="#fff3cd"];   // N:M según SQL
 `;
 
 /* ATRIBUTOS (PK y esenciales). Para evitar “encimados”, los edges no afectan el layout (constraint=false) */
@@ -197,84 +205,79 @@ const attributesFull = `
 
 /* Edges de atributos sin influir el layout (constraint=false) para evitar encimados */
 const attributeEdges = `
-  Usuario -> a_u_pk [arrowhead=none, constraint=false];
-  Usuario -> a_u_nom [arrowhead=none, constraint=false];
-  Usuario -> a_u_ape [arrowhead=none, constraint=false];
-  Usuario -> a_u_fn [arrowhead=none, constraint=false];
-  Usuario -> a_u_email [arrowhead=none, constraint=false];
-  Usuario -> a_u_tel [arrowhead=none, constraint=false];
-  Usuario -> a_u_gen [arrowhead=none, constraint=false];
-  Tipo_Usuario -> a_tu_pk [arrowhead=none, constraint=false];
-  Tipo_Usuario -> a_tu_desc [arrowhead=none, constraint=false];
-  Direccion -> a_dir_pk [arrowhead=none, constraint=false];
-  Direccion -> a_dir_calle [arrowhead=none, constraint=false];
-  Direccion -> a_dir_ne [arrowhead=none, constraint=false];
-  Direccion -> a_dir_ni [arrowhead=none, constraint=false];
-  Direccion -> a_dir_ref [arrowhead=none, constraint=false];
-  Colonia -> a_col_pk [arrowhead=none, constraint=false];
-  Colonia -> a_col_nom [arrowhead=none, constraint=false];
-  Colonia -> a_col_cp [arrowhead=none, constraint=false];
-  Ciudad -> a_ciu_pk [arrowhead=none, constraint=false];
-  Ciudad -> a_ciu_nom [arrowhead=none, constraint=false];
-  Estado -> a_est_pk [arrowhead=none, constraint=false];
-  Estado -> a_est_nom [arrowhead=none, constraint=false];
-  Editorial -> a_ed_pk [arrowhead=none, constraint=false];
-  Editorial -> a_ed_nom [arrowhead=none, constraint=false];
-  Tipo_Libro -> a_tl_pk [arrowhead=none, constraint=false];
-  Tipo_Libro -> a_tl_desc [arrowhead=none, constraint=false];
-  Idioma -> a_idi_pk [arrowhead=none, constraint=false];
-  Idioma -> a_idi_desc [arrowhead=none, constraint=false];
-  Genero -> a_gen_pk [arrowhead=none, constraint=false];
-  Genero -> a_gen_desc [arrowhead=none, constraint=false];
-  Autor -> a_aut_pk [arrowhead=none, constraint=false];
-  Autor -> a_aut_nom [arrowhead=none, constraint=false];
-  Autor -> a_aut_ape [arrowhead=none, constraint=false];
-  Libro -> a_lib_pk [arrowhead=none, constraint=false];
-  Libro -> a_lib_tit [arrowhead=none, constraint=false];
-  Libro -> a_lib_sub [arrowhead=none, constraint=false];
-  Libro -> a_lib_isbn13 [arrowhead=none, constraint=false];
-  Libro -> a_lib_isbn10 [arrowhead=none, constraint=false];
-  Libro -> a_lib_ed [arrowhead=none, constraint=false];
-  Libro -> a_lib_anio [arrowhead=none, constraint=false];
-  Ejemplar -> a_ej_pk [arrowhead=none, constraint=false];
-  Ejemplar -> a_ej_cb [arrowhead=none, constraint=false];
-  Ejemplar -> a_ej_ubi [arrowhead=none, constraint=false];
-  Ejemplar -> a_ej_estado [arrowhead=none, constraint=false];
-  Prestamo -> a_pre_pk [arrowhead=none, constraint=false];
-  Prestamo -> a_pre_fp [arrowhead=none, constraint=false];
-  Prestamo -> a_pre_fde [arrowhead=none, constraint=false];
-  Prestamo -> a_pre_fdr [arrowhead=none, constraint=false];
-  Prestamo -> a_pre_status [arrowhead=none, constraint=false];
+  edge [arrowhead=none, constraint=false];
+
+  Usuario -> a_u_pk; Usuario -> a_u_nom; Usuario -> a_u_ape; Usuario -> a_u_fn; Usuario -> a_u_email; Usuario -> a_u_tel; Usuario -> a_u_gen;
+
+  Tipo_Usuario -> a_tu_pk; Tipo_Usuario -> a_tu_desc;
+
+  Direccion -> a_dir_pk; Direccion -> a_dir_calle; Direccion -> a_dir_ne; Direccion -> a_dir_ni; Direccion -> a_dir_ref;
+
+  Colonia -> a_col_pk; Colonia -> a_col_nom; Colonia -> a_col_cp;
+
+  Ciudad -> a_ciu_pk; Ciudad -> a_ciu_nom;
+
+  Estado -> a_est_pk; Estado -> a_est_nom;
+
+  Editorial -> a_ed_pk; Editorial -> a_ed_nom;
+
+  Tipo_Libro -> a_tl_pk; Tipo_Libro -> a_tl_desc;
+
+  Idioma -> a_idi_pk; Idioma -> a_idi_desc;
+
+  Genero -> a_gen_pk; Genero -> a_gen_desc;
+
+  Autor -> a_aut_pk; Autor -> a_aut_nom; Autor -> a_aut_ape;
+
+  Libro -> a_lib_pk; Libro -> a_lib_tit; Libro -> a_lib_sub; Libro -> a_lib_isbn13; Libro -> a_lib_isbn10; Libro -> a_lib_ed; Libro -> a_lib_anio;
+
+  Ejemplar -> a_ej_pk; Ejemplar -> a_ej_cb; Ejemplar -> a_ej_ubi; Ejemplar -> a_ej_estado;
+
+  Prestamo -> a_pre_pk; Prestamo -> a_pre_fp; Prestamo -> a_pre_fde; Prestamo -> a_pre_fdr; Prestamo -> a_pre_status;
 `;
 
 /* Relaciones con cardinalidad. Los diamonds están colocados entre clusters para reducir cruces */
 const relationshipEdges = `
-  Usuario -> R_Usuario_Tipo [dir=none, taillabel="N", labeldistance=1.5, headlabel="1"];
-  R_Usuario_Tipo -> Tipo_Usuario [dir=none];
-  Usuario -> R_Usuario_Dir [dir=none, taillabel="N", labeldistance=1.5, headlabel="1"];
-  R_Usuario_Dir -> Direccion [dir=none];
-  Direccion -> R_Dir_Col [dir=none, taillabel="N", labeldistance=1.5, headlabel="1"];
-  R_Dir_Col -> Colonia [dir=none];
-  Colonia -> R_Col_Ciu [dir=none, taillabel="N", labeldistance=1.5, headlabel="1"];
-  R_Col_Ciu -> Ciudad [dir=none];
-  Ciudad -> R_Ciu_Est [dir=none, taillabel="N", labeldistance=1.5, headlabel="1"];
-  R_Ciu_Est -> Estado [dir=none];
-  Libro -> R_Lib_Editorial [dir=none, taillabel="N", labeldistance=1.5, headlabel="1"];
-  R_Lib_Editorial -> Editorial [dir=none];
-  Libro -> R_Lib_Tipo [dir=none, taillabel="N", labeldistance=1.5, headlabel="1"];
-  R_Lib_Tipo -> Tipo_Libro [dir=none];
-  Libro -> R_Lib_Idioma [dir=none, taillabel="N", labeldistance=1.5, headlabel="1"];
-  R_Lib_Idioma -> Idioma [dir=none];
-  Libro -> R_Lib_Autor [dir=none, taillabel="N", labeldistance=1.5, headlabel="N"];
-  R_Lib_Autor -> Autor [dir=none];
-  Libro -> R_Lib_Genero [dir=none, taillabel="N", labeldistance=1.5, headlabel="N"];
-  R_Lib_Genero -> Genero [dir=none];
-  Libro -> R_Lib_Ejemplar [dir=none, taillabel="1", labeldistance=1.3, headlabel="N"];
-  R_Lib_Ejemplar -> Ejemplar [dir=none];
-  Usuario -> R_Prestamo_Usuario [dir=none, taillabel="1", labeldistance=1.3, headlabel="N"];
-  R_Prestamo_Usuario -> Prestamo [dir=none];
-  Prestamo -> R_Prestamo_Ejemplar [dir=none, taillabel="N", labeldistance=1.5, headlabel="N"];
-  R_Prestamo_Ejemplar -> Ejemplar [dir=none];
+  edge [dir=none];
+
+  Usuario -> R_Usuario_Tipo   [taillabel="N", labeldistance=1.5, headlabel="1"];
+  R_Usuario_Tipo -> Tipo_Usuario;
+
+  Usuario -> R_Usuario_Dir    [taillabel="N", labeldistance=1.5, headlabel="1"];
+  R_Usuario_Dir -> Direccion;
+
+  Direccion -> R_Dir_Col      [taillabel="N", labeldistance=1.5, headlabel="1"];
+  R_Dir_Col -> Colonia;
+
+  Colonia -> R_Col_Ciu        [taillabel="N", labeldistance=1.5, headlabel="1"];
+  R_Col_Ciu -> Ciudad;
+
+  Ciudad -> R_Ciu_Est         [taillabel="N", labeldistance=1.5, headlabel="1"];
+  R_Ciu_Est -> Estado;
+
+  Libro -> R_Lib_Editorial    [taillabel="N", labeldistance=1.5, headlabel="1"];
+  R_Lib_Editorial -> Editorial;
+
+  Libro -> R_Lib_Tipo         [taillabel="N", labeldistance=1.5, headlabel="1"];
+  R_Lib_Tipo -> Tipo_Libro;
+
+  Libro -> R_Lib_Idioma       [taillabel="N", labeldistance=1.5, headlabel="1"];
+  R_Lib_Idioma -> Idioma;
+
+  Libro -> R_Lib_Autor        [taillabel="N", labeldistance=1.5, headlabel="N"];
+  R_Lib_Autor -> Autor;
+
+  Libro -> R_Lib_Genero       [taillabel="N", labeldistance=1.5, headlabel="N"];
+  R_Lib_Genero -> Genero;
+
+  Libro -> R_Lib_Ejemplar     [taillabel="1", labeldistance=1.3, headlabel="N"];
+  R_Lib_Ejemplar -> Ejemplar;
+
+  Usuario -> R_Prestamo_Usuario [taillabel="1", labeldistance=1.3, headlabel="N"];
+  R_Prestamo_Usuario -> Prestamo;
+
+  Prestamo -> R_Prestamo_Ejemplar [taillabel="N", labeldistance=1.5, headlabel="N"];
+  R_Prestamo_Ejemplar -> Ejemplar;
 `;
 
 /* Clústeres y rangos para minimizar cruces y “encimados” */
