@@ -2,341 +2,368 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
-<title>ERD (Chen) – Biblioteca (estilo examen, sin cruces, todos los atributos)</title>
+<title>ERD (Chen) – Biblioteca (estilo examen, sin cruces, más separación)</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
-  html,body{height:100%;margin:0;font-family:Segoe UI,Arial,sans-serif;background:#fff;color:#000}
+  html,body{height:100%;margin:0;font-family:Arial,Helvetica,sans-serif;background:#fff;color:#000}
   header{padding:10px 14px;border-bottom:1px solid #ccc;background:#f7f7f7}
   h1{margin:0;font-size:16px;font-weight:600}
   main{overflow:auto}
-  .wrap{min-width:1800px;min-height:1000px;display:flex;align-items:center;justify-content:center}
+  .wrap{min-width:2400px;min-height:1400px;display:flex;align-items:flex-start;justify-content:center;padding:10px 0}
   svg{background:#fff}
 
-  /* Estilo monocromo como el ejemplo */
+  /* Estilo monocromo tipo examen */
   .box{fill:#fff;stroke:#000;stroke-width:1}
   .diamond{fill:#fff;stroke:#000;stroke-width:1}
   .oval{fill:#fff;stroke:#000;stroke-width:1}
   .edge{stroke:#000;stroke-width:1;fill:none}
 
-  .label{font:13px Arial, sans-serif; fill:#000}
-  .small{font:12px Arial, sans-serif; fill:#000}
-  .mini{font:11px Arial, sans-serif; fill:#000}
+  .label{font:14px Arial, sans-serif; fill:#000}
+  .small{font:13px Arial, sans-serif; fill:#000}
+  .mini{font:12px Arial, sans-serif; fill:#000}
+
+  /* Botones export opcionales */
+  .controls{position:fixed;right:12px;top:10px;display:flex;gap:8px}
+  button{appearance:none;border:1px solid #ccc;background:#fff;padding:.35rem .6rem;border-radius:6px;cursor:pointer;font-size:12px}
 </style>
 </head>
 <body>
-<header><h1>ERD (Chen) – Biblioteca (orientación de ejemplo, sin cruces, todos los atributos)</h1></header>
+<header><h1>ERD (Chen) – Biblioteca (sin cruces, mayor separación)</h1></header>
+
+<div class="controls">
+  <button id="btnSvg">Exportar SVG</button>
+  <button id="btnPng">Exportar PNG</button>
+</div>
+
 <main>
   <div class="wrap">
-    <!-- Lienzo amplio para evitar encimados -->
-    <svg width="1800" height="980" viewBox="0 0 1800 980" xmlns="http://www.w3.org/2000/svg">
+    <!-- Lienzo GRANDE para evitar encimados -->
+    <svg id="erd" width="2400" height="1400" viewBox="0 0 2400 1400" xmlns="http://www.w3.org/2000/svg">
 
-      <!-- ============ Fila superior: Geografía + Usuario + Préstamo (cadena sin cruces) ============ -->
+      <!-- ========== Fila superior: Geografía -> Usuario -> Préstamo (sin cruces) ========== -->
       <!-- ESTADO -->
-      <g id="estado">
-        <rect class="box" x="40" y="120" width="120" height="40" rx="4"/>
-        <text class="label" x="100" y="145" text-anchor="middle">Estado</text>
+      <g id="Estado">
+        <rect class="box" x="60" y="220" width="160" height="48" rx="4"/>
+        <text class="label" x="140" y="250" text-anchor="middle">Estado</text>
         <!-- Atributos -->
-        <ellipse class="oval" cx="40" cy="85" rx="52" ry="20"/><text class="mini" x="40" y="89" text-anchor="middle">ID_estado</text>
-        <path class="edge" d="M60 120 L60 105" />
-        <ellipse class="oval" cx="170" cy="85" rx="50" ry="20"/><text class="mini" x="170" y="89" text-anchor="middle">Nombre</text>
-        <path class="edge" d="M140 120 L150 105" />
+        <ellipse class="oval" cx="90"  cy="160" rx="65" ry="22"/><text class="mini" x="90"  y="164" text-anchor="middle">ID_estado</text>
+        <path class="edge" d="M100 220 L98 182" />
+        <ellipse class="oval" cx="210" cy="160" rx="60" ry="22"/><text class="mini" x="210" y="164" text-anchor="middle">Nombre</text>
+        <path class="edge" d="M180 220 L195 182" />
       </g>
 
-      <!-- Diamante PERTENECE (Ciudad-Estado) -->
-      <g id="r_ciu_est">
-        <polygon class="diamond" points="200,140 225,120 250,140 225,160"/>
-        <text class="small" x="225" y="145" text-anchor="middle">Pertenece</text>
+      <!-- PERTENECE (Ciudad-Estado) -->
+      <g id="R_Ciu_Est">
+        <polygon class="diamond" points="265,244 290,224 315,244 290,264"/>
+        <text class="small" x="290" y="248" text-anchor="middle">Pertenece</text>
       </g>
 
       <!-- CIUDAD -->
-      <g id="ciudad">
-        <rect class="box" x="270" y="120" width="120" height="40" rx="4"/>
-        <text class="label" x="330" y="145" text-anchor="middle">Ciudad</text>
-        <!-- Atributos -->
-        <ellipse class="oval" cx="270" cy="85" rx="50" ry="20"/><text class="mini" x="270" y="89" text-anchor="middle">ID_ciudad</text>
-        <path class="edge" d="M290 120 L290 105" />
-        <ellipse class="oval" cx="400" cy="85" rx="50" ry="20"/><text class="mini" x="400" y="89" text-anchor="middle">Nombre</text>
-        <path class="edge" d="M380 120 L390 105" />
+      <g id="Ciudad">
+        <rect class="box" x="360" y="220" width="160" height="48" rx="4"/>
+        <text class="label" x="440" y="250" text-anchor="middle">Ciudad</text>
+        <ellipse class="oval" cx="390" cy="160" rx="62" ry="22"/><text class="mini" x="390" y="164" text-anchor="middle">ID_ciudad</text>
+        <path class="edge" d="M400 220 L398 182" />
+        <ellipse class="oval" cx="520" cy="160" rx="60" ry="22"/><text class="mini" x="520" y="164" text-anchor="middle">Nombre</text>
+        <path class="edge" d="M500 220 L510 182" />
       </g>
 
       <!-- Cardinalidades Ciudad-Estado -->
-      <path class="edge" d="M160 140 L200 140" />
-      <text class="small" x="175" y="132">1</text>
-      <path class="edge" d="M250 140 L270 140" />
-      <text class="small" x="260" y="132">N</text>
+      <path class="edge" d="M220 244 L265 244" />
+      <text class="small" x="235" y="234">1</text>
+      <path class="edge" d="M315 244 L360 244" />
+      <text class="small" x="338" y="234">N</text>
 
-      <!-- Diamante PERTENECE (Colonia-Ciudad) -->
-      <g id="r_col_ciu">
-        <polygon class="diamond" points="440,140 465,120 490,140 465,160"/>
-        <text class="small" x="465" y="145" text-anchor="middle">Pertenece</text>
+      <!-- PERTENECE (Colonia-Ciudad) -->
+      <g id="R_Col_Ciu">
+        <polygon class="diamond" points="565,244 590,224 615,244 590,264"/>
+        <text class="small" x="590" y="248" text-anchor="middle">Pertenece</text>
       </g>
 
       <!-- COLONIA -->
-      <g id="colonia">
-        <rect class="box" x="510" y="120" width="120" height="40" rx="4"/>
-        <text class="label" x="570" y="145" text-anchor="middle">Colonia</text>
-        <!-- Atributos -->
-        <ellipse class="oval" cx="510" cy="85" rx="50" ry="20"/><text class="mini" x="510" y="89" text-anchor="middle">ID_colonia</text>
-        <path class="edge" d="M530 120 L530 105" />
-        <ellipse class="oval" cx="640" cy="85" rx="50" ry="20"/><text class="mini" x="640" y="89" text-anchor="middle">Nombre</text>
-        <path class="edge" d="M620 120 L630 105" />
-        <ellipse class="oval" cx="640" cy="170" rx="35" ry="18"/><text class="mini" x="640" y="174" text-anchor="middle">CP</text>
-        <path class="edge" d="M620 160 L630 162" />
+      <g id="Colonia">
+        <rect class="box" x="660" y="220" width="160" height="48" rx="4"/>
+        <text class="label" x="740" y="250" text-anchor="middle">Colonia</text>
+        <ellipse class="oval" cx="690" cy="160" rx="62" ry="22"/><text class="mini" x="690" y="164" text-anchor="middle">ID_colonia</text>
+        <path class="edge" d="M705 220 L700 182" />
+        <ellipse class="oval" cx="820" cy="160" rx="60" ry="22"/><text class="mini" x="820" y="164" text-anchor="middle">Nombre</text>
+        <path class="edge" d="M800 220 L810 182" />
+        <ellipse class="oval" cx="820" cy="300" rx="40" ry="20"/><text class="mini" x="820" y="304" text-anchor="middle">CP</text>
+        <path class="edge" d="M800 268 L810 284" />
       </g>
 
       <!-- Cardinalidades Colonia-Ciudad -->
-      <path class="edge" d="M390 140 L440 140" />
-      <text class="small" x="405" y="132">1</text>
-      <path class="edge" d="M490 140 L510 140" />
-      <text class="small" x="500" y="132">N</text>
+      <path class="edge" d="M520 244 L565 244" />
+      <text class="small" x="535" y="234">1</text>
+      <path class="edge" d="M615 244 L660 244" />
+      <text class="small" x="638" y="234">N</text>
 
-      <!-- Diamante PERTENECE (Dirección-Colonia) -->
-      <g id="r_dir_col">
-        <polygon class="diamond" points="680,140 705,120 730,140 705,160"/>
-        <text class="small" x="705" y="145" text-anchor="middle">Pertenece</text>
+      <!-- PERTENECE (Dirección-Colonia) -->
+      <g id="R_Dir_Col">
+        <polygon class="diamond" points="865,244 890,224 915,244 890,264"/>
+        <text class="small" x="890" y="248" text-anchor="middle">Pertenece</text>
       </g>
 
-      <!-- DIRECCION -->
-      <g id="direccion">
-        <rect class="box" x="750" y="120" width="140" height="40" rx="4"/>
-        <text class="label" x="820" y="145" text-anchor="middle">Dirección</text>
-        <!-- Atributos (distribuidos para no cruzar) -->
-        <ellipse class="oval" cx="750" cy="85" rx="58" ry="20"/><text class="mini" x="750" y="89" text-anchor="middle">ID_direccion</text>
-        <path class="edge" d="M770 120 L770 105" />
-        <ellipse class="oval" cx="890" cy="85" rx="46" ry="20"/><text class="mini" x="890" y="89" text-anchor="middle">Calle</text>
-        <path class="edge" d="M870 120 L880 105" />
-        <ellipse class="oval" cx="740" cy="185" rx="62" ry="20"/><text class="mini" x="740" y="189" text-anchor="middle">NumeroExterior</text>
-        <path class="edge" d="M760 160 L752 170" />
-        <ellipse class="oval" cx="880" cy="185" rx="60" ry="20"/><text class="mini" x="880" y="189" text-anchor="middle">NumeroInterior</text>
-        <path class="edge" d="M880 160 L880 170" />
-        <ellipse class="oval" cx="820" cy="230" rx="58" ry="20"/><text class="mini" x="820" y="234" text-anchor="middle">Referencia</text>
-        <path class="edge" d="M820 160 L820 210" />
+      <!-- DIRECCIÓN -->
+      <g id="Direccion">
+        <rect class="box" x="960" y="220" width="190" height="48" rx="4"/>
+        <text class="label" x="1055" y="250" text-anchor="middle">Dirección</text>
+        <ellipse class="oval" cx="980" cy="160" rx="72" ry="22"/><text class="mini" x="980" y="164" text-anchor="middle">ID_direccion</text>
+        <path class="edge" d="M1000 220 L995 182" />
+        <ellipse class="oval" cx="1140" cy="160" rx="54" ry="22"/><text class="mini" x="1140" y="164" text-anchor="middle">Calle</text>
+        <path class="edge" d="M1120 220 L1130 182" />
+        <ellipse class="oval" cx="980" cy="310" rx="90" ry="22"/><text class="mini" x="980" y="314" text-anchor="middle">NumeroExterior</text>
+        <path class="edge" d="M1000 268 L995 288" />
+        <ellipse class="oval" cx="1130" cy="310" rx="90" ry="22"/><text class="mini" x="1130" y="314" text-anchor="middle">NumeroInterior</text>
+        <path class="edge" d="M1110 268 L1120 288" />
+        <ellipse class="oval" cx="1055" cy="360" rx="72" ry="22"/><text class="mini" x="1055" y="364" text-anchor="middle">Referencia</text>
+        <path class="edge" d="M1055 268 L1055 338" />
       </g>
 
       <!-- Cardinalidades Dirección-Colonia -->
-      <path class="edge" d="M630 140 L680 140" />
-      <text class="small" x="645" y="132">1</text>
-      <path class="edge" d="M730 140 L750 140" />
-      <text class="small" x="740" y="132">N</text>
+      <path class="edge" d="M820 244 L865 244" />
+      <text class="small" x="835" y="234">1</text>
+      <path class="edge" d="M915 244 L960 244" />
+      <text class="small" x="938" y="234">N</text>
 
-      <!-- Diamante VIVE_EN (Usuario-Dirección) -->
-      <g id="r_usr_dir">
-        <polygon class="diamond" points="930,140 955,120 980,140 955,160"/>
-        <text class="small" x="955" y="145" text-anchor="middle">Vive en</text>
+      <!-- VIVE_EN (Usuario-Dirección) -->
+      <g id="R_Usr_Dir">
+        <polygon class="diamond" points="1190,244 1215,224 1240,244 1215,264"/>
+        <text class="small" x="1215" y="248" text-anchor="middle">Vive en</text>
       </g>
 
       <!-- USUARIO -->
-      <g id="usuario">
-        <rect class="box" x="1000" y="120" width="130" height="40" rx="4"/>
-        <text class="label" x="1065" y="145" text-anchor="middle">Usuario</text>
-        <!-- Atributos -->
-        <ellipse class="oval" cx="990" cy="85" rx="48" ry="20"/><text class="mini" x="990" y="89" text-anchor="middle">ID_usu</text>
-        <path class="edge" d="M1010 120 L1002 105" />
-        <ellipse class="oval" cx="1140" cy="85" rx="48" ry="20"/><text class="mini" x="1140" y="89" text-anchor="middle">Nombre</text>
-        <path class="edge" d="M1120 120 L1130 105" />
-        <ellipse class="oval" cx="990" cy="185" rx="50" ry="20"/><text class="mini" x="990" y="189" text-anchor="middle">Apellido</text>
-        <path class="edge" d="M1010 160 L1000 170" />
-        <ellipse class="oval" cx="1140" cy="185" rx="56" ry="20"/><text class="mini" x="1140" y="189" text-anchor="middle">FechaNac</text>
-        <path class="edge" d="M1120 160 L1130 170" />
-        <ellipse class="oval" cx="1065" cy="230" rx="44" ry="20"/><text class="mini" x="1065" y="234" text-anchor="middle">Email</text>
-        <path class="edge" d="M1065 160 L1065 210" />
-        <ellipse class="oval" cx="1188" cy="140" rx="52" ry="20"/><text class="mini" x="1188" y="144" text-anchor="middle">Teléfono</text>
-        <path class="edge" d="M1130 140 L1166 140" />
-        <ellipse class="oval" cx="1188" cy="190" rx="44" ry="20"/><text class="mini" x="1188" y="194" text-anchor="middle">Género</text>
-        <path class="edge" d="M1130 160 L1166 180" />
+      <g id="Usuario">
+        <rect class="box" x="1280" y="220" width="170" height="48" rx="4"/>
+        <text class="label" x="1365" y="250" text-anchor="middle">Usuario</text>
+        <!-- Arriba -->
+        <ellipse class="oval" cx="1305" cy="160" rx="55" ry="22"/><text class="mini" x="1305" y="164" text-anchor="middle">ID_usu</text>
+        <path class="edge" d="M1320 220 L1315 182" />
+        <ellipse class="oval" cx="1435" cy="160" rx="55" ry="22"/><text class="mini" x="1435" y="164" text-anchor="middle">Nombre</text>
+        <path class="edge" d="M1410 220 L1420 182" />
+        <!-- Abajo, bien separados -->
+        <ellipse class="oval" cx="1290" cy="310" rx="58" ry="22"/><text class="mini" x="1290" y="314" text-anchor="middle">Apellido</text>
+        <path class="edge" d="M1310 268 L1305 290" />
+        <ellipse class="oval" cx="1365" cy="360" rx="62" ry="22"/><text class="mini" x="1365" y="364" text-anchor="middle">Email</text>
+        <path class="edge" d="M1365 268 L1365 338" />
+        <ellipse class="oval" cx="1440" cy="310" rx="64" ry="22"/><text class="mini" x="1440" y="314" text-anchor="middle">FechaNac</text>
+        <path class="edge" d="M1420 268 L1430 290" />
+        <ellipse class="oval" cx="1490" cy="360" rx="62" ry="22"/><text class="mini" x="1490" y="364" text-anchor="middle">Género</text>
+        <path class="edge" d="M1450 268 L1472 338" />
+        <ellipse class="oval" cx="1525" cy="260" rx="68" ry="22"/><text class="mini" x="1525" y="264" text-anchor="middle">Teléfono</text>
+        <path class="edge" d="M1450 244 L1495 252" />
       </g>
 
       <!-- Cardinalidades Usuario-Dirección (N:1) -->
-      <path class="edge" d="M890 140 L930 140" />
-      <text class="small" x="905" y="132">1</text>
-      <path class="edge" d="M980 140 L1000 140" />
-      <text class="small" x="990" y="132">N</text>
+      <path class="edge" d="M1150 244 L1190 244" />
+      <text class="small" x="1165" y="234">1</text>
+      <path class="edge" d="M1240 244 L1280 244" />
+      <text class="small" x="1260" y="234">N</text>
 
-      <!-- Diamante ES_DE (Usuario-Tipo_Usuario) arriba para no cruzar -->
-      <g id="r_usr_tipo">
-        <polygon class="diamond" points="1065,75 1090,55 1115,75 1090,95"/>
-        <text class="small" x="1090" y="78" text-anchor="middle">Es de</text>
+      <!-- ES_DE (Usuario-Tipo_Usuario) arriba amplio -->
+      <g id="R_Usr_Tipo">
+        <polygon class="diamond" points="1370,120 1395,100 1420,120 1395,140"/>
+        <text class="small" x="1395" y="124" text-anchor="middle">Es de</text>
+      </g>
+      <g id="Tipo_Usuario">
+        <rect class="box" x="1340" y="40" width="220" height="40" rx="4"/>
+        <text class="small" x="1450" y="65" text-anchor="middle">Tipo_Usuario</text>
+        <ellipse class="oval" cx="1450" cy="10" rx="80" ry="20"/><text class="mini" x="1450" y="14" text-anchor="middle">Descripcion</text>
+        <path class="edge" d="M1450 40 L1450 30" />
+        <ellipse class="oval" cx="1580" cy="60" rx="72" ry="20"/><text class="mini" x="1580" y="64" text-anchor="middle">ID_tipousu</text>
+        <path class="edge" d="M1560 60 L1558 60" />
+      </g>
+      <path class="edge" d="M1370 220 L1370 140" /><text class="small" x="1376" y="180">N</text>
+      <path class="edge" d="M1420 120 L1450 120 L1450 80" /><text class="small" x="1456" y="100">1</text>
+
+      <!-- REALIZA (Usuario-Préstamo) -->
+      <g id="R_Realiza">
+        <polygon class="diamond" points="1660,244 1685,224 1710,244 1685,264"/>
+        <text class="small" x="1685" y="248" text-anchor="middle">Realiza</text>
+        <text class="small" x="1685" y="212" text-anchor="middle">1:N</text>
       </g>
 
-      <!-- TIPO_USUARIO (arriba) -->
-      <g id="tipo_usuario">
-        <rect class="box" x="1060" y="20" width="160" height="36" rx="4"/>
-        <text class="small" x="1140" y="43" text-anchor="middle">Tipo_Usuario</text>
-        <!-- Atributos -->
-        <ellipse class="oval" cx="1240" cy="38" rx="58" ry="18"/><text class="mini" x="1240" y="42" text-anchor="middle">ID_tipousu</text>
-        <path class="edge" d="M1220 40 L1218 40" />
-        <ellipse class="oval" cx="1140" cy="5" rx="62" ry="18"/><text class="mini" x="1140" y="9" text-anchor="middle">Descripcion</text>
-        <path class="edge" d="M1140 20 L1140 18" />
-      </g>
-
-      <!-- Conexión Usuario-Es_de-TipoUsuario con cardinalidades (N:1) -->
-      <path class="edge" d="M1065 120 L1065 95" />
-      <text class="small" x="1070" y="108">N</text>
-      <path class="edge" d="M1115 75 L1120 56 L1120 56" />
-      <path class="edge" d="M1090 55 L1090 56" />
-      <path class="edge" d="M1115 75 L1140 75 L1140 56" />
-      <text class="small" x="1146" y="66">1</text>
-
-      <!-- Diamante REALIZA (Usuario-Préstamo) -->
-      <g id="r_realiza">
-        <polygon class="diamond" points="1240,140 1265,120 1290,140 1265,160"/>
-        <text class="small" x="1265" y="145" text-anchor="middle">Realiza</text>
-        <text class="small" x="1265" y="115" text-anchor="middle">1:N</text>
-      </g>
-
-      <!-- PRESTAMO -->
-      <g id="prestamo">
-        <rect class="box" x="1310" y="120" width="140" height="40" rx="4"/>
-        <text class="label" x="1380" y="145" text-anchor="middle">Préstamo</text>
-        <!-- Atributos -->
-        <ellipse class="oval" cx="1310" cy="85" rx="60" ry="20"/><text class="mini" x="1310" y="89" text-anchor="middle">ID_prestamo</text>
-        <path class="edge" d="M1330 120 L1325 105" />
-        <ellipse class="oval" cx="1450" cy="85" rx="68" ry="20"/><text class="mini" x="1450" y="89" text-anchor="middle">FechaPrestamo</text>
-        <path class="edge" d="M1430 120 L1440 105" />
-        <ellipse class="oval" cx="1310" cy="185" rx="95" ry="22"/><text class="mini" x="1310" y="189" text-anchor="middle">FechaDevolucionEsperada</text>
-        <path class="edge" d="M1330 160 L1320 170" />
-        <ellipse class="oval" cx="1450" cy="185" rx="85" ry="22"/><text class="mini" x="1450" y="189" text-anchor="middle">FechaDevolucionReal</text>
-        <path class="edge" d="M1430 160 L1440 170" />
-        <ellipse class="oval" cx="1525" cy="140" rx="46" ry="20"/><text class="mini" x="1525" y="144" text-anchor="middle">Status</text>
-        <path class="edge" d="M1450 140 L1479 140" />
+      <!-- PRÉSTAMO -->
+      <g id="Prestamo">
+        <rect class="box" x="1750" y="220" width="190" height="48" rx="4"/>
+        <text class="label" x="1845" y="250" text-anchor="middle">Préstamo</text>
+        <!-- Atributos muy separados (arriba/abajo) -->
+        <ellipse class="oval" cx="1765" cy="160" rx="78" ry="22"/><text class="mini" x="1765" y="164" text-anchor="middle">ID_prestamo</text>
+        <path class="edge" d="M1785 220 L1780 182" />
+        <ellipse class="oval" cx="1925" cy="160" rx="88" ry="22"/><text class="mini" x="1925" y="164" text-anchor="middle">FechaPrestamo</text>
+        <path class="edge" d="M1905 220 L1915 182" />
+        <ellipse class="oval" cx="1765" cy="310" rx="140" ry="24"/><text class="mini" x="1765" y="314" text-anchor="middle">FechaDevolucionEsperada</text>
+        <path class="edge" d="M1785 268 L1778 288" />
+        <ellipse class="oval" cx="1925" cy="310" rx="120" ry="24"/><text class="mini" x="1925" y="314" text-anchor="middle">FechaDevolucionReal</text>
+        <path class="edge" d="M1905 268 L1915 288" />
+        <ellipse class="oval" cx="1995" cy="260" rx="55" ry="22"/><text class="mini" x="1995" y="264" text-anchor="middle">Status</text>
+        <path class="edge" d="M1940 244 L1970 252" />
       </g>
 
       <!-- Conexiones Usuario—Realiza—Préstamo -->
-      <path class="edge" d="M1130 140 L1240 140" />
-      <text class="small" x="1155" y="132">1</text>
-      <path class="edge" d="M1290 140 L1310 140" />
-      <text class="small" x="1300" y="132">*</text>
+      <path class="edge" d="M1450 244 L1660 244" />
+      <text class="small" x="1475" y="234">1</text>
+      <path class="edge" d="M1710 244 L1750 244" />
+      <text class="small" x="1730" y="234">*</text>
 
-      <!-- ============ Fila intermedia: Contiene — Libro y su “estrella” ============ -->
-      <!-- Diamante CONTIENE (N:M) debajo de Préstamo -->
-      <g id="r_contiene">
-        <polygon class="diamond" points="1380,280 1405,260 1430,280 1405,300"/>
-        <text class="small" x="1405" y="285" text-anchor="middle">Contiene</text>
-        <text class="small" x="1438" y="279">N:M</text>
+      <!-- ========== Fila media: Contiene — Libro y “estrella” del libro (sin cruces) ========== -->
+
+      <!-- CONTIENE (N:M) debajo de Préstamo -->
+      <g id="R_Contiene">
+        <polygon class="diamond" points="1845,470 1870,450 1895,470 1870,490"/>
+        <text class="small" x="1870" y="474" text-anchor="middle">Contiene</text>
+        <text class="small" x="1900" y="444">N:M</text>
       </g>
+      <!-- Codo desde Prestamo hacia abajo (espaciado) -->
+      <path class="edge" d="M1845 268 L1845 420 L1845 450" />
+      <text class="small" x="1852" y="402">*</text>
 
-      <!-- Conexión desde Préstamo en codo para no cruzar -->
-      <path class="edge" d="M1380 160 L1380 230 L1380 260" />
-      <text class="small" x="1386" y="200">*</text>
-
-      <!-- LIBRO (a la derecha, fila media) -->
-      <g id="libro">
-        <rect class="box" x="1500" y="260" width="140" height="40" rx="4"/>
-        <text class="label" x="1570" y="285" text-anchor="middle">Libro</text>
-        <!-- Atributos: todos -->
-        <ellipse class="oval" cx="1500" cy="225" rx="55" ry="20"/><text class="mini" x="1500" y="229" text-anchor="middle">ID_libro</text>
-        <path class="edge" d="M1520 260 L1512 245" />
-        <ellipse class="oval" cx="1640" cy="225" rx="50" ry="20"/><text class="mini" x="1640" y="229" text-anchor="middle">Titulo</text>
-        <path class="edge" d="M1620 260 L1630 245" />
-        <ellipse class="oval" cx="1490" cy="330" rx="60" ry="20"/><text class="mini" x="1490" y="334" text-anchor="middle">Subtitulo</text>
-        <path class="edge" d="M1510 300 L1502 312" />
-        <ellipse class="oval" cx="1650" cy="330" rx="52" ry="20"/><text class="mini" x="1650" y="334" text-anchor="middle">ISBN13</text>
-        <path class="edge" d="M1620 300 L1636 316" />
-        <ellipse class="oval" cx="1570" cy="360" rx="52" ry="20"/><text class="mini" x="1570" y="364" text-anchor="middle">ISBN10</text>
-        <path class="edge" d="M1570 300 L1570 342" />
-        <ellipse class="oval" cx="1715" cy="285" rx="44" ry="18"/><text class="mini" x="1715" y="289" text-anchor="middle">Edicion</text>
-        <path class="edge" d="M1640 280 L1693 283" />
-        <ellipse class="oval" cx="1715" cy="245" rx="75" ry="20"/><text class="mini" x="1715" y="249" text-anchor="middle">AnioPublicacion</text>
-        <path class="edge" d="M1640 270 L1695 256" />
+      <!-- LIBRO a la derecha -->
+      <g id="Libro">
+        <rect class="box" x="1980" y="450" width="170" height="48" rx="4"/>
+        <text class="label" x="2065" y="480" text-anchor="middle">Libro</text>
+        <!-- Atributos: todos, muy espaciados -->
+        <ellipse class="oval" cx="1980" cy="395" rx="65" ry="22"/><text class="mini" x="1980" y="399" text-anchor="middle">ID_libro</text>
+        <path class="edge" d="M2000 450 L1994 417" />
+        <ellipse class="oval" cx="2140" cy="395" rx="55" ry="22"/><text class="mini" x="2140" y="399" text-anchor="middle">Titulo</text>
+        <path class="edge" d="M2120 450 L2130 417" />
+        <ellipse class="oval" cx="1970" cy="540" rx="70" ry="22"/><text class="mini" x="1970" y="544" text-anchor="middle">Subtitulo</text>
+        <path class="edge" d="M1990 498 L1982 520" />
+        <ellipse class="oval" cx="2145" cy="540" rx="60" ry="22"/><text class="mini" x="2145" y="544" text-anchor="middle">ISBN13</text>
+        <path class="edge" d="M2120 498 L2132 520" />
+        <ellipse class="oval" cx="2065" cy="585" rx="60" ry="22"/><text class="mini" x="2065" y="589" text-anchor="middle">ISBN10</text>
+        <path class="edge" d="M2065 498 L2065 565" />
+        <ellipse class="oval" cx="2215" cy="490" rx="50" ry="20"/><text class="mini" x="2215" y="494" text-anchor="middle">Edicion</text>
+        <path class="edge" d="M2150 474 L2193 484" />
+        <ellipse class="oval" cx="2215" cy="445" rx="90" ry="22"/><text class="mini" x="2215" y="449" text-anchor="middle">AnioPublicacion</text>
+        <path class="edge" d="M2150 466 L2193 456" />
       </g>
 
       <!-- Conexión CONTIENE—LIBRO -->
-      <path class="edge" d="M1430 280 L1500 280" />
-      <text class="small" x="1465" y="272">*</text>
+      <path class="edge" d="M1895 470 L1980 470" />
+      <text class="small" x="1938" y="460">*</text>
 
-      <!-- PUBLICADO_POR (N:1) hacia EDITORIAL (arriba de LIBRO) -->
-      <g id="r_publicado">
-        <polygon class="diamond" points="1540,210 1560,195 1580,210 1560,225"/>
-        <text class="mini" x="1560" y="214" text-anchor="middle">Publicado por</text>
+      <!-- PUBLICADO_POR (N:1) hacia EDITORIAL (arriba de LIBRO, bien separado) -->
+      <g id="R_Publicado">
+        <polygon class="diamond" points="2050,380 2075,360 2100,380 2075,400"/>
+        <text class="small" x="2075" y="384" text-anchor="middle">Publicado por</text>
       </g>
-      <g id="editorial">
-        <rect class="box" x="1530" y="150" width="120" height="36" rx="4"/>
-        <text class="small" x="1590" y="172" text-anchor="middle">Editorial</text>
-        <!-- Atributos -->
-        <ellipse class="oval" cx="1665" cy="168" rx="60" ry="18"/><text class="mini" x="1665" y="172" text-anchor="middle">ID_editorial</text>
-        <path class="edge" d="M1650 168 L1650 168" />
-        <ellipse class="oval" cx="1475" cy="168" rx="52" ry="18"/><text class="mini" x="1475" y="172" text-anchor="middle">Nombre</text>
-        <path class="edge" d="M1530 168 L1527 168" />
+      <g id="Editorial">
+        <rect class="box" x="2020" y="300" width="160" height="42" rx="4"/>
+        <text class="small" x="2100" y="326" text-anchor="middle">Editorial</text>
+        <ellipse class="oval" cx="2200" cy="318" rx="80" ry="20"/><text class="mini" x="2200" y="322" text-anchor="middle">ID_editorial</text>
+        <path class="edge" d="M2180 318 L2178 318" />
+        <ellipse class="oval" cx="1960" cy="318" rx="62" ry="20"/><text class="mini" x="1960" y="322" text-anchor="middle">Nombre</text>
+        <path class="edge" d="M2020 318 L2015 318" />
       </g>
-      <path class="edge" d="M1570 260 L1570 225" /><text class="small" x="1576" y="240">N</text>
-      <path class="edge" d="M1560 195 L1560 186" /><text class="small" x="1566" y="188">1</text>
+      <path class="edge" d="M2065 450 L2065 400" /><text class="small" x="2072" y="420">N</text>
+      <path class="edge" d="M2075 360 L2075 342" /><text class="small" x="2082" y="346">1</text>
 
-      <!-- ES_TIPO (N:1) a TIPO_LIBRO (derecha de LIBRO) -->
-      <g id="r_tipo">
-        <polygon class="diamond" points="1660,280 1680,265 1700,280 1680,295"/>
-        <text class="mini" x="1680" y="284" text-anchor="middle">Es tipo</text>
+      <!-- ES_TIPO (N:1) a TIPO_LIBRO (a la derecha lejos) -->
+      <g id="R_Tipo">
+        <polygon class="diamond" points="2170,470 2195,450 2220,470 2195,490"/>
+        <text class="small" x="2195" y="474" text-anchor="middle">Es tipo</text>
       </g>
-      <g id="tipo_libro">
-        <rect class="box" x="1720" y="260" width="120" height="40" rx="4"/>
-        <text class="small" x="1780" y="285" text-anchor="middle">Tipo_Libro</text>
-        <!-- Atributos -->
-        <ellipse class="oval" cx="1780" cy="225" rx="60" ry="18"/><text class="mini" x="1780" y="229" text-anchor="middle">ID_tipolibro</text>
-        <path class="edge" d="M1780 260 L1780 243" />
-        <ellipse class="oval" cx="1780" cy="330" rx="68" ry="18"/><text class="mini" x="1780" y="334" text-anchor="middle">Descripcion</text>
-        <path class="edge" d="M1780 300 L1780 312" />
+      <g id="Tipo_Libro">
+        <rect class="box" x="2250" y="450" width="170" height="48" rx="4"/>
+        <text class="small" x="2335" y="480" text-anchor="middle">Tipo_Libro</text>
+        <ellipse class="oval" cx="2335" cy="395" rx="90" ry="22"/><text class="mini" x="2335" y="399" text-anchor="middle">ID_tipolibro</text>
+        <path class="edge" d="M2335 450 L2335 418" />
+        <ellipse class="oval" cx="2335" cy="540" rx="98" ry="22"/><text class="mini" x="2335" y="544" text-anchor="middle">Descripcion</text>
+        <path class="edge" d="M2335 498 L2335 520" />
       </g>
-      <path class="edge" d="M1640 280 L1660 280" /><text class="small" x="1650" y="272">N</text>
-      <path class="edge" d="M1700 280 L1720 280" /><text class="small" x="1710" y="272">1</text>
+      <path class="edge" d="M2150 470 L2170 470" /><text class="small" x="2160" y="460">N</text>
+      <path class="edge" d="M2220 470 L2250 470" /><text class="small" x="2235" y="460">1</text>
 
-      <!-- EN_IDIOMA (N:1) a IDIOMA (más a la derecha, misma fila) -->
-      <g id="r_idioma">
-        <polygon class="diamond" points="1820,280 1840,265 1860,280 1840,295"/>
-        <text class="mini" x="1840" y="284" text-anchor="middle">En idioma</text>
+      <!-- EN_IDIOMA (N:1) a IDIOMA (aún más a la derecha) -->
+      <g id="R_Idioma">
+        <polygon class="diamond" points="2420,470 2445,450 2470,470 2445,490"/>
+        <text class="small" x="2445" y="474" text-anchor="middle">En idioma</text>
       </g>
-      <g id="idioma">
-        <rect class="box" x="1880" y="260" width="110" height="40" rx="4"/>
-        <text class="small" x="1935" y="285" text-anchor="middle">Idioma</text>
-        <!-- Atributos -->
-        <ellipse class="oval" cx="1935" cy="225" rx="58" ry="18"/><text class="mini" x="1935" y="229" text-anchor="middle">ID_idioma</text>
-        <path class="edge" d="M1935 260 L1935 243" />
-        <ellipse class="oval" cx="1935" cy="330" rx="68" ry="18"/><text class="mini" x="1935" y="334" text-anchor="middle">Descripcion</text>
-        <path class="edge" d="M1935 300 L1935 312" />
+      <g id="Idioma">
+        <rect class="box" x="2500" y="450" width="160" height="48" rx="4"/>
+        <text class="small" x="2580" y="480" text-anchor="middle">Idioma</text>
+        <ellipse class="oval" cx="2580" cy="395" rx="88" ry="22"/><text class="mini" x="2580" y="399" text-anchor="middle">ID_idioma</text>
+        <path class="edge" d="M2580 450 L2580 418" />
+        <ellipse class="oval" cx="2580" cy="540" rx="98" ry="22"/><text class="mini" x="2580" y="544" text-anchor="middle">Descripcion</text>
+        <path class="edge" d="M2580 498 L2580 520" />
       </g>
-      <path class="edge" d="M1840 280 L1860 280" /><text class="small" x="1850" y="272">1</text>
-      <path class="edge" d="M1700 280 L1820 280" /><text class="small" x="1760" y="272">N</text>
+      <!-- Nota: el lienzo es amplio; estas x>2400 siguen visibles por min-width. -->
 
-      <!-- CLASIFICA (N:M) con GÉNERO (debajo derecha, en codo para no cruzar) -->
-      <g id="r_clasifica">
-        <polygon class="diamond" points="1620,380 1645,360 1670,380 1645,400"/>
-        <text class="mini" x="1645" y="384" text-anchor="middle">Se clasifica</text>
-        <text class="small" x="1675" y="374">N:M</text>
+      <!-- SE CLASIFICA (N:M) con GÉNERO (debajo derecha, sin cruzar) -->
+      <g id="R_Clasifica">
+        <polygon class="diamond" points="2140,680 2165,660 2190,680 2165,700"/>
+        <text class="small" x="2165" y="684" text-anchor="middle">Se clasifica</text>
+        <text class="small" x="2198" y="674">N:M</text>
       </g>
-      <g id="genero">
-        <rect class="box" x="1700" y="430" width="105" height="36" rx="4"/>
-        <text class="small" x="1752" y="452" text-anchor="middle">Género</text>
-        <!-- Atributos -->
-        <ellipse class="oval" cx="1752" cy="395" rx="58" ry="18"/><text class="mini" x="1752" y="399" text-anchor="middle">ID_genero</text>
-        <path class="edge" d="M1752 430 L1752 413" />
-        <ellipse class="oval" cx="1752" cy="485" rx="70" ry="18"/><text class="mini" x="1752" y="489" text-anchor="middle">Descripcion</text>
-        <path class="edge" d="M1752 466 L1752 467" />
+      <g id="Genero">
+        <rect class="box" x="2240" y="740" width="150" height="42" rx="4"/>
+        <text class="small" x="2315" y="765" text-anchor="middle">Género</text>
+        <ellipse class="oval" cx="2315" cy="700" rx="86" ry="22"/><text class="mini" x="2315" y="704" text-anchor="middle">ID_genero</text>
+        <path class="edge" d="M2315 740 L2315 722" />
+        <ellipse class="oval" cx="2315" cy="820" rx="98" ry="22"/><text class="mini" x="2315" y="824" text-anchor="middle">Descripcion</text>
+        <path class="edge" d="M2315 782 L2315 798" />
       </g>
-      <path class="edge" d="M1570 300 L1570 340 L1620 340 L1620 380" /><text class="small" x="1576" y="324">*</text>
-      <path class="edge" d="M1670 380 L1700 380 L1700 430" /><text class="small" x="1686" y="372">*</text>
+      <path class="edge" d="M2065 498 L2065 640 L2140 640 L2140 680" /><text class="small" x="2072" y="616">*</text>
+      <path class="edge" d="M2190 680 L2240 680 L2240 740" /><text class="small" x="2210" y="670">*</text>
 
       <!-- ESCRIBE (N:M) con AUTOR (debajo de LIBRO) -->
-      <g id="r_escribe">
-        <polygon class="diamond" points="1500,420 1525,400 1550,420 1525,440"/>
-        <text class="mini" x="1525" y="425" text-anchor="middle">Escribe</text>
-        <text class="small" x="1555" y="415">N:M</text>
+      <g id="R_Escribe">
+        <polygon class="diamond" points="1980,640 2005,620 2030,640 2005,660"/>
+        <text class="small" x="2005" y="644" text-anchor="middle">Escribe</text>
+        <text class="small" x="2036" y="634">N:M</text>
       </g>
-      <g id="autor">
-        <rect class="box" x="1480" y="480" width="140" height="40" rx="4"/>
-        <text class="small" x="1550" y="505" text-anchor="middle">Autor</text>
-        <!-- Atributos -->
-        <ellipse class="oval" cx="1450" cy="520" rx="58" ry="20"/><text class="mini" x="1450" y="524" text-anchor="middle">ID_autor</text>
-        <path class="edge" d="M1480 500 L1465 508" />
-        <ellipse class="oval" cx="1620" cy="520" rx="55" ry="20"/><text class="mini" x="1620" y="524" text-anchor="middle">Nombre</text>
-        <path class="edge" d="M1620 500 L1620 508" />
-        <ellipse class="oval" cx="1540" cy="560" rx="56" ry="20"/><text class="mini" x="1540" y="564" text-anchor="middle">Apellido</text>
-        <path class="edge" d="M1540 520 L1540 542" />
+      <g id="Autor">
+        <rect class="box" x="1960" y="720" width="180" height="48" rx="4"/>
+        <text class="small" x="2050" y="750" text-anchor="middle">Autor</text>
+        <ellipse class="oval" cx="1930" cy="780" rx="82" ry="22"/><text class="mini" x="1930" y="784" text-anchor="middle">ID_autor</text>
+        <path class="edge" d="M1960 744 L1945 762" />
+        <ellipse class="oval" cx="2150" cy="780" rx="74" ry="22"/><text class="mini" x="2150" y="784" text-anchor="middle">Nombre</text>
+        <path class="edge" d="M2140 744 L2146 762" />
+        <ellipse class="oval" cx="2050" cy="840" rx="76" ry="22"/><text class="mini" x="2050" y="844" text-anchor="middle">Apellido</text>
+        <path class="edge" d="M2050 768 L2050 818" />
       </g>
-      <path class="edge" d="M1570 300 L1570 380 L1550 380 L1550 400" /><text class="small" x="1560" y="352">*</text>
-      <path class="edge" d="M1525 440 L1525 480" /><text class="small" x="1532" y="462">*</text>
+      <path class="edge" d="M2065 498 L2065 600 L2030 600 L2030 620" /><text class="small" x="2058" y="576">*</text>
+      <path class="edge" d="M2005 660 L2005 720" /><text class="small" x="2012" y="700">*</text>
 
-      <!-- ============ Cardinalidades faltantes ya etiquetadas en cada tramo ============ -->
+      <!-- ========== Fin del diagrama ========== -->
 
     </svg>
   </div>
 </main>
+
+<script>
+  // Export helpers
+  function exportSVG(){
+    const svg = document.getElementById('erd');
+    const xml = new XMLSerializer().serializeToString(svg);
+    const blob = new Blob(['<?xml version="1.0" encoding="UTF-8"?>\\n' + xml], {type:'image/svg+xml'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'ERD_Biblioteca_sin_cruces_espaciado.svg';
+    document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(url); a.remove();},0);
+  }
+  function exportPNG(){
+    const svg = document.getElementById('erd');
+    const xml = new XMLSerializer().serializeToString(svg);
+    const img = new Image();
+    img.onload = function(){
+      const scale = 2;
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#fff'; ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob(b => {
+        const url = URL.createObjectURL(b);
+        const a = document.createElement('a'); a.href = url; a.download = 'ERD_Biblioteca_sin_cruces_espaciado.png';
+        document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(url); a.remove();},0);
+      }, 'image/png', 1.0);
+    };
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<?xml version="1.0"?>\\n' + xml);
+  }
+  document.getElementById('btnSvg').onclick = exportSVG;
+  document.getElementById('btnPng').onclick = exportPNG;
+</script>
 </body>
 </html>
