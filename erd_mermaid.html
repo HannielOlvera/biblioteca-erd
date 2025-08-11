@@ -184,6 +184,11 @@
             background: #ef4444;
         }
         
+        /* Oculta el texto Mermaid hasta que sea procesado */
+        .mermaid:not([data-processed="true"]) {
+            visibility: hidden;
+        }
+        
         @keyframes slideIn {
             from { transform: translateX(100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }

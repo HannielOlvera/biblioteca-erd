@@ -9,11 +9,12 @@ let startX = 0;
 let startY = 0;
 let svg = null;
 let resizeTimer = null;
+let mermaidWaitStart = 0;
 
-// Configurar Mermaid: desactivar auto para aplicar tema y ejecutar manualmente
+// Configurar Mermaid
 if (window.mermaid) {
   window.mermaid.initialize({
-    startOnLoad: false,
+    startOnLoad: true,
     theme: 'default',
     themeVariables: {
       primaryColor: '#e7f0ff',
@@ -25,19 +26,57 @@ if (window.mermaid) {
   });
 }
 
+function hideLoading() {
+  const loading = document.getElementById('loading');
+  if (loading) loading.style.display = 'none';
+}
+
 function waitForMermaid() {
   svg = document.querySelector('#diagram svg');
   if (svg) {
+    hideLoading();
     setupDiagram();
-  } else {
-    setTimeout(waitForMermaid, 100);
+    return;
+  }
+  if (Date.now() - mermaidWaitStart > 6000) {
+    hideLoading();
+    showNotification('No se pudo renderizar el diagrama. Revisa la consola o abre con un servidor local.', 'error');
+    if (location.protocol === 'file:') {
+      showNotification('Sugerencia: abre con Live Server o http://localhost para evitar bloqueos de file://', 'error');
+    }
+    return;
+  }
+  setTimeout(waitForMermaid, 120);
+}
+
+async function renderMermaid() {
+  // Validar sintaxis antes de renderizar y aplicar pequeños fixes
+  try {
+    const blocks = document.querySelectorAll('.mermaid');
+    blocks.forEach((b) => {
+      const txt = b.textContent;
+      try {
+        window.mermaid.parse(txt);
+      } catch (err) {
+        // Fallback: cambiar tipos date -> string si falla
+        const fixed = txt.replace(/\bdate\b/g, 'string');
+        try {
+          window.mermaid.parse(fixed);
+          b.textContent = fixed;
+          showNotification('Se ajustaron tipos DATE→string por compatibilidad');
+        } catch (e2) {
+          console.error('Error de sintaxis Mermaid:', err);
+          showNotification('Error de sintaxis en el diagrama', 'error');
+        }
+      }
+    });
+    await window.mermaid.run({ query: '.mermaid' });
+  } catch (e) {
+    console.warn('Mermaid run falló, esperando SVG...', e);
   }
 }
 
 function setupDiagram() {
-  const loading = document.getElementById('loading');
-  if (loading) loading.style.display = 'none';
-
   // Asegurar viewBox
   if (svg && !svg.getAttribute('viewBox')) {
     const bbox = svg.getBBox();
@@ -225,16 +264,15 @@ window.zoomOut = zoomOut;
 window.resetView = resetView;
 window.exportPDF = exportPDF;
 
-// Inicializar cuando el DOM esté listo: ejecutar Mermaid y preparar navegación
+// Inicializar cuando el DOM esté listo: validar y renderizar Mermaid, luego preparar navegación
 document.addEventListener('DOMContentLoaded', async () => {
   try {
-    if (window.mermaid && window.mermaid.run) {
-      await window.mermaid.run({ query: '.mermaid' });
-    }
+    await renderMermaid();
   } catch (e) {
-    console.warn('Mermaid run falló, esperando SVG...', e);
+    console.error('Error al preparar Mermaid:', e);
   }
-  setTimeout(waitForMermaid, 200);
+  mermaidWaitStart = Date.now();
+  setTimeout(waitForMermaid, 150);
 
   console.log('📚 Sistema de diagrama ERD Mermaid inicializado');
 });
