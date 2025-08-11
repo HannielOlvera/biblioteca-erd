@@ -248,94 +248,86 @@
         <div id="diagram">
             <div class="mermaid">
 erDiagram
-    %% Entidades principales del sistema biblioteca
-    
     USUARIO {
-        int ID_usuario PK "Clave primaria"
-        string nombre "Nombre completo"
-        string email "Correo electrónico"
-        string telefono "Teléfono de contacto"
-        date fecha_registro "Fecha de registro"
-        string tipo "Estudiante, Profesor, Admin"
-        string estado "Activo, Inactivo, Suspendido"
+        int ID_usuario PK
+        string nombre
+        string email
+        string telefono
+        date fecha_registro
+        string tipo
+        string estado
     }
-    
+
     LIBRO {
-        int ID_libro PK "Clave primaria"
-        string titulo "Título del libro"
-        string isbn "ISBN único"
-        int año_publicacion "Año de publicación"
-        string idioma "Idioma del libro"
-        int total_ejemplares "Cantidad total"
-        int disponibles "Ejemplares disponibles"
+        int ID_libro PK
+        string titulo
+        string isbn
+        int anio_publicacion
+        string idioma
+        int total_ejemplares
+        int disponibles
     }
-    
+
     AUTOR {
-        int ID_autor PK "Clave primaria"
-        string nombre "Nombre del autor"
-        string apellido "Apellido del autor"
-        string nacionalidad "País de origen"
-        date fecha_nacimiento "Fecha de nacimiento"
+        int ID_autor PK
+        string nombre
+        string apellido
+        string nacionalidad
+        date fecha_nacimiento
     }
-    
+
     EDITORIAL {
-        int ID_editorial PK "Clave primaria"
-        string nombre "Nombre de la editorial"
-        string pais "País de la editorial"
-        string sitio_web "Sitio web oficial"
+        int ID_editorial PK
+        string nombre
+        string pais
+        string sitio_web
     }
-    
+
     GENERO {
-        int ID_genero PK "Clave primaria"
-        string nombre "Nombre del género"
-        string descripcion "Descripción del género"
+        int ID_genero PK
+        string nombre
+        string descripcion
     }
-    
+
     EJEMPLAR {
-        int ID_ejemplar PK "Clave primaria"
-        string codigo_barras "Código de barras único"
-        string ubicacion "Ubicación física"
-        string estado "Disponible, Prestado, Dañado"
-        date fecha_adquisicion "Fecha de compra"
-        int ID_libro FK "Referencia al libro"
+        int ID_ejemplar PK
+        string codigo_barras
+        string ubicacion
+        string estado
+        date fecha_adquisicion
+        int ID_libro FK
     }
-    
+
     PRESTAMO {
-        int ID_prestamo PK "Clave primaria"
-        date fecha_prestamo "Fecha del préstamo"
-        date fecha_vencimiento "Fecha de vencimiento"
-        date fecha_devolucion "Fecha real de devolución"
-        string estado "Activo, Devuelto, Vencido"
-        decimal multa "Monto de multa"
-        int ID_usuario FK "Usuario que solicita"
-        int ID_ejemplar FK "Ejemplar prestado"
+        int ID_prestamo PK
+        date fecha_prestamo
+        date fecha_vencimiento
+        date fecha_devolucion
+        string estado
+        float multa
+        int ID_usuario FK
+        int ID_ejemplar FK
     }
-    
+
     RESERVA {
-        int ID_reserva PK "Clave primaria"
-        date fecha_reserva "Fecha de la reserva"
-        date fecha_vencimiento "Vencimiento de reserva"
-        string estado "Pendiente, Confirmada, Cancelada"
-        int ID_usuario FK "Usuario que reserva"
-        int ID_libro FK "Libro reservado"
+        int ID_reserva PK
+        date fecha_reserva
+        date fecha_vencimiento
+        string estado
+        int ID_usuario FK
+        int ID_libro FK
     }
-    
-    %% Relaciones del sistema
-    
-    USUARIO ||--o{ PRESTAMO : "realiza"
-    USUARIO ||--o{ RESERVA : "hace"
-    
-    LIBRO ||--o{ EJEMPLAR : "tiene"
-    LIBRO ||--o{ RESERVA : "es_reservado"
-    LIBRO }o--o{ AUTOR : "escrito_por"
-    LIBRO }o--|| EDITORIAL : "publicado_por"
-    LIBRO }o--o{ GENERO : "pertenece_a"
-    
-    EJEMPLAR ||--o{ PRESTAMO : "prestado_en"
-    
-    AUTOR ||--o{ LIBRO : "escribe"
-    EDITORIAL ||--o{ LIBRO : "publica"
-    GENERO ||--o{ LIBRO : "categoriza"
+
+    USUARIO ||--o{ PRESTAMO : realiza
+    USUARIO ||--o{ RESERVA : hace
+
+    LIBRO ||--o{ EJEMPLAR : tiene
+    LIBRO ||--o{ RESERVA : es_reservado
+    LIBRO }o--o{ AUTOR : escrito_por
+    LIBRO }o--|| EDITORIAL : publicado_por
+    LIBRO }o--o{ GENERO : pertenece_a
+
+    EJEMPLAR ||--o{ PRESTAMO : prestado_en
             </div>
         </div>
         
