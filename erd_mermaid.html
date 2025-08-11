@@ -558,13 +558,13 @@ erDiagram
         }
 
         async function exportPDF() {
-            // Verificar librerías nuevamente al intentar exportar
+            // Las librerías están embebidas, verificar disponibilidad
             if (!window.jsPDF) {
-                showNotification('Error: jsPDF no está cargado. Recarga la página.', 'error');
+                showNotification('Error: jsPDF no disponible', 'error');
                 return;
             }
             if (!window.svg2pdf) {
-                showNotification('Error: svg2pdf no está cargado. Recarga la página.', 'error');
+                showNotification('Error: svg2pdf no disponible', 'error');
                 return;
             }
             if (!svg) {
@@ -574,17 +574,34 @@ erDiagram
             
             try {
                 showNotification('Generando PDF...');
-                const pdf = new window.jsPDF('l', 'pt', 'a3');
+                
+                // Crear PDF en formato landscape A4 para mejor vista
+                const pdf = new window.jsPDF('l', 'mm', 'a4');
+                
+                // Obtener dimensiones del SVG
+                const bbox = svg.getBBox();
+                const svgWidth = bbox.width;
+                const svgHeight = bbox.height;
+                
+                // Calcular escala para ajustar al PDF
+                const pdfWidth = 280; // A4 landscape width minus margins
+                const pdfHeight = 190; // A4 landscape height minus margins
+                const scale = Math.min(pdfWidth / svgWidth, pdfHeight / svgHeight) * 0.8;
+                
+                // Procesar SVG para PDF
                 await window.svg2pdf(svg, pdf, {
-                    xOffset: 50,
-                    yOffset: 50,
-                    scale: 0.8
+                    xOffset: 10,
+                    yOffset: 10,
+                    scale: scale
                 });
+                
+                // Guardar archivo
                 pdf.save('Sistema_Biblioteca_ERD_Mermaid.pdf');
                 showNotification('PDF exportado exitosamente');
+                
             } catch (error) {
                 console.error('Error exportando PDF:', error);
-                showNotification('Error al exportar PDF: ' + error.message, 'error');
+                showNotification('Error al exportar PDF. Intenta usar "Imprimir > Guardar como PDF" del navegador.', 'error');
             }
         }
 
@@ -603,29 +620,12 @@ erDiagram
 
         // Inicializar cuando esté listo
         document.addEventListener('DOMContentLoaded', () => {
-            // Dar más tiempo para que las librerías CDN se carguen
-            setTimeout(() => {
-                if (!window.jsPDF || !window.svg2pdf) {
-                    console.warn('Librerías PDF no cargadas, esperando más tiempo...');
-                    // Intentar cargar manualmente si fallan
-                    if (!window.jsPDF) {
-                        console.log('Intentando cargar jsPDF...');
-                    }
-                    if (!window.svg2pdf) {
-                        console.log('Intentando cargar svg2pdf...');
-                    }
-                    setTimeout(() => {
-                        if (!window.jsPDF || !window.svg2pdf) {
-                            showNotification('PDF no disponible - las librerías no se cargaron desde CDN', 'error');
-                        } else {
-                            console.log('✅ Librerías PDF cargadas exitosamente');
-                        }
-                    }, 5000);
-                } else {
-                    console.log('✅ Librerías PDF disponibles al cargar');
-                }
-            }, 2000);
+            // Con librerías embebidas, están disponibles inmediatamente
+            console.log('✅ Librerías PDF embebidas disponibles para GitHub Pages');
+            console.log('jsPDF:', typeof window.jsPDF);
+            console.log('svg2pdf:', typeof window.svg2pdf);
             
+            // Inicializar diagrama
             setTimeout(initDiagram, 1000);
         });
     </script>
