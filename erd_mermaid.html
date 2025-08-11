@@ -185,8 +185,8 @@
         }
         
         /* Oculta el texto Mermaid hasta que sea procesado */
-        .mermaid:not([data-processed="true"]) {
-            visibility: hidden;
+        .mermaid {
+            visibility: visible !important;
         }
         
         @keyframes slideIn {
@@ -289,7 +289,7 @@ erDiagram
     int ID_usu PK
     string Nombre
     string Apellido
-    date FechaNac
+    string FechaNac
     string Email
     string Telefono
     string Genero
@@ -357,9 +357,9 @@ erDiagram
   Prestamo {
     int ID_prestamo PK
     int ID_usu FK
-    date FechaPrestamo
-    date FechaDevolucionEsperada
-    date FechaDevolucionReal
+    string FechaPrestamo
+    string FechaDevolucionEsperada
+    string FechaDevolucionReal
     string Status
   }
 
