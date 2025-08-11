@@ -254,120 +254,121 @@
             <div class="mermaid">
 erDiagram
     Estado {
-        idEstado
+        idestado
         nombre
     }
     Ciudad {
-        idCiudad
+        idciudad
         nombre
-        idEstado
+        idestado
     }
     Colonia {
-        idColonia
+        idcolonia
         nombre
         cp
-        idCiudad
+        idciudad
     }
     Direccion {
-        idDireccion
+        iddireccion
         calle
-        numeroExterior
-        numeroInterior
+        numeroexterior
+        numerointerior
         referencia
-        idColonia
+        idcolonia
     }
-    TipoUsuario {
-        idTipoUsu
+    Tipousuario {
+        idtipousu
         descripcion
     }
     Usuario {
-        idUsu
+        idusu
         nombre
         apellido
-        fechaNac
+        fechanac
         email
         telefono
         genero
-        idTipoUsu
-        idDireccion
+        idtipousu
+        iddireccion
     }
     Editorial {
-        idEditorial
+        ideditorial
         nombre
     }
     Genero {
-        idGenero
+        idgenero
         descripcion
     }
-    TipoLibro {
-        idTipoLibro
+    Tipolibro {
+        idtipolibro
         descripcion
     }
     Idioma {
-        idIdioma
+        ididioma
         descripcion
     }
     Libro {
-        idLibro
+        idlibro
         titulo
         subtitulo
         isbn13
         isbn10
-        idEditorial
-        idTipoLibro
-        idIdioma
+        ideditorial
+        idtipolibro
+        ididioma
         edicion
-        anioPublicacion
+        aniopublicacion
     }
     Autor {
-        idAutor
+        idautor
         nombre
         apellido
     }
-    LibroAutor {
-        idLibro
-        idAutor
+    Libroautor {
+        idlibro
+        idautor
     }
-    LibroGenero {
-        idLibro
-        idGenero
+    Librogenero {
+        idlibro
+        idgenero
     }
     Ejemplar {
-        idEjemplar
-        idLibro
-        codigoBarras
+        idejemplar
+        idlibro
+        codigobarras
         ubicacion
-        estadoEjemplar
+        estadoejemplar
     }
     Prestamo {
-        idPrestamo
-        idUsu
-        fechaPrestamo
-        fechaDevolucionEsperada
-        fechaDevolucionReal
+        idprestamo
+        idusu
+        fechaprestamo
+        fechadevolucionesperada
+        fechadevolucionreal
         status
     }
-    PrestamoDetalle {
-        idPrestamo
-        idEjemplar
+    Prestamodetalle {
+        idprestamo
+        idejemplar
     }
 
     Estado ||--o{ Ciudad : tiene
     Ciudad ||--o{ Colonia : tiene
     Colonia ||--o{ Direccion : tiene
     Direccion ||--o{ Usuario : ubica
-    TipoUsuario ||--o{ Usuario : clasifica
+    Tipousuario ||--o{ Usuario : clasifica
     Usuario ||--o{ Prestamo : realiza
     Editorial ||--o{ Libro : publica
-    TipoLibro ||--o{ Libro : tipo
+    Tipolibro ||--o{ Libro : tipo
     Idioma ||--o{ Libro : idioma
     Libro ||--o{ Ejemplar : tiene
-    Libro ||--o{ LibroAutor : tieneAutor
-    Autor ||--o{ LibroAutor : esAutor
-    Libro ||--o{ LibroGenero : tieneGenero
-    Genero ||--o{ LibroGenero : esGenero
-    Prestamo ||--o{ PrestamoDetalle : detalle
-    Ejemplar ||--o{ PrestamoDetalle : ejemplar
+    Libro ||--o{ Libroautor : tieneautor
+    Autor ||--o{ Libroautor : esautor
+    Libro ||--o{ Librogenero : tienegenero
+    Genero ||--o{ Librogenero : esgenero
+    Prestamo ||--o{ Prestamodetalle : detalle
+    Ejemplar ||--o{ Prestamodetalle : ejemplar
+    %% Fin del bloque erDiagram
             </div>
         </div>
         
