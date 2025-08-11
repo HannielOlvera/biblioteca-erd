@@ -91,70 +91,79 @@
     <div id="diagram">
       <!-- SVG rediseñado: entidades, relaciones y líneas separadas, sin superposiciones, y todas las tablas del SQL -->
       <svg id="erd" viewBox="0 0 18000 12000" xmlns="http://www.w3.org/2000/svg">
-        <!-- BANDA 1: GEOGRAFÍA -->
+        <!-- DIAGRAMA HORIZONTAL ESTILO CHEN PROFESIONAL -->
         <!-- Estado -->
         <g id="Estado">
-          <rect class="box" x="500" y="500" width="320" height="60" rx="4"/>
-          <text class="label" x="660" y="540" text-anchor="middle">Estado</text>
-          <ellipse class="oval" cx="560" cy="400" rx="90" ry="24"/><text class="mini" x="560" y="404" text-anchor="middle">ID_estado</text>
-          <ellipse class="oval" cx="760" cy="400" rx="90" ry="24"/><text class="mini" x="760" y="404" text-anchor="middle">Nombre</text>
-        </g>
-        <!-- Ciudad -->
-        <g id="Ciudad">
-          <rect class="box" x="1200" y="500" width="320" height="60" rx="4"/>
-          <text class="label" x="1360" y="540" text-anchor="middle">Ciudad</text>
-          <ellipse class="oval" cx="1260" cy="400" rx="90" ry="24"/><text class="mini" x="1260" y="404" text-anchor="middle">ID_ciudad</text>
-          <ellipse class="oval" cx="1460" cy="400" rx="90" ry="24"/><text class="mini" x="1460" y="404" text-anchor="middle">Nombre</text>
-          <ellipse class="oval" cx="1360" cy="650" rx="90" ry="24"/><text class="mini" x="1360" y="654" text-anchor="middle">ID_estado</text>
+          <rect class="box" x="500" y="1000" width="220" height="60" rx="4"/>
+          <text class="label" x="610" y="1040" text-anchor="middle">Estado</text>
+          <ellipse class="oval" cx="500" cy="900" rx="70" ry="24"/>
+          <text class="mini" x="500" y="904" text-anchor="middle">ID_estado</text>
+          <ellipse class="oval" cx="720" cy="900" rx="70" ry="24"/>
+          <text class="mini" x="720" y="904" text-anchor="middle">Nombre</text>
         </g>
         <!-- Relación Estado-Ciudad -->
         <g id="R_Estado_Ciudad">
-          <polygon class="diamond" points="950,530 990,500 1030,530 990,560"/>
-          <text class="small" x="990" y="540" text-anchor="middle">Pertenece</text>
+          <polygon class="diamond" points="900,1030 940,1000 980,1030 940,1060"/>
+          <text class="small" x="940" y="1040" text-anchor="middle">Pertenece</text>
         </g>
-        <path class="edge" d="M820 530 Q900 530 950 530" />
-        <path class="edge" d="M1030 530 Q1100 530 1200 530" />
-        <text class="small" x="1100" y="520">N:1</text>
-
-        <!-- Colonia -->
-        <g id="Colonia">
-          <rect class="box" x="2000" y="500" width="340" height="60" rx="4"/>
-          <text class="label" x="2170" y="540" text-anchor="middle">Colonia</text>
-          <ellipse class="oval" cx="2060" cy="400" rx="90" ry="24"/><text class="mini" x="2060" y="404" text-anchor="middle">ID_colonia</text>
-          <ellipse class="oval" cx="2260" cy="400" rx="90" ry="24"/><text class="mini" x="2260" y="404" text-anchor="middle">Nombre</text>
-          <ellipse class="oval" cx="2170" cy="650" rx="70" ry="22"/><text class="mini" x="2170" y="654" text-anchor="middle">CP</text>
-          <ellipse class="oval" cx="2170" cy="750" rx="90" ry="24"/><text class="mini" x="2170" y="754" text-anchor="middle">ID_ciudad</text>
+        <path class="edge" d="M720 1030 L900 1030" />
+        <!-- Ciudad -->
+        <g id="Ciudad">
+          <rect class="box" x="1100" y="1000" width="220" height="60" rx="4"/>
+          <text class="label" x="1210" y="1040" text-anchor="middle">Ciudad</text>
+          <ellipse class="oval" cx="1100" cy="900" rx="70" ry="24"/>
+          <text class="mini" x="1100" y="904" text-anchor="middle">ID_ciudad</text>
+          <ellipse class="oval" cx="1320" cy="900" rx="70" ry="24"/>
+          <text class="mini" x="1320" y="904" text-anchor="middle">Nombre</text>
+          <ellipse class="oval" cx="1210" cy="1150" rx="70" ry="24"/>
+          <text class="mini" x="1210" y="1154" text-anchor="middle">ID_estado</text>
         </g>
+        <path class="edge" d="M980 1030 L1100 1030" />
         <!-- Relación Ciudad-Colonia -->
         <g id="R_Ciudad_Colonia">
-          <polygon class="diamond" points="1700,530 1740,500 1780,530 1740,560"/>
-          <text class="small" x="1740" y="540" text-anchor="middle">Pertenece</text>
+          <polygon class="diamond" points="1500,1030 1540,1000 1580,1030 1540,1060"/>
+          <text class="small" x="1540" y="1040" text-anchor="middle">Pertenece</text>
         </g>
-        <path class="edge" d="M1520 530 Q1600 530 1700 530" />
-        <path class="edge" d="M1780 530 Q1900 530 2000 530" />
-        <text class="small" x="1850" y="520">N:1</text>
-
-        <!-- Direccion -->
-        <g id="Direccion">
-          <rect class="box" x="2800" y="500" width="360" height="60" rx="4"/>
-          <text class="label" x="2980" y="540" text-anchor="middle">Dirección</text>
-          <ellipse class="oval" cx="2860" cy="400" rx="90" ry="24"/><text class="mini" x="2860" y="404" text-anchor="middle">ID_direccion</text>
-          <ellipse class="oval" cx="3060" cy="400" rx="90" ry="24"/><text class="mini" x="3060" y="404" text-anchor="middle">Calle</text>
-          <ellipse class="oval" cx="2980" cy="650" rx="90" ry="24"/><text class="mini" x="2980" y="654" text-anchor="middle">NumeroExterior</text>
-          <ellipse class="oval" cx="2980" cy="750" rx="90" ry="24"/><text class="mini" x="2980" y="754" text-anchor="middle">NumeroInterior</text>
-          <ellipse class="oval" cx="2980" cy="850" rx="90" ry="24"/><text class="mini" x="2980" y="854" text-anchor="middle">Referencia</text>
-          <ellipse class="oval" cx="2980" cy="950" rx="90" ry="24"/><text class="mini" x="2980" y="954" text-anchor="middle">ID_colonia</text>
+        <path class="edge" d="M1320 1030 L1500 1030" />
+        <!-- Colonia -->
+        <g id="Colonia">
+          <rect class="box" x="1700" y="1000" width="240" height="60" rx="4"/>
+          <text class="label" x="1820" y="1040" text-anchor="middle">Colonia</text>
+          <ellipse class="oval" cx="1700" cy="900" rx="70" ry="24"/>
+          <text class="mini" x="1700" y="904" text-anchor="middle">ID_colonia</text>
+          <ellipse class="oval" cx="1940" cy="900" rx="70" ry="24"/>
+          <text class="mini" x="1940" y="904" text-anchor="middle">Nombre</text>
+          <ellipse class="oval" cx="1820" cy="1150" rx="60" ry="22"/>
+          <text class="mini" x="1820" y="1154" text-anchor="middle">CP</text>
+          <ellipse class="oval" cx="1820" cy="1250" rx="70" ry="24"/>
+          <text class="mini" x="1820" y="1254" text-anchor="middle">ID_ciudad</text>
         </g>
+        <path class="edge" d="M1580 1030 L1700 1030" />
         <!-- Relación Colonia-Direccion -->
         <g id="R_Colonia_Direccion">
-          <polygon class="diamond" points="2500,530 2540,500 2580,530 2540,560"/>
-          <text class="small" x="2540" y="540" text-anchor="middle">Pertenece</text>
+          <polygon class="diamond" points="2100,1030 2140,1000 2180,1030 2140,1060"/>
+          <text class="small" x="2140" y="1040" text-anchor="middle">Pertenece</text>
         </g>
-        <path class="edge" d="M2340 530 Q2420 530 2500 530" />
-        <path class="edge" d="M2580 530 Q2700 530 2800 530" />
-        <text class="small" x="2650" y="520">N:1</text>
-
-        <!-- ...continúa el diagrama con la misma lógica para el resto de entidades y relaciones... -->
+        <path class="edge" d="M1940 1030 L2100 1030" />
+        <!-- Direccion -->
+        <g id="Direccion">
+          <rect class="box" x="2300" y="1000" width="260" height="60" rx="4"/>
+          <text class="label" x="2430" y="1040" text-anchor="middle">Dirección</text>
+          <ellipse class="oval" cx="2320" cy="900" rx="70" ry="24"/>
+          <text class="mini" x="2320" y="904" text-anchor="middle">ID_direccion</text>
+          <ellipse class="oval" cx="2540" cy="900" rx="70" ry="24"/>
+          <text class="mini" x="2540" y="904" text-anchor="middle">Calle</text>
+          <ellipse class="oval" cx="2430" cy="1150" rx="70" ry="24"/>
+          <text class="mini" x="2430" y="1154" text-anchor="middle">NumeroExterior</text>
+          <ellipse class="oval" cx="2430" cy="1250" rx="70" ry="24"/>
+          <text class="mini" x="2430" y="1254" text-anchor="middle">NumeroInterior</text>
+          <ellipse class="oval" cx="2430" cy="1350" rx="70" ry="24"/>
+          <text class="mini" x="2430" y="1354" text-anchor="middle">Referencia</text>
+          <ellipse class="oval" cx="2430" cy="1450" rx="70" ry="24"/>
+          <text class="mini" x="2430" y="1454" text-anchor="middle">ID_colonia</text>
+        </g>
+        <path class="edge" d="M2180 1030 L2300 1030" />
+        <!-- ...continúa el diagrama horizontal para todas las entidades y relaciones principales... -->
         
         <!-- BANDA 2: USUARIOS Y CONTACTO -->
         <!-- TipoUsuario -->
