@@ -16,11 +16,17 @@
 
         <section class="notice">
             <h3>Modelo Lógico - Sistema de Biblioteca</h3>
-            <p>Incluye PK/FK, relaciones N:M y cardinalidades. Puedes exportar el gráfico como SVG.</p>
+            <p>Incluye PK/FK, relaciones N:M y cardinalidades. Puedes exportar el gráfico como PDF y navegar con pan/zoom.</p>
         </section>
 
         <div class="toolbar">
-            <button class="btn" id="btnExportSvg">Exportar SVG</button>
+            <button class="btn" id="btnExportPdf">Exportar PDF</button>
+            <button class="btn" id="zoomIn">Zoom +</button>
+            <button class="btn" id="zoomOut">Zoom −</button>
+            <button class="btn" id="reset">Reset</button>
+            <label class="btn" style="user-select:none; cursor:pointer;">
+              <input type="checkbox" id="autoPan" style="margin-right:8px"> Auto-pan con cursor
+            </label>
         </div>
 
         <div class="diagram-container">
@@ -164,24 +170,78 @@
         </div>
     </div>
 
+    <!-- Librerías para exportación a PDF -->
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/svg2pdf.js@2.2.1/dist/svg2pdf.umd.min.js"></script>
+    <script src="assets/js/pdf-export.js"></script>
+
     <script>
         mermaid.initialize({ startOnLoad: true, theme: 'default', themeVariables: {
             primaryColor: '#e7f0ff', primaryTextColor: '#111827', primaryBorderColor: '#1976d2',
             lineColor: '#374151', sectionBkgColor: '#f8fafc', altSectionBkgColor: '#ffffff', gridColor: '#e5e7eb'
         }});
 
-        // Export current Mermaid diagram as SVG
-        document.getElementById('btnExportSvg').addEventListener('click', async () => {
-            // Mermaid renders to an SVG inside .mermaid
+        // Pan/zoom y exportación a PDF del SVG generado por Mermaid
+        function ensureViewBox(svg){
+          if(!svg.getAttribute('viewBox')){
+            const w = svg.width && svg.width.baseVal ? svg.width.baseVal.value : 2000;
+            const h = svg.height && svg.height.baseVal ? svg.height.baseVal.value : 1200;
+            svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+          }
+        }
+
+        function setupPanZoom(){
+          const svg = document.querySelector('#mmd svg');
+          if(!svg) return;
+          ensureViewBox(svg);
+          const vb = svg.getAttribute('viewBox').split(/[ ,]+/).map(Number);
+          const content = { x: vb[0], y: vb[1], w: vb[2], h: vb[3] };
+          const view = { ...content };
+          const container = document.querySelector('.diagram-container');
+
+          function apply(){ svg.setAttribute('viewBox', `${view.x} ${view.y} ${view.w} ${view.h}`); }
+          function clamp(){
+            if(view.w > content.w) view.w = content.w; if(view.h > content.h) view.h = content.h;
+            const maxX = Math.max(content.x, content.x + content.w - view.w);
+            const maxY = Math.max(content.y, content.y + content.h - view.h);
+            if(view.x < content.x) view.x = content.x; if(view.y < content.y) view.y = content.y;
+            if(view.x > maxX) view.x = maxX; if(view.y > maxY) view.y = maxY;
+          }
+          function clientScale(){ const r = svg.getBoundingClientRect(); return { sx: view.w / r.width, sy: view.h / r.height }; }
+
+          let dragging=false, start={mx:0,my:0,x:0,y:0};
+          container.addEventListener('mousedown', e=>{ dragging=true; start={mx:e.clientX,my:e.clientY,x:view.x,y:view.y}; container.style.cursor='grabbing'; e.preventDefault(); });
+          window.addEventListener('mousemove', e=>{ if(!dragging) return; const {sx,sy}=clientScale(); view.x=start.x-(e.clientX-start.mx)*sx; view.y=start.y-(e.clientY-start.my)*sy; clamp(); apply(); });
+          window.addEventListener('mouseup', ()=>{ dragging=false; container.style.cursor='default'; });
+
+          svg.addEventListener('wheel', e=>{ e.preventDefault(); const f = e.deltaY<0?0.9:1.1; const cx=view.x+view.w/2; const cy=view.y+view.h/2; view.w=Math.max(200, Math.min(content.w, view.w*f)); view.h=Math.max(200, Math.min(content.h, view.h*f)); view.x=cx-view.w/2; view.y=cy-view.h/2; clamp(); apply(); }, {passive:false});
+
+          const autoPan = document.getElementById('autoPan');
+          container.addEventListener('mousemove', e=>{
+            if(!autoPan || !autoPan.checked || dragging) return;
+            const r = svg.getBoundingClientRect(); const m=40; const {sx,sy}=clientScale(); let moved=false;
+            if(e.clientX < r.left + m) { view.x -= 20*sx; moved=true; }
+            if(e.clientX > r.right - m){ view.x += 20*sx; moved=true; }
+            if(e.clientY < r.top + m)  { view.y -= 20*sy; moved=true; }
+            if(e.clientY > r.bottom - m){ view.y += 20*sy; moved=true; }
+            if(moved){ clamp(); apply(); }
+          });
+
+          document.getElementById('zoomIn').addEventListener('click', ()=> svg.dispatchEvent(new WheelEvent('wheel', { deltaY: -100 })));
+          document.getElementById('zoomOut').addEventListener('click', ()=> svg.dispatchEvent(new WheelEvent('wheel', { deltaY: 100 })));
+          document.getElementById('reset').addEventListener('click', ()=>{ view.x=content.x; view.y=content.y; view.w=content.w; view.h=content.h; apply(); });
+          document.getElementById('btnExportPdf').addEventListener('click', ()=>{ if(window.exportSvgToPdf) window.exportSvgToPdf(svg, 'ERD_Logico.pdf'); else alert('Exportación PDF no disponible.'); });
+
+          apply();
+        }
+
+        // Espera a que Mermaid renderice
+        document.addEventListener('DOMContentLoaded', ()=>{
+          const observer = new MutationObserver(()=>{
             const svg = document.querySelector('#mmd svg');
-            if(!svg){ alert('El diagrama aún no se ha renderizado.'); return; }
-            const xml = new XMLSerializer().serializeToString(svg);
-            const blob = new Blob(['<?xml version="1.0" encoding="UTF-8"?>\n' + xml], {type:'image/svg+xml'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url; a.download = 'ERD_Logico_Mermaid.svg';
-            document.body.appendChild(a); a.click();
-            setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 0);
+            if(svg){ setupPanZoom(); observer.disconnect(); }
+          });
+          observer.observe(document.getElementById('mmd'), { childList: true, subtree: true });
         });
     </script>
     <script src="assets/js/main.js" defer></script>
