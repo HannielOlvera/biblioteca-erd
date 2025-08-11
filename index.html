@@ -3,66 +3,117 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Biblioteca – Diagramas ER (Chen y Crow's Foot) con vistas previas y exportación." />
+    <meta name="description" content="Biblioteca – Diagramas ER (Chen y Crow's Foot) con vistas previas interactivas, exportación a PDF y navegación profesional." />
+    <meta name="keywords" content="diagrama ER, base de datos, biblioteca, Chen, Crow's Foot, modelado de datos" />
+    <meta name="author" content="HannielOlvera" />
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ctext y='14' font-size='14'%3E📚%3C/text%3E%3C/svg%3E" />
-    <title>Biblioteca – Diagramas ER</title>
+    <title>Biblioteca – Diagramas ER Profesionales</title>
+    
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
     <link rel="stylesheet" href="assets/css/styles.css" />
+    
+    <!-- Preload critical resources -->
+    <link rel="modulepreload" href="assets/js/main.js" />
 </head>
 <body>
     <div class="container">
         <header class="page">
             <div>
                 <h1 class="title">📚 Sistema de Biblioteca - Diagramas ER</h1>
-                <p class="lead">Modelos Conceptual (Chen) y Lógico (Crow's Foot) con vistas previas embebidas.</p>
+                <p class="lead">Modelos Conceptual (Chen) y Lógico (Crow's Foot) con navegación interactiva y exportación profesional.</p>
             </div>
             <nav class="links">
-                <a href="erd_chen.html" class="btn btn--ghost">Ver Chen</a>
-                <a href="erd_logico_mermaid.html" class="btn btn--accent">Ver Lógico</a>
+                <a href="erd_chen.html" class="btn btn--ghost" aria-label="Ver diagrama conceptual Chen">📊 Ver Chen</a>
+                <a href="erd_logico_mermaid.html" class="btn btn--accent" aria-label="Ver diagrama lógico Crow's Foot">🔗 Ver Lógico</a>
             </nav>
         </header>
 
         <section class="notice">
-            <h3>Sobre este proyecto</h3>
-            <p>Dos enfoques para modelar la base de datos de una biblioteca universitaria. Incluye exportación y previsualizaciones.</p>
+            <h3>🎯 Sobre este proyecto</h3>
+            <p>Dos enfoques profesionales para modelar la base de datos de una biblioteca universitaria. Incluye navegación interactiva, zoom/pan fluido y exportación a PDF de alta calidad.</p>
+            <ul>
+                <li><strong>Navegación natural:</strong> Arrastra para mover, rueda para zoom, atajos de teclado</li>
+                <li><strong>Exportación profesional:</strong> PDF de alta calidad con fondo blanco</li>
+                <li><strong>Diseño responsive:</strong> Optimizado para todos los dispositivos</li>
+            </ul>
         </section>
 
-        <section class="grid">
+        <section class="grid" role="main">
             <article class="card">
                 <h3>📊 Diagrama Entidad-Relación (Chen)</h3>
-                <p>Modelo conceptual con entidades, atributos y relaciones. Exportable a SVG y PNG.</p>
-                <a href="erd_chen.html" class="btn">Ver Diagrama Completo</a>
+                <p>Modelo conceptual tradicional con entidades, atributos y relaciones. Navegación fluida con zoom/pan avanzado y exportación a PDF profesional.</p>
+                <a href="erd_chen.html" class="btn" aria-label="Ver diagrama Chen completo">Ver Diagrama Completo</a>
                 <div class="preview">
-                    <!-- Lazy load -->
-                    <iframe data-src="erd_chen.html" title="Vista previa ERD Chen" loading="lazy"></iframe>
+                    <iframe 
+                        data-src="erd_chen.html" 
+                        title="Vista previa del diagrama ER Chen del sistema de biblioteca"
+                        loading="lazy"
+                        aria-label="Vista previa interactiva del diagrama Chen">
+                    </iframe>
                 </div>
             </article>
 
             <article class="card">
                 <h3>🔗 Diagrama Lógico (Crow's Foot)</h3>
-                <p>Modelo lógico con PK/FK y cardinalidades, generado con Mermaid.</p>
-                <a href="erd_logico_mermaid.html" class="btn">Ver Diagrama Completo</a>
+                <p>Modelo lógico con llaves primarias/foráneas y cardinalidades específicas. Generado con Mermaid y optimizado para implementación de base de datos.</p>
+                <a href="erd_logico_mermaid.html" class="btn" aria-label="Ver diagrama lógico completo">Ver Diagrama Completo</a>
                 <div class="preview">
-                    <!-- Lazy load -->
-                    <iframe data-src="erd_logico_mermaid.html" title="Vista previa ERD Lógico" loading="lazy"></iframe>
+                    <iframe 
+                        data-src="erd_logico_mermaid.html" 
+                        title="Vista previa del diagrama lógico Crow's Foot del sistema de biblioteca"
+                        loading="lazy"
+                        aria-label="Vista previa interactiva del diagrama lógico">
+                    </iframe>
                 </div>
             </article>
         </section>
 
         <section class="notice">
-            <h3>Características del Sistema</h3>
-            <ul>
-                <li>Gestión de usuarios, catálogo y préstamos</li>
-                <li>Relaciones N:M resueltas con tablas puente</li>
-                <li>Vistas previas rápidas y diseño responsive</li>
-            </ul>
+            <h3>🚀 Características Avanzadas del Sistema</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
+                <div>
+                    <h4>👥 Gestión Integral de Usuarios</h4>
+                    <ul>
+                        <li>Diferenciación entre estudiantes y profesores</li>
+                        <li>Límites personalizados de préstamo</li>
+                        <li>Sistema automatizado de multas</li>
+                        <li>Historial completo de transacciones</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>📚 Catálogo Avanzado</h4>
+                    <ul>
+                        <li>Metadatos completos (ISBN, editorial, idioma)</li>
+                        <li>Gestión de múltiples autores por libro</li>
+                        <li>Control de disponibilidad en tiempo real</li>
+                        <li>Clasificación por géneros y tipos</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>🔄 Sistema de Préstamos</h4>
+                    <ul>
+                        <li>Fechas automáticas de préstamo/devolución</li>
+                        <li>Control inteligente de multas</li>
+                        <li>Estados detallados de ejemplares</li>
+                        <li>Reportes y estadísticas avanzadas</li>
+                    </ul>
+                </div>
+            </div>
         </section>
 
-        <p class="footer">© 2025 Biblioteca ERD. Publicado con GitHub Pages.</p>
+        <footer class="footer">
+            <p>© 2025 Sistema de Biblioteca ERD • Desarrollado por <a href="https://github.com/HannielOlvera" target="_blank" rel="noopener">HannielOlvera</a> • Publicado con GitHub Pages</p>
+            <p style="margin-top: 0.5rem; font-size: 0.8rem; opacity: 0.7;">
+                Presiona <kbd style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">Alt + H</kbd> en las páginas de diagramas para ver atajos de teclado
+            </p>
+        </footer>
     </div>
 
-    <script src="assets/js/main.js" defer></script>
+    <script src="assets/js/main.js" type="module"></script>
 </body>
 </html>
