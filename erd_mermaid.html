@@ -248,86 +248,143 @@
         <div id="diagram">
             <div class="mermaid">
 erDiagram
-    USUARIO {
-        int ID_usuario PK
-        string nombre
-        string email
-        string telefono
-        date fecha_registro
-        string tipo
-        string estado
-    }
+  Estado {
+    int ID_estado PK
+    string Nombre
+  }
 
-    LIBRO {
-        int ID_libro PK
-        string titulo
-        string isbn
-        int anio_publicacion
-        string idioma
-        int total_ejemplares
-        int disponibles
-    }
+  Ciudad {
+    int ID_ciudad PK
+    string Nombre
+    int ID_estado FK
+  }
 
-    AUTOR {
-        int ID_autor PK
-        string nombre
-        string apellido
-        string nacionalidad
-        date fecha_nacimiento
-    }
+  Colonia {
+    int ID_colonia PK
+    string Nombre
+    string CP
+    int ID_ciudad FK
+  }
 
-    EDITORIAL {
-        int ID_editorial PK
-        string nombre
-        string pais
-        string sitio_web
-    }
+  Direccion {
+    int ID_direccion PK
+    string Calle
+    string NumeroExterior
+    string NumeroInterior
+    string Referencia
+    int ID_colonia FK
+  }
 
-    GENERO {
-        int ID_genero PK
-        string nombre
-        string descripcion
-    }
+  Tipo_Usuario {
+    int ID_tipousu PK
+    string Descripcion
+  }
 
-    EJEMPLAR {
-        int ID_ejemplar PK
-        string codigo_barras
-        string ubicacion
-        string estado
-        date fecha_adquisicion
-        int ID_libro FK
-    }
+  Usuario {
+    int ID_usu PK
+    string Nombre
+    string Apellido
+    date FechaNac
+    string Email
+    string Telefono
+    string Genero
+    int ID_tipousu FK
+    int ID_direccion FK
+  }
 
-    PRESTAMO {
-        int ID_prestamo PK
-        date fecha_prestamo
-        date fecha_vencimiento
-        date fecha_devolucion
-        string estado
-        float multa
-        int ID_usuario FK
-        int ID_ejemplar FK
-    }
+  Editorial {
+    int ID_editorial PK
+    string Nombre
+  }
 
-    RESERVA {
-        int ID_reserva PK
-        date fecha_reserva
-        date fecha_vencimiento
-        string estado
-        int ID_usuario FK
-        int ID_libro FK
-    }
+  Genero {
+    int ID_genero PK
+    string Descripcion
+  }
 
-    USUARIO ||--o{ PRESTAMO : realiza
-    USUARIO ||--o{ RESERVA : hace
+  Tipo_Libro {
+    int ID_tipolibro PK
+    string Descripcion
+  }
 
-    LIBRO ||--o{ EJEMPLAR : tiene
-    LIBRO ||--o{ RESERVA : es_reservado
-    LIBRO }o--o{ AUTOR : escrito_por
-    LIBRO }o--|| EDITORIAL : publicado_por
-    LIBRO }o--o{ GENERO : pertenece_a
+  Idioma {
+    int ID_idioma PK
+    string Descripcion
+  }
 
-    EJEMPLAR ||--o{ PRESTAMO : prestado_en
+  Libro {
+    int ID_libro PK
+    string Titulo
+    string Subtitulo
+    string ISBN13
+    string ISBN10
+    int ID_editorial FK
+    int ID_tipolibro FK
+    int ID_idioma FK
+    int Edicion
+    int AnioPublicacion
+  }
+
+  Autor {
+    int ID_autor PK
+    string Nombre
+    string Apellido
+  }
+
+  Libro_Autor {
+    int ID_libro PK
+    int ID_autor PK
+  }
+
+  Libro_Genero {
+    int ID_libro PK
+    int ID_genero PK
+  }
+
+  Ejemplar {
+    int ID_ejemplar PK
+    int ID_libro FK
+    string CodigoBarras
+    string Ubicacion
+    string EstadoEjemplar
+  }
+
+  Prestamo {
+    int ID_prestamo PK
+    int ID_usu FK
+    date FechaPrestamo
+    date FechaDevolucionEsperada
+    date FechaDevolucionReal
+    string Status
+  }
+
+  Prestamo_Detalle {
+    int ID_prestamo PK
+    int ID_ejemplar PK
+  }
+
+  Estado ||--o{ Ciudad : tiene
+  Ciudad ||--o{ Colonia : tiene
+  Colonia ||--o{ Direccion : tiene
+  Direccion ||--o{ Usuario : ubica
+
+  Tipo_Usuario ||--o{ Usuario : clasifica
+  Usuario ||--o{ Prestamo : realiza
+
+  Editorial ||--o{ Libro : publica
+  Tipo_Libro ||--o{ Libro : clasifica
+  Idioma ||--o{ Libro : idioma_de
+
+  Libro ||--o{ Ejemplar : tiene
+
+  Libro ||--o{ Libro_Autor : relaciona
+  Autor ||--o{ Libro_Autor : relaciona
+
+  Libro ||--o{ Libro_Genero : clasifica
+  Genero ||--o{ Libro_Genero : clasifica
+
+  Prestamo ||--o{ Prestamo_Detalle : incluye
+  Ejemplar ||--o{ Prestamo_Detalle : incluido_en
             </div>
         </div>
         
