@@ -585,10 +585,12 @@
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/svg2pdf.js@2.2.1/dist/svg2pdf.umd.min.js"></script>
   
-  <!-- Sistema avanzado de funcionalidades -->
+  <!-- Sistema ultra-avanzado de funcionalidades -->
   <script src="assets/js/notifications.js"></script>
   <script src="assets/js/pdf-export.js"></script>
-  <script src="assets/js/advanced-pan-zoom.js"></script>
+  <script src="assets/js/ultra-advanced-pan-zoom.js"></script>
+  <script src="assets/js/smooth-interaction-engine.js"></script>
+  <script src="assets/js/erd-context-menu.js"></script>
   <script src="assets/js/keyboard-shortcuts.js"></script>
   <script src="assets/js/performance-monitor.js"></script>
   <script src="assets/js/main.js" type="module"></script>
@@ -607,41 +609,54 @@
         window.BibliotecaERD?.showNotification('Diagrama Chen cargado exitosamente', 'success', 2500, 'Sistema Listo');
       }, 500);
       
-      // Initialize advanced pan/zoom with enhanced options
-      const panZoom = new SVGPanZoom(svg, {
+      // Initialize ultra-advanced pan/zoom with ultra-smooth interactions
+      const panZoom = new UltraAdvancedPanZoom(svg, {
         enablePan: true,
         enableZoom: true,
         enableAutoFit: true,
         enableSmoothing: true,
         enableAutoPan: false,
-        smoothingFactor: 0.12,
-        zoomStep: 0.15,
-        maxZoom: 10,
-        minZoom: 0.05,
-        edgePanSpeed: 30,
-        edgePanMargin: 60,
-        inertia: 0.94,
-        friction: 0.86,
+        enableInertia: true,
+        enableBoundaries: true,
+        rightClickPan: true,
+        smoothingFactor: 0.08,    // Ultra-responsive
+        zoomStep: 0.12,           // Precision zoom steps
+        maxZoom: 15,              // Higher zoom for detailed inspection
+        minZoom: 0.03,            // Lower min zoom for overview
+        inertia: 0.96,            // High inertia for smooth glides
+        friction: 0.82,           // Lower friction for longer momentum
+        edgePanSpeed: 35,
+        edgePanMargin: 80,
         doubleClickZoom: true,
-        mouseWheelZoom: true
+        mouseWheelZoom: true,
+        touchSupport: true,
+        showCursor: true,
+        cursorTransition: true
       });
+      
+      // Initialize smooth interaction engine for ultra-fluid experience
+      const smoothEngine = new SmoothInteractionEngine(svg, panZoom);
+      
+      // Initialize enhanced right-click context menu
+      const contextMenu = new ERDContextMenu(svg, panZoom);
       
       // Initialize keyboard shortcuts
       const keyboard = new KeyboardShortcuts(panZoom);
       
-      // Enhanced status bar updates with performance monitoring
+      // Enhanced status bar updates with ultra-smooth performance monitoring
       let lastUpdate = Date.now();
       function updateStatusBar() {
         const now = Date.now();
-        if (now - lastUpdate < 50) return; // Throttle to 20 FPS
+        if (now - lastUpdate < 33) return; // Throttle to 30 FPS for smoothness
         lastUpdate = now;
         
         const zoom = Math.round(panZoom.state.scale * 100);
         const x = Math.round(panZoom.state.x);
         const y = Math.round(panZoom.state.y);
-        const fps = Math.round(1000 / Math.max(16, now - lastUpdate));
+        const fps = panZoom.performanceMetrics?.fps || 60;
+        const isInteracting = smoothEngine.getInteractionStats().isInteracting ? '🎯' : '📊';
         
-        statusBar.textContent = `Zoom: ${zoom}% | Posición: (${x}, ${y}) | FPS: ${fps} | 🎯 Alt+H para ayuda`;
+        statusBar.textContent = `${isInteracting} Zoom: ${zoom}% | Posición: (${x}, ${y}) | FPS: ${fps} | Right-click para opciones | Alt+H para ayuda`;
       }
       
       // Update status bar with RAF for smooth performance
@@ -730,39 +745,65 @@
         window.BibliotecaERD?.showNotification('Vista ajustada por doble clic', 'info', 1500);
       });
       
-      // Performance monitoring and optimization warnings
-      let performanceWarningShown = false;
-      setInterval(() => {
-        const scale = panZoom.state.scale;
-        if (scale > 5 && !performanceWarningShown) {
-          window.BibliotecaERD?.showNotification(
-            'Zoom muy alto puede afectar el rendimiento. Considera reducir el zoom.', 
-            'warning', 
-            5000,
-            'Rendimiento'
-          );
-          performanceWarningShown = true;
-        } else if (scale <= 5) {
-          performanceWarningShown = false;
-        }
-      }, 5000);
-      
-      // Welcome message with instructions
+      // Welcome message with ultra-enhanced instructions
       setTimeout(() => {
         window.BibliotecaERD?.showNotification(
-          'Usa Alt+H para ver todos los atajos de teclado disponibles', 
+          'Sistema ultra-avanzado cargado: Alt+H para atajos, Right-click para opciones', 
           'info', 
-          5000,
-          'Tip Profesional'
+          6000,
+          'Ultra Tip Profesional'
         );
       }, 3000);
       
-      // Expose panZoom instance for debugging
-      window.erdPanZoom = panZoom;
+      // Advanced performance monitoring with interaction feedback
+      let performanceWarningShown = false;
+      let lastInteractionTime = Date.now();
       
-      console.log('🎯 ERD Chen Diagram initialized successfully');
-      console.log('📊 Features: Advanced Pan/Zoom, Keyboard Shortcuts, PDF Export, Auto-Pan');
-      console.log('⌨️ Press Alt+H for keyboard shortcuts');
+      // Listen for interaction events to provide feedback
+      svg.addEventListener('panZoomChange', (e) => {
+        lastInteractionTime = Date.now();
+      });
+      
+      setInterval(() => {
+        const scale = panZoom.state.scale;
+        const stats = smoothEngine.getInteractionStats();
+        
+        if (scale > 8 && !performanceWarningShown) {
+          window.BibliotecaERD?.showNotification(
+            'Zoom ultra-alto detectado. El sistema se adapta automáticamente para mantener fluidez.', 
+            'warning', 
+            5000,
+            'Optimización Automática'
+          );
+          performanceWarningShown = true;
+        } else if (scale <= 8) {
+          performanceWarningShown = false;
+        }
+        
+        // Show interaction tips periodically
+        const timeSinceInteraction = Date.now() - lastInteractionTime;
+        if (timeSinceInteraction > 30000 && Math.random() < 0.1) { // 10% chance every 30 seconds
+          const tips = [
+            'Usa doble-click para auto-ajustar la vista',
+            'Mantén presionado el botón derecho para navegación alternativa',
+            'Las flechas del teclado permiten navegación precisa',
+            'El zoom con rueda del mouse se centra en el cursor'
+          ];
+          const randomTip = tips[Math.floor(Math.random() * tips.length)];
+          window.BibliotecaERD?.showNotification(randomTip, 'info', 4000, 'Tip de Navegación');
+          lastInteractionTime = Date.now(); // Reset timer
+        }
+      }, 5000);
+      
+      // Expose ultra-advanced instances for debugging and external access
+      window.erdPanZoom = panZoom;
+      window.erdSmoothEngine = smoothEngine;
+      window.erdContextMenu = contextMenu;
+      
+      console.log('🚀 Ultra-Advanced ERD Chen Diagram initialized successfully');
+      console.log('🎯 Features: Ultra-Smooth Pan/Zoom, Right-click Context Menu, Enhanced Interactions');
+      console.log('⌨️ Press Alt+H for keyboard shortcuts | Right-click for context menu');
+      console.log('📊 Performance stats available via window.erdSmoothEngine.getInteractionStats()');
     });
   </script>
 </body>
