@@ -2,16 +2,19 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
-<title>ERD (Chen) – Biblioteca (espaciado extremo, sin cruces, V13)</title>
+<title>ERD (Chen) – Biblioteca</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="Diagrama ER (Chen) del sistema Biblioteca con exportación y zoom/pan." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ctext y='14' font-size='14'%3E📊%3C/text%3E%3C/svg%3E" />
+<link rel="stylesheet" href="assets/css/styles.css" />
 <style>
-  html,body{height:100%;margin:0;font-family:Arial,Helvetica,sans-serif;background:#fff;color:#000}
-  header{padding:10px 14px;border-bottom:1px solid #ccc;background:#f7f7f7}
+  html,body{height:100%;margin:0;background:#fff;color:#000}
+  header{padding:10px 14px;border-bottom:1px solid #e5e7eb;background:#f7f7f7}
   h1{margin:0;font-size:16px;font-weight:600}
   main{overflow:auto}
   .wrap{min-width:6000px;min-height:4000px;display:flex;align-items:flex-start;justify-content:center;padding:12px}
   svg{background:#fff}
-  /* Estilo examen monocromo */
+  /* Estilo monocromo para examen */
   .box{fill:#fff;stroke:#000;stroke-width:1}
   .diamond{fill:#fff;stroke:#000;stroke-width:1}
   .oval{fill:#fff;stroke:#000;stroke-width:1}
@@ -19,17 +22,22 @@
   .label{font:15px Arial, sans-serif; fill:#000}
   .small{font:14px Arial, sans-serif; fill:#000}
   .mini{font:13px Arial, sans-serif; fill:#000}
-  .controls{position:fixed;right:12px;top:10px;display:flex;gap:8px}
-  button{appearance:none;border:1px solid #ccc;background:#fff;padding:.35rem .6rem;border-radius:6px;cursor:pointer;font-size:12px}
 </style>
 </head>
 <body>
-<header><h1>ERD – Biblioteca (espaciado extremo, sin cruces, V13)</h1></header>
-
-<div class="controls">
-  <button id="btnSvg">Exportar SVG</button>
-  <button id="btnPng">Exportar PNG</button>
-</div>
+<header>
+  <div class="container" style="background:transparent;border:none;box-shadow:none;backdrop-filter:none;padding:8px 0;">
+    <a href="index.html" class="btn btn--ghost">← Volver</a>
+    <h1>ERD – Biblioteca (Chen)</h1>
+    <div class="toolbar">
+      <button class="btn" id="btnSvg">Exportar SVG</button>
+      <button class="btn" id="btnPng">Exportar PNG</button>
+      <button class="btn" id="btnZoomIn">Zoom +</button>
+      <button class="btn" id="btnZoomOut">Zoom −</button>
+      <button class="btn" id="btnReset">Reset</button>
+    </div>
+  </div>
+</header>
 
 <main>
   <div class="wrap">
@@ -399,36 +407,49 @@
 </main>
 
 <script>
-  function exportSVG(){
+  // Zoom/Pan mínimo usando viewBox scaling
+  (function(){
     const svg = document.getElementById('erd');
-    const xml = new XMLSerializer().serializeToString(svg);
-    const blob = new Blob(['<?xml version="1.0" encoding="UTF-8"?>\n'+xml], {type:'image/svg+xml'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = url; a.download = 'ERD_Biblioteca_V13.svg';
-    document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(url); a.remove();},0);
-  }
-  function exportPNG(){
-    const svg = document.getElementById('erd');
-    const xml = new XMLSerializer().serializeToString(svg);
-    const img = new Image();
-    img.onload = function(){
-      const scale = 2;
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width * scale;
-      canvas.height = img.height * scale;
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = '#fff'; ctx.fillRect(0,0,canvas.width,canvas.height);
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      canvas.toBlob(b=>{
-        const url = URL.createObjectURL(b);
-        const a = document.createElement('a'); a.href = url; a.download = 'ERD_Biblioteca_V13.png';
-        document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(url); a.remove();},0);
-      }, 'image/png', 1.0);
-    };
-    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<?xml version="1.0"?>\n' + xml);
-  }
-  document.getElementById('btnSvg').onclick = exportSVG;
-  document.getElementById('btnPng').onclick = exportPNG;
+    const vb0 = svg.viewBox.baseVal; // live object
+    let scale = 1; // 1 = 100%
+    const Z = 1.2;
+
+    function setViewBox(){
+      svg.setAttribute('viewBox', `0 0 ${6000/scale} ${4000/scale}`);
+    }
+    function exportSVG(){
+      const xml = new XMLSerializer().serializeToString(svg);
+      const blob = new Blob(['<?xml version="1.0" encoding="UTF-8"?>\n'+xml], {type:'image/svg+xml'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'ERD_Biblioteca.svg';
+      document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(url); a.remove();},0);
+    }
+    function exportPNG(){
+      const xml = new XMLSerializer().serializeToString(svg);
+      const img = new Image();
+      img.onload = function(){
+        const scaleOut = 2;
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width * scaleOut;
+        canvas.height = img.height * scaleOut;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#fff'; ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob(b=>{
+          const url = URL.createObjectURL(b);
+          const a = document.createElement('a'); a.href = url; a.download = 'ERD_Biblioteca.png';
+          document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(url); a.remove();},0);
+        }, 'image/png', 1.0);
+      };
+      img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<?xml version="1.0"?>\n' + xml);
+    }
+
+    document.getElementById('btnSvg').onclick = exportSVG;
+    document.getElementById('btnPng').onclick = exportPNG;
+    document.getElementById('btnZoomIn').onclick = () => { scale *= Z; setViewBox(); };
+    document.getElementById('btnZoomOut').onclick = () => { scale /= Z; setViewBox(); };
+    document.getElementById('btnReset').onclick = () => { scale = 1; setViewBox(); };
+  })();
 </script>
 </body>
 </html>
