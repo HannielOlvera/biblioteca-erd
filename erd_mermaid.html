@@ -63,38 +63,53 @@
             });
         };
         
-        // Función para descargar PNG (que funcionaba antes)
-        window.downloadPNG = function(svg, filename = 'diagrama.png') {
+        // Función mejorada para PNG de alta resolución
+        window.downloadHighResPNG = function(svg, filename = 'diagrama.png') {
             return new Promise((resolve, reject) => {
                 try {
                     const svgData = new XMLSerializer().serializeToString(svg);
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
                     
+                    // Obtener dimensiones del SVG
                     const bbox = svg.getBBox();
-                    const scale = 2;
+                    
+                    // Escala alta para mejor resolución (4x)
+                    const scale = 4;
                     canvas.width = bbox.width * scale;
                     canvas.height = bbox.height * scale;
                     
+                    // Configurar el contexto para mejor calidad
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = 'high';
+                    
                     const img = new Image();
                     img.onload = function() {
+                        // Fondo blanco
                         ctx.fillStyle = 'white';
                         ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        
+                        // Dibujar la imagen escalada
                         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                         
+                        // Crear y descargar
                         canvas.toBlob(function(blob) {
                             const url = URL.createObjectURL(blob);
                             const a = document.createElement('a');
                             a.href = url;
                             a.download = filename;
+                            a.style.display = 'none';
+                            document.body.appendChild(a);
                             a.click();
+                            document.body.removeChild(a);
                             URL.revokeObjectURL(url);
                             resolve();
-                        }, 'image/png', 0.95);
+                        }, 'image/png', 1.0); // Calidad máxima
                     };
                     
-                    img.onerror = () => reject(new Error('Error al procesar SVG'));
+                    img.onerror = () => reject(new Error('Error al procesar imagen'));
                     
+                    // Convertir SVG a data URL
                     const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
                     const url = URL.createObjectURL(svgBlob);
                     img.src = url;
@@ -105,8 +120,51 @@
             });
         };
         
-        // Función para descargar SVG directamente (simplificada)
-        window.downloadSVG = function(svg, filename = 'diagrama.svg') {
+        // Función alternativa: capturar canvas directo
+        window.downloadCanvasImage = function(svg, filename = 'diagrama.png') {
+            try {
+                const container = document.getElementById('diagram');
+                const rect = container.getBoundingClientRect();
+                
+                // Crear canvas del tamaño visible
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                canvas.width = rect.width * 2; // Doble resolución
+                canvas.height = rect.height * 2;
+                
+                // Fondo blanco
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Dibujar el SVG actual (con sus transformaciones)
+                const svgData = new XMLSerializer().serializeToString(svg);
+                const img = new Image();
+                
+                img.onload = function() {
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    
+                    // Descargar
+                    canvas.toBlob(function(blob) {
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = filename;
+                        a.click();
+                        URL.revokeObjectURL(url);
+                    }, 'image/png', 1.0);
+                };
+                
+                const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+                img.src = URL.createObjectURL(svgBlob);
+                
+            } catch (error) {
+                console.error('Error en canvas:', error);
+            }
+        };
+        
+        // Función para copiar SVG al portapapeles
+        window.copySVGCode = function(svg) {
             try {
                 const svgClone = svg.cloneNode(true);
                 const bbox = svg.getBBox();
@@ -119,17 +177,22 @@
                 const serializer = new XMLSerializer();
                 const svgString = serializer.serializeToString(svgClone);
                 
-                const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
-                const url = URL.createObjectURL(blob);
+                // Copiar al portapapeles
+                navigator.clipboard.writeText(svgString).then(() => {
+                    console.log('SVG copiado al portapapeles');
+                }).catch(() => {
+                    // Método alternativo
+                    const textarea = document.createElement('textarea');
+                    textarea.value = svgString;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    console.log('SVG copiado (método alternativo)');
+                });
                 
-                const downloadLink = document.createElement('a');
-                downloadLink.href = url;
-                downloadLink.download = filename;
-                downloadLink.click();
-                
-                URL.revokeObjectURL(url);
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error copiando SVG:', error);
             }
         };
     </script>
@@ -174,14 +237,14 @@
             background: #3b82f6;
             color: white;
             border: none;
-            padding: 0.75rem 1.5rem;
+            padding: 0.75rem 1rem;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 500;
             transition: all 0.2s ease;
             text-decoration: none;
-            min-width: 120px;
+            min-width: 100px;
         }
         
         .btn:hover {
@@ -320,8 +383,9 @@
             <button class="btn" onclick="zoomOut()">🔍−</button>
             <button class="btn" onclick="resetView()">↻ Reset</button>
             <button class="btn btn-secondary" onclick="exportPDF()">🖨️ Imprimir</button>
-            <button class="btn btn-secondary" onclick="downloadPNG()">📄 PNG</button>
-            <button class="btn btn-secondary" onclick="downloadSVG()">📁 SVG</button>
+            <button class="btn btn-secondary" onclick="downloadHighResPNG()">📄 PNG HD</button>
+            <button class="btn btn-secondary" onclick="downloadCanvasImage()">🖼️ Imagen</button>
+            <button class="btn btn-secondary" onclick="copySVGCode()">� Copiar SVG</button>
             <a href="index.html" class="btn btn-secondary">← Volver</a>
         </div>
     </header>
@@ -621,18 +685,23 @@ erDiagram
             }
         }
 
-        async function downloadPNG() {
+        async function downloadHighResPNG() {
             if (!svg) return;
             try {
-                await window.downloadPNG(svg, 'Sistema_Biblioteca_ERD_Mermaid.png');
+                await window.downloadHighResPNG(svg, 'Sistema_Biblioteca_ERD_HD.png');
             } catch (error) {
                 console.error('Error:', error);
             }
         }
 
-        function downloadSVG() {
+        function downloadCanvasImage() {
             if (!svg) return;
-            window.downloadSVG(svg, 'Sistema_Biblioteca_ERD_Mermaid.svg');
+            window.downloadCanvasImage(svg, 'Sistema_Biblioteca_ERD_Canvas.png');
+        }
+
+        function copySVGCode() {
+            if (!svg) return;
+            window.copySVGCode(svg);
         }
 
         // Inicializar cuando esté listo
