@@ -254,118 +254,120 @@
             <div class="mermaid">
 erDiagram
     Estado {
-        int ID_estado PK
-        varchar Nombre
+        SMALLINT ID_estado PK "AI"
+        VARCHAR(50) Nombre "UQ"
     }
-    
     Ciudad {
-        int ID_ciudad PK
-        varchar Nombre
-        int ID_estado FK
+        INT ID_ciudad PK "AI"
+        VARCHAR(50) Nombre
+        SMALLINT ID_estado FK
     }
-    
     Colonia {
-        int ID_colonia PK
-        varchar Nombre
-        char CP
-        int ID_ciudad FK
+        INT ID_colonia PK "AI"
+        VARCHAR(60) Nombre
+        CHAR(5) CP
+        INT ID_ciudad FK
     }
-    
     Direccion {
-        int ID_direccion PK
-        varchar Calle
-        varchar NumeroExterior
-        varchar NumeroInterior
-        varchar Referencia
-        int ID_colonia FK
+        INT ID_direccion PK "AI"
+        VARCHAR(80) Calle
+        VARCHAR(10) NumeroExterior
+        VARCHAR(10) NumeroInterior
+        VARCHAR(120) Referencia
+        INT ID_colonia FK
     }
-    
     Tipo_Usuario {
-        int ID_tipousu PK
-        varchar Descripcion
+        TINYINT ID_tipousu PK "AI"
+        VARCHAR(30) Descripcion "UQ"
     }
-    
     Usuario {
-        int ID_usu PK
-        varchar Nombre
-        varchar Apellido
-        varchar FechaNac
-        varchar Email
-        varchar Telefono
-        varchar Genero
-        int ID_tipousu FK
-        int ID_direccion FK
+        INT ID_usu PK "AI"
+        VARCHAR(40) Nombre
+        VARCHAR(40) Apellido
+        DATE FechaNac
+        VARCHAR(80) Email "UQ"
+        VARCHAR(15) Telefono
+        ENUM('F','M','X') Genero
+        TINYINT ID_tipousu FK
+        INT ID_direccion FK
     }
-    
     Editorial {
-        int ID_editorial PK
-        varchar Nombre
+        SMALLINT ID_editorial PK "AI"
+        VARCHAR(80) Nombre "UQ"
     }
-    
     Genero {
-        int ID_genero PK
-        varchar Descripcion
+        SMALLINT ID_genero PK "AI"
+        VARCHAR(40) Descripcion "UQ"
     }
-    
     Tipo_Libro {
-        int ID_tipolibro PK
-        varchar Descripcion
+        TINYINT ID_tipolibro PK "AI"
+        VARCHAR(30) Descripcion "UQ"
     }
-    
     Idioma {
-        int ID_idioma PK
-        varchar Descripcion
+        TINYINT ID_idioma PK "AI"
+        VARCHAR(30) Descripcion "UQ"
     }
-    
     Libro {
-        int ID_libro PK
-        varchar Titulo
-        varchar Subtitulo
-        char ISBN13
-        char ISBN10
-        int ID_editorial FK
-        int ID_tipolibro FK
-        int ID_idioma FK
-        int Edicion
-        int AnioPublicacion
+        INT ID_libro PK "AI"
+        VARCHAR(150) Titulo
+        VARCHAR(150) Subtitulo
+        CHAR(13) ISBN13 "UQ"
+        CHAR(10) ISBN10 "UQ"
+        SMALLINT ID_editorial FK
+        TINYINT ID_tipolibro FK
+        TINYINT ID_idioma FK
+        TINYINT Edicion
+        YEAR AnioPublicacion
     }
-    
     Autor {
-        int ID_autor PK
-        varchar Nombre
-        varchar Apellido
+        INT ID_autor PK "AI"
+        VARCHAR(60) Nombre
+        VARCHAR(60) Apellido
     }
-    
+    Libro_Autor {
+        INT ID_libro PK,FK
+        INT ID_autor PK,FK
+    }
+    Libro_Genero {
+        INT ID_libro PK,FK
+        SMALLINT ID_genero PK,FK
+    }
     Ejemplar {
-        int ID_ejemplar PK
-        int ID_libro FK
-        varchar CodigoBarras
-        varchar Ubicacion
-        varchar EstadoEjemplar
+        INT ID_ejemplar PK "AI"
+        INT ID_libro FK
+        VARCHAR(32) CodigoBarras "UQ"
+        VARCHAR(60) Ubicacion
+        ENUM('Disponible','Prestado','Dañado','Extraviado','En_Proceso') EstadoEjemplar
     }
-    
     Prestamo {
-        int ID_prestamo PK
-        int ID_usu FK
-        varchar FechaPrestamo
-        varchar FechaDevolucionEsperada
-        varchar FechaDevolucionReal
-        varchar Status
+        INT ID_prestamo PK "AI"
+        INT ID_usu FK
+        DATE FechaPrestamo
+        DATE FechaDevolucionEsperada
+        DATE FechaDevolucionReal
+        ENUM('Activo','Devuelto','Atrasado') Status
     }
-    
-    Estado ||--o{ Ciudad : tiene
-    Ciudad ||--o{ Colonia : tiene
-    Colonia ||--o{ Direccion : tiene
-    Direccion ||--o{ Usuario : ubica
-    Tipo_Usuario ||--o{ Usuario : clasifica
-    Usuario ||--o{ Prestamo : realiza
-    Editorial ||--o{ Libro : publica
-    Tipo_Libro ||--o{ Libro : clasifica
-    Idioma ||--o{ Libro : idioma_de
-    Libro ||--o{ Ejemplar : tiene
-    Libro }o--o{ Autor : escrito_por
-    Libro }o--o{ Genero : pertenece_a
-    Prestamo }o--o{ Ejemplar : contiene
+    Prestamo_Detalle {
+        INT ID_prestamo PK,FK
+        INT ID_ejemplar PK,FK
+    }
+
+    Estado ||--o{ Ciudad : "tiene"
+    Ciudad ||--o{ Colonia : "tiene"
+    Colonia ||--o{ Direccion : "tiene"
+    Direccion ||--o{ Usuario : "ubica"
+    Tipo_Usuario ||--o{ Usuario : "clasifica"
+    Usuario ||--o{ Prestamo : "realiza"
+    Editorial ||--o{ Libro : "publica"
+    Tipo_Libro ||--o{ Libro : "tipo"
+    Idioma ||--o{ Libro : "idioma"
+    Libro ||--o{ Ejemplar : "tiene"
+    Libro ||--o{ Libro_Autor : "tiene_autor"
+    Autor ||--o{ Libro_Autor : "es_autor"
+    Libro ||--o{ Libro_Genero : "tiene_genero"
+    Genero ||--o{ Libro_Genero : "es_genero"
+    Prestamo ||--o{ Prestamo_Detalle : "detalle"
+    Ejemplar ||--o{ Prestamo_Detalle : "ejemplar"
             </div>
         </div>
         
