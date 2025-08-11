@@ -254,102 +254,102 @@
             <div class="mermaid">
 erDiagram
     Estado {
-        SMALLINT ID_estado PK "AI"
-        VARCHAR(50) Nombre "UQ"
+        ID_estado PK
+        Nombre
     }
     Ciudad {
-        INT ID_ciudad PK "AI"
-        VARCHAR(50) Nombre
-        SMALLINT ID_estado FK
+        ID_ciudad PK
+        Nombre
+        ID_estado FK
     }
     Colonia {
-        INT ID_colonia PK "AI"
-        VARCHAR(60) Nombre
-        CHAR(5) CP
-        INT ID_ciudad FK
+        ID_colonia PK
+        Nombre
+        CP
+        ID_ciudad FK
     }
     Direccion {
-        INT ID_direccion PK "AI"
-        VARCHAR(80) Calle
-        VARCHAR(10) NumeroExterior
-        VARCHAR(10) NumeroInterior
-        VARCHAR(120) Referencia
-        INT ID_colonia FK
+        ID_direccion PK
+        Calle
+        NumeroExterior
+        NumeroInterior
+        Referencia
+        ID_colonia FK
     }
     Tipo_Usuario {
-        TINYINT ID_tipousu PK "AI"
-        VARCHAR(30) Descripcion "UQ"
+        ID_tipousu PK
+        Descripcion
     }
     Usuario {
-        INT ID_usu PK "AI"
-        VARCHAR(40) Nombre
-        VARCHAR(40) Apellido
-        DATE FechaNac
-        VARCHAR(80) Email "UQ"
-        VARCHAR(15) Telefono
-        ENUM('F','M','X') Genero
-        TINYINT ID_tipousu FK
-        INT ID_direccion FK
+        ID_usu PK
+        Nombre
+        Apellido
+        FechaNac
+        Email
+        Telefono
+        Genero
+        ID_tipousu FK
+        ID_direccion FK
     }
     Editorial {
-        SMALLINT ID_editorial PK "AI"
-        VARCHAR(80) Nombre "UQ"
+        ID_editorial PK
+        Nombre
     }
     Genero {
-        SMALLINT ID_genero PK "AI"
-        VARCHAR(40) Descripcion "UQ"
+        ID_genero PK
+        Descripcion
     }
     Tipo_Libro {
-        TINYINT ID_tipolibro PK "AI"
-        VARCHAR(30) Descripcion "UQ"
+        ID_tipolibro PK
+        Descripcion
     }
     Idioma {
-        TINYINT ID_idioma PK "AI"
-        VARCHAR(30) Descripcion "UQ"
+        ID_idioma PK
+        Descripcion
     }
     Libro {
-        INT ID_libro PK "AI"
-        VARCHAR(150) Titulo
-        VARCHAR(150) Subtitulo
-        CHAR(13) ISBN13 "UQ"
-        CHAR(10) ISBN10 "UQ"
-        SMALLINT ID_editorial FK
-        TINYINT ID_tipolibro FK
-        TINYINT ID_idioma FK
-        TINYINT Edicion
-        YEAR AnioPublicacion
+        ID_libro PK
+        Titulo
+        Subtitulo
+        ISBN13
+        ISBN10
+        ID_editorial FK
+        ID_tipolibro FK
+        ID_idioma FK
+        Edicion
+        AnioPublicacion
     }
     Autor {
-        INT ID_autor PK "AI"
-        VARCHAR(60) Nombre
-        VARCHAR(60) Apellido
+        ID_autor PK
+        Nombre
+        Apellido
     }
     Libro_Autor {
-        INT ID_libro PK,FK
-        INT ID_autor PK,FK
+        ID_libro PK,FK
+        ID_autor PK,FK
     }
     Libro_Genero {
-        INT ID_libro PK,FK
-        SMALLINT ID_genero PK,FK
+        ID_libro PK,FK
+        ID_genero PK,FK
     }
     Ejemplar {
-        INT ID_ejemplar PK "AI"
-        INT ID_libro FK
-        VARCHAR(32) CodigoBarras "UQ"
-        VARCHAR(60) Ubicacion
-        ENUM('Disponible','Prestado','Dañado','Extraviado','En_Proceso') EstadoEjemplar
+        ID_ejemplar PK
+        ID_libro FK
+        CodigoBarras
+        Ubicacion
+        EstadoEjemplar
     }
     Prestamo {
-        INT ID_prestamo PK "AI"
-        INT ID_usu FK
-        DATE FechaPrestamo
-        DATE FechaDevolucionEsperada
-        DATE FechaDevolucionReal
-        ENUM('Activo','Devuelto','Atrasado') Status
+        ID_prestamo PK
+        ID_usu FK
+        FechaPrestamo
+        FechaDevolucionEsperada
+        FechaDevolucionReal
+        Status
     }
     Prestamo_Detalle {
-        INT ID_prestamo PK,FK
-        INT ID_ejemplar PK,FK
+        ID_prestamo PK,FK
+        ID_ejemplar PK,FK
     }
 
     Estado ||--o{ Ciudad : "tiene"
