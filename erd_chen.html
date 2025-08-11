@@ -360,6 +360,16 @@
         <path class="edge" d="M3500 3035 L2000 3035 L2000 4500 L2500 4500" />
         <text class="small" x="2150" y="3800">*</text>
 
+        <!-- LIBRO_AUTOR (N:M explícito) -->
+        <g id="R_Libro_Autor">
+          <polygon class="diamond" points="2100,4700 2140,4670 2180,4700 2140,4730"/>
+          <text class="small" x="2140" y="4706" text-anchor="middle">Libro_Autor</text>
+          <text class="small" x="2180" y="4690">N:M</text>
+        </g>
+        <path class="edge" d="M3500 3035 L2100 3035 L2100 4700" />
+        <path class="edge" d="M2140 4730 L2140 5000 L2360 5000" />
+        <text class="small" x="2200" y="4900">*</text>
+
         <!-- AUTOR -->
         <g id="Autor">
           <rect class="box" x="2360" y="5000" width="400" height="70" rx="4"/>
@@ -384,6 +394,16 @@
         </g>
         <path class="edge" d="M3750 3070 L3750 4470" />
         <text class="small" x="3765" y="3800">*</text>
+
+        <!-- LIBRO_GENERO (N:M explícito) -->
+        <g id="R_Libro_Genero">
+          <polygon class="diamond" points="3400,4700 3440,4670 3480,4700 3440,4730"/>
+          <text class="small" x="3440" y="4706" text-anchor="middle">Libro_Genero</text>
+          <text class="small" x="3480" y="4690">N:M</text>
+        </g>
+        <path class="edge" d="M3750 3070 L3400 3070 L3400 4700" />
+        <path class="edge" d="M3440 4730 L3440 5000 L3590 5000" />
+        <text class="small" x="3500" y="4900">*</text>
 
         <!-- GÉNERO -->
         <g id="Genero">
@@ -435,6 +455,16 @@
         <text class="small" x="6550" y="1300">*</text>
         <path class="edge" d="M8080 2200 L9000 2200 L9000 5300 L5790 5300" />
         <text class="small" x="8900" y="3750">*</text><text class="small" x="8000" y="3750">*</text>
+
+        <!-- PRESTAMO_DETALLE (N:M explícito) -->
+        <g id="R_Prestamo_Detalle">
+          <polygon class="diamond" points="7000,3000 7040,2970 7080,3000 7040,3030"/>
+          <text class="small" x="7040" y="3006" text-anchor="middle">Prestamo_Detalle</text>
+          <text class="small" x="7080" y="2990">N:M</text>
+        </g>
+        <path class="edge" d="M6500 830 L7000 830 L7000 3000" />
+        <path class="edge" d="M7040 3030 L7040 5300 L5790 5300" />
+        <text class="small" x="7050" y="4000">*</text>
       </svg>
     </div>
 
