@@ -254,120 +254,120 @@
             <div class="mermaid">
 erDiagram
     Estado {
-        ID_estado PK
-        Nombre
+        idEstado
+        nombre
     }
     Ciudad {
-        ID_ciudad PK
-        Nombre
-        ID_estado FK
+        idCiudad
+        nombre
+        idEstado
     }
     Colonia {
-        ID_colonia PK
-        Nombre
-        CP
-        ID_ciudad FK
+        idColonia
+        nombre
+        cp
+        idCiudad
     }
     Direccion {
-        ID_direccion PK
-        Calle
-        NumeroExterior
-        NumeroInterior
-        Referencia
-        ID_colonia FK
+        idDireccion
+        calle
+        numeroExterior
+        numeroInterior
+        referencia
+        idColonia
     }
-    Tipo_Usuario {
-        ID_tipousu PK
-        Descripcion
+    TipoUsuario {
+        idTipoUsu
+        descripcion
     }
     Usuario {
-        ID_usu PK
-        Nombre
-        Apellido
-        FechaNac
-        Email
-        Telefono
-        Genero
-        ID_tipousu FK
-        ID_direccion FK
+        idUsu
+        nombre
+        apellido
+        fechaNac
+        email
+        telefono
+        genero
+        idTipoUsu
+        idDireccion
     }
     Editorial {
-        ID_editorial PK
-        Nombre
+        idEditorial
+        nombre
     }
     Genero {
-        ID_genero PK
-        Descripcion
+        idGenero
+        descripcion
     }
-    Tipo_Libro {
-        ID_tipolibro PK
-        Descripcion
+    TipoLibro {
+        idTipoLibro
+        descripcion
     }
     Idioma {
-        ID_idioma PK
-        Descripcion
+        idIdioma
+        descripcion
     }
     Libro {
-        ID_libro PK
-        Titulo
-        Subtitulo
-        ISBN13
-        ISBN10
-        ID_editorial FK
-        ID_tipolibro FK
-        ID_idioma FK
-        Edicion
-        AnioPublicacion
+        idLibro
+        titulo
+        subtitulo
+        isbn13
+        isbn10
+        idEditorial
+        idTipoLibro
+        idIdioma
+        edicion
+        anioPublicacion
     }
     Autor {
-        ID_autor PK
-        Nombre
-        Apellido
+        idAutor
+        nombre
+        apellido
     }
-    Libro_Autor {
-        ID_libro PK,FK
-        ID_autor PK,FK
+    LibroAutor {
+        idLibro
+        idAutor
     }
-    Libro_Genero {
-        ID_libro PK,FK
-        ID_genero PK,FK
+    LibroGenero {
+        idLibro
+        idGenero
     }
     Ejemplar {
-        ID_ejemplar PK
-        ID_libro FK
-        CodigoBarras
-        Ubicacion
-        EstadoEjemplar
+        idEjemplar
+        idLibro
+        codigoBarras
+        ubicacion
+        estadoEjemplar
     }
     Prestamo {
-        ID_prestamo PK
-        ID_usu FK
-        FechaPrestamo
-        FechaDevolucionEsperada
-        FechaDevolucionReal
-        Status
+        idPrestamo
+        idUsu
+        fechaPrestamo
+        fechaDevolucionEsperada
+        fechaDevolucionReal
+        status
     }
-    Prestamo_Detalle {
-        ID_prestamo PK,FK
-        ID_ejemplar PK,FK
+    PrestamoDetalle {
+        idPrestamo
+        idEjemplar
     }
 
-    Estado ||--o{ Ciudad : "tiene"
-    Ciudad ||--o{ Colonia : "tiene"
-    Colonia ||--o{ Direccion : "tiene"
-    Direccion ||--o{ Usuario : "ubica"
-    Tipo_Usuario ||--o{ Usuario : "clasifica"
-    Usuario ||--o{ Prestamo : "realiza"
-    Editorial ||--o{ Libro : "publica"
-    Tipo_Libro ||--o{ Libro : "tipo"
-    Idioma ||--o{ Libro : "idioma"
-    Libro ||--o{ Ejemplar : "tiene"
-    Libro ||--o{ Libro_Autor : "tiene_autor"
-    Autor ||--o{ Libro_Autor : "es_autor"
-    Libro ||--o{ Libro_Genero : "tiene_genero"
-    Genero ||--o{ Libro_Genero : "es_genero"
-    Prestamo ||--o{ Prestamo_Detalle : "detalle"
-    Ejemplar ||--o{ Prestamo_Detalle : "ejemplar"
+    Estado ||--o{ Ciudad : tiene
+    Ciudad ||--o{ Colonia : tiene
+    Colonia ||--o{ Direccion : tiene
+    Direccion ||--o{ Usuario : ubica
+    TipoUsuario ||--o{ Usuario : clasifica
+    Usuario ||--o{ Prestamo : realiza
+    Editorial ||--o{ Libro : publica
+    TipoLibro ||--o{ Libro : tipo
+    Idioma ||--o{ Libro : idioma
+    Libro ||--o{ Ejemplar : tiene
+    Libro ||--o{ LibroAutor : tieneAutor
+    Autor ||--o{ LibroAutor : esAutor
+    Libro ||--o{ LibroGenero : tieneGenero
+    Genero ||--o{ LibroGenero : esGenero
+    Prestamo ||--o{ PrestamoDetalle : detalle
+    Ejemplar ||--o{ PrestamoDetalle : ejemplar
             </div>
         </div>
         
