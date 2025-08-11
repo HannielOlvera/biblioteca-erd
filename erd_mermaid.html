@@ -253,6 +253,145 @@
         <div id="diagram">
             <div class="mermaid">
 erDiagram
+  Estado {
+    SMALLINT ID_estado PK "Clave primaria"
+    VARCHAR Nombre "Nombre del estado"
+  }
+
+  Ciudad {
+    INT ID_ciudad PK "Clave primaria"
+    VARCHAR Nombre "Nombre de la ciudad"
+    SMALLINT ID_estado FK "Estado al que pertenece"
+  }
+
+  Colonia {
+    INT ID_colonia PK
+    VARCHAR Nombre
+    CHAR CP "Código postal"
+    INT ID_ciudad FK
+  }
+
+  Direccion {
+    INT ID_direccion PK
+    VARCHAR Calle
+    VARCHAR NumeroExterior
+    VARCHAR NumeroInterior
+    VARCHAR Referencia
+    INT ID_colonia FK
+  }
+
+  Tipo_Usuario {
+    TINYINT ID_tipousu PK
+    VARCHAR Descripcion
+  }
+
+  Usuario {
+    INT ID_usu PK
+    VARCHAR Nombre
+    VARCHAR Apellido
+    DATE FechaNac
+    VARCHAR Email
+    VARCHAR Telefono
+    ENUM Genero
+    TINYINT ID_tipousu FK
+    INT ID_direccion FK
+  }
+
+  Editorial {
+    SMALLINT ID_editorial PK
+    VARCHAR Nombre
+  }
+
+  Genero {
+    SMALLINT ID_genero PK
+    VARCHAR Descripcion
+  }
+
+  Tipo_Libro {
+    TINYINT ID_tipolibro PK
+    VARCHAR Descripcion
+  }
+
+  Idioma {
+    TINYINT ID_idioma PK
+    VARCHAR Descripcion
+  }
+
+  Libro {
+    INT ID_libro PK
+    VARCHAR Titulo
+    VARCHAR Subtitulo
+    CHAR ISBN13
+    CHAR ISBN10
+    SMALLINT ID_editorial FK
+    TINYINT ID_tipolibro FK
+    TINYINT ID_idioma FK
+    TINYINT Edicion
+    YEAR AnioPublicacion
+  }
+
+  Autor {
+    INT ID_autor PK
+    VARCHAR Nombre
+    VARCHAR Apellido
+  }
+
+  Libro_Autor {
+    INT ID_libro PK, FK
+    INT ID_autor PK, FK
+  }
+
+  Libro_Genero {
+    INT ID_libro PK, FK
+    SMALLINT ID_genero PK, FK
+  }
+
+  Ejemplar {
+    INT ID_ejemplar PK
+    INT ID_libro FK
+    VARCHAR CodigoBarras
+    VARCHAR Ubicacion
+    ENUM EstadoEjemplar
+  }
+
+  Prestamo {
+    INT ID_prestamo PK
+    INT ID_usu FK
+    DATE FechaPrestamo
+    DATE FechaDevolucionEsperada
+    DATE FechaDevolucionReal
+    ENUM Status
+  }
+
+  Prestamo_Detalle {
+    INT ID_prestamo PK, FK
+    INT ID_ejemplar PK, FK
+  }
+
+  %% Relaciones geograficas
+  Estado ||--o{ Ciudad : "tiene"
+  Ciudad ||--o{ Colonia : "tiene"
+  Colonia ||--o{ Direccion : "tiene"
+  Direccion ||--o{ Usuario : "es de"
+
+  %% Usuario y tipo
+  Tipo_Usuario ||--o{ Usuario : "clasifica"
+
+  %% Libro y relaciones bibliograficas
+  Editorial ||--o{ Libro : "publica"
+  Tipo_Libro ||--o{ Libro : "clasifica"
+  Idioma ||--o{ Libro : "idioma"
+  Libro ||--o{ Ejemplar : "tiene"
+  Libro ||--o{ Libro_Autor : "escrito por"
+  Autor ||--o{ Libro_Autor : "escribe"
+  Libro ||--o{ Libro_Genero : "tiene genero"
+  Genero ||--o{ Libro_Genero : "describe"
+
+  %% Prestamos y ejemplares
+  Usuario ||--o{ Prestamo : "realiza"
+  Prestamo ||--o{ Prestamo_Detalle : "incluye"
+  Ejemplar ||--o{ Prestamo_Detalle : "en prestamo"
+  Libro ||--o{ Ejemplar : "tiene ejemplar"
     Estado {
         idestado
         nombre
