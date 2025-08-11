@@ -230,8 +230,6 @@
             <button class="btn" onclick="zoomIn()">🔍+</button>
             <button class="btn" onclick="zoomOut()">🔍−</button>
             <button class="btn" onclick="resetView()">↻ Reset</button>
-            <button class="btn btn-secondary" onclick="printDiagram()">🖨️ PDF</button>
-            <button class="btn btn-success" onclick="downloadImage()">📥 IMG</button>
             <button class="btn btn-success" onclick="downloadSVG()">📄 SVG</button>
             <button class="btn btn-secondary" onclick="showHelp()">❓ Ayuda</button>
             <a href="index.html" class="btn btn-secondary">← Volver</a>
@@ -350,93 +348,6 @@ erDiagram
         int ID_prestamo PK
         int ID_usu FK
         varchar FechaPrestamo
-        varchar FechaDevolucionEsperada
-        varchar FechaDevolucionReal
-        varchar Status
-    }
-    
-    Estado ||--o{ Ciudad : tiene
-    Ciudad ||--o{ Colonia : tiene
-    Colonia ||--o{ Direccion : tiene
-    Direccion ||--o{ Usuario : ubica
-    Tipo_Usuario ||--o{ Usuario : clasifica
-    Usuario ||--o{ Prestamo : realiza
-    Editorial ||--o{ Libro : publica
-    Tipo_Libro ||--o{ Libro : clasifica
-    Idioma ||--o{ Libro : idioma_de
-    Libro ||--o{ Ejemplar : tiene
-    Libro }o--o{ Autor : escrito_por
-    Libro }o--o{ Genero : pertenece_a
-    Prestamo }o--o{ Ejemplar : contiene
-            </div>
-        </div>
-        
-        <div class="status" id="status">
-            📊 Zoom: 100% | Posición: (0, 0) | Arrastra para navegar
-        </div>
-    </div>
-
-    <script>
-        // Variables globales
-        let currentScale = 1;
-        let currentX = 0;
-        let currentY = 0;
-        let isDragging = false;
-        let startX, startY;
-        let svg = null;
-
-        // Configurar Mermaid
-        mermaid.initialize({
-            startOnLoad: true,
-            theme: 'default',
-            themeVariables: {
-                primaryColor: '#e7f0ff',
-                primaryTextColor: '#1f2937',
-                primaryBorderColor: '#3b82f6'
-            }
-        });
-
-        // Función para mostrar toast
-        function showToast(message, type = 'success') {
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.style.animation = 'slideOut 0.3s ease';
-                setTimeout(() => {
-                    if (toast.parentNode) toast.parentNode.removeChild(toast);
-                }, 300);
-            }, 3000);
-        }
-
-        // Inicializar diagrama
-        function initDiagram() {
-            svg = document.querySelector('#diagram svg');
-            if (svg) {
-                document.getElementById('loading').style.display = 'none';
-                setupNavigation();
-                setTimeout(autoFit, 500);
-                showToast('✅ Diagrama cargado correctamente');
-                console.log('✅ Diagrama listo');
-            } else {
-                setTimeout(initDiagram, 100);
-            }
-        }
-
-        // Configurar navegación
-        function setupNavigation() {
-            const container = document.getElementById('diagram');
-            
-            container.addEventListener('mousedown', (e) => {
-                isDragging = true;
-                startX = e.clientX - currentX;
-                startY = e.clientY - currentY;
-            });
-
-            document.addEventListener('mousemove', (e) => {
-                if (!isDragging) return;
                 e.preventDefault();
                 currentX = e.clientX - startX;
                 currentY = e.clientY - startY;
@@ -508,28 +419,26 @@ erDiagram
         }
 
         // Zoom in
-        function zoomIn() {
-            const container = document.getElementById('diagram');
-            const rect = container.getBoundingClientRect();
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            
-            const newScale = Math.min(3, currentScale * 1.2);
-            const ratio = newScale / currentScale;
-            
-            currentX = centerX - (centerX - currentX) * ratio;
-            currentY = centerY - (centerY - currentY) * ratio;
-            currentScale = newScale;
-            
-            updateTransform();
-        }
+        function showHelp() {
+            const helpText = `🆘 MÉTODO DE DESCARGA DISPONIBLE:
 
-        // Zoom out
-        function zoomOut() {
-            const container = document.getElementById('diagram');
-            const rect = container.getBoundingClientRect();
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
+📄 SVG: Descarga archivo vectorial SVG  
+
+📋 MÉTODOS ALTERNATIVOS:
+• Clic derecho en diagrama → "Guardar imagen como..."
+• Captura de pantalla: Win + Shift + S
+• F12 → Console → document.querySelector("#diagram svg")
+• Ctrl + P → "Guardar como PDF"
+
+🎯 NAVEGACIÓN:
+• Arrastrar: Mover diagrama
+• Rueda: Zoom in/out  
+• Doble clic: Auto-ajustar
+• Flechas: Mover con teclado
+
+¡Múltiples opciones para asegurar que funcione! 💪`;
+            alert(helpText);
+        }
             
             const newScale = Math.max(0.1, currentScale * 0.8);
             const ratio = newScale / currentScale;
