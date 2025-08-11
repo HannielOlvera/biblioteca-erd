@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Diagrama Lógico (Crow's Foot) del sistema Biblioteca con navegación avanzada, zoom/pan fluido y exportación profesional a PDF." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ctext y='14' font-size='14'%3E🔗%3C/text%3E%3C/svg%3E" />
+    <title>ERD Lógico (Crow's Foot) – Biblioteca Profesional</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Mermaid CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js" crossorigin="anonymous"></script>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="assets/css/styles.css" />
+    
+    <style>
+        body {
+            margin: 0;
+            font-family: var(--font-sans);
+            background: linear-gradient(135deg, var(--bg-start) 0%, var(--bg-end) 100%);
+            background-attachment: fixed;
+            color: var(--text);
+            min-height: 100vh;
+        }
+        
+        .page-header {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: var(--space-md) var(--space-lg);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--space-lg);
+            flex-wrap: wrap;
+        }
+        
+        .page-title {
+            font-size: clamp(1.25rem, 3vw, 1.75rem);
+            font-weight: 700;
+            margin: 0;
+            background: linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.8) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--space-lg);
+        }
+        
+        .diagram-wrapper {
+            background: #fff;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-2xl);
+            overflow: hidden;
+            position: relative;
+            min-height: 600px;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .diagram-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-600), var(--accent), var(--primary-600));
+            z-index: 10;
+        }
+        
+        .diagram-container {
+            width: 100%;
+            height: 80vh;
+            min-height: 600px;
+            overflow: hidden;
+            position: relative;
+            cursor: grab;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .diagram-container.dragging {
+            cursor: grabbing !important;
+        }
+        
+        #mmd {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #mmd svg {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        
+        /* Enhanced toolbar */
+        .enhanced-toolbar {
+            position: absolute;
+            top: var(--space-md);
+            right: var(--space-md);
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-sm);
+            z-index: 100;
+            background: rgba(255,255,255,0.95);
+            padding: var(--space-sm);
+            border-radius: var(--radius-lg);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0,0,0,0.1);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .enhanced-toolbar .btn {
+            color: #374151;
+            font-size: 0.8rem;
+            padding: var(--space-xs) var(--space-md);
+            background: rgba(255,255,255,0.8);
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .enhanced-toolbar .btn:hover {
+            background: rgba(255,255,255,1);
+            color: #111827;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .status-bar {
+            position: absolute;
+            bottom: var(--space-md);
+            left: var(--space-md);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: var(--space-xs) var(--space-md);
+            border-radius: var(--radius-md);
+            font-size: 0.8rem;
+            font-family: var(--font-mono);
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        
+        .loading-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #6b7280;
+            font-size: 1.1rem;
+            z-index: 50;
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: var(--space-md);
+            }
+            
+            .enhanced-toolbar {
+                position: static;
+                margin-bottom: var(--space-md);
+                justify-content: center;
+            }
+            
+            .diagram-container {
+                height: 60vh;
+                min-height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="page-header">
+        <div class="header-content">
+            <div style="display: flex; align-items: center; gap: var(--space-md);">
+                <a href="index.html" class="btn btn--ghost" aria-label="Volver al índice">← Volver</a>
+                <h1 class="page-title">🔗 Diagrama Lógico (Crow's Foot) - Biblioteca</h1>
+            </div>
+            
+            <div class="enhanced-toolbar">
+                <button class="btn" id="btnAutoFit" title="Ajustar a pantalla (Espacio)">🎯 Auto-fit</button>
+                <button class="btn" id="btnPdf" title="Exportar a PDF">📄 PDF</button>
+                <button class="btn" id="zoomIn" title="Acercar (+)">🔍+</button>
+                <button class="btn" id="zoomOut" title="Alejar (-)">🔍−</button>
+                <button class="btn" id="reset" title="Restablecer vista">↻ Reset</button>
+                <label class="btn control-group" style="cursor: pointer;" title="Activar desplazamiento automático en bordes">
+                    <input type="checkbox" id="autoPan" style="margin-right: 6px; accent-color: var(--accent);"> 
+                    Auto-pan
+                </label>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="diagram-wrapper">
+            <div class="loading-indicator" id="loadingIndicator">
+                Generando diagrama Mermaid... ⏳
+            </div>
+            
+            <div class="diagram-container" id="diagramContainer">
+                <div id="mmd">
+                    <div class="mermaid">
+erDiagram
+    %% ===== ENTIDADES PRINCIPALES =====
+    
+    TIPO_USUARIO {
+        int ID_tipousu PK
+        string Descripcion
+    }
+    
+    ESTADO {
+        int ID_estado PK
+        string Nombre
+    }
+    
+    CIUDAD {
+        int ID_ciudad PK
+        string Nombre
+        int ID_estado FK
+    }
+    
+    COLONIA {
+        int ID_colonia PK
+        string Nombre
+        string CP
+        int ID_ciudad FK
+    }
+    
+    DIRECCION {
+        int ID_direccion PK
+        string Calle
+        string NumeroExterior
+        string NumeroInterior
+        string Referencia
+        int ID_colonia FK
+    }
+    
+    USUARIO {
+        int ID_usu PK
+        string Nombre
+        string Apellido
+        string Telefono
+        string Email
+        date FechaNac
+        string Genero
+        int ID_tipousu FK
+        int ID_direccion FK
+    }
+    
+    EDITORIAL {
+        int ID_editorial PK
+        string Nombre
+    }
+    
+    IDIOMA {
+        int ID_idioma PK
+        string Descripcion
+    }
+    
+    TIPO_LIBRO {
+        int ID_tipolibro PK
+        string Descripcion
+    }
+    
+    LIBRO {
+        int ID_libro PK
+        string Titulo
+        string Subtitulo
+        string ISBN13
+        string ISBN10
+        int AnioPublicacion
+        string Edicion
+        int ID_editorial FK
+        int ID_idioma FK
+        int ID_tipolibro FK
+    }
+    
+    AUTOR {
+        int ID_autor PK
+        string Nombre
+        string Apellido
+    }
+    
+    GENERO {
+        int ID_genero PK
+        string Descripcion
+    }
+    
+    EJEMPLAR {
+        int ID_ejemplar PK
+        string CodigoBarras
+        string Ubicacion
+        string EstadoEjemplar
+        int ID_libro FK
+    }
+    
+    PRESTAMO {
+        int ID_prestamo PK
+        date FechaPrestamo
+        date FechaDevolucionEsperada
+        date FechaDevolucionReal
+        string Status
+        int ID_usu FK
+    }
+    
+    %% ===== TABLAS DE RELACIÓN N:M =====
+    
+    LIBRO_AUTOR {
+        int ID_libro FK
+        int ID_autor FK
+    }
+    
+    LIBRO_GENERO {
+        int ID_libro FK
+        int ID_genero FK
+    }
+    
+    PRESTAMO_EJEMPLAR {
+        int ID_prestamo FK
+        int ID_ejemplar FK
+    }
+    
+    %% ===== RELACIONES =====
+    
+    %% Geografía y Direcciones
+    ESTADO ||--o{ CIUDAD : "contiene"
+    CIUDAD ||--o{ COLONIA : "contiene"
+    COLONIA ||--o{ DIRECCION : "contiene"
+    
+    %% Usuarios
+    TIPO_USUARIO ||--o{ USUARIO : "clasifica"
+    DIRECCION ||--o{ USUARIO : "reside_en"
+    
+    %% Libros y Catálogo
+    EDITORIAL ||--o{ LIBRO : "publica"
+    IDIOMA ||--o{ LIBRO : "escrito_en"
+    TIPO_LIBRO ||--o{ LIBRO : "categoriza"
+    LIBRO ||--o{ EJEMPLAR : "tiene_ejemplares"
+    
+    %% Relaciones N:M
+    LIBRO ||--o{ LIBRO_AUTOR : ""
+    AUTOR ||--o{ LIBRO_AUTOR : ""
+    
+    LIBRO ||--o{ LIBRO_GENERO : ""
+    GENERO ||--o{ LIBRO_GENERO : ""
+    
+    %% Préstamos
+    USUARIO ||--o{ PRESTAMO : "realiza"
+    PRESTAMO ||--o{ PRESTAMO_EJEMPLAR : ""
+    EJEMPLAR ||--o{ PRESTAMO_EJEMPLAR : ""
+                    </div>
+                </div>
+            </div>
+            
+            <div class="status-bar" id="statusBar">
+                Zoom: 100% | Posición: (0, 0) | Arrastra para mover • Rueda para zoom
+            </div>
+        </div>
+    </main>
+
+    <!-- Librerías para exportación a PDF -->
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/svg2pdf.js@2.2.1/dist/svg2pdf.umd.min.js"></script>
+    
+  <!-- Sistema ultra-avanzado de funcionalidades -->
+  <script src="assets/js/notifications.js"></script>
+  <script src="assets/js/pdf-export.js"></script>
+  <script src="assets/js/ultra-advanced-pan-zoom.js"></script>
+  <script src="assets/js/smooth-interaction-engine.js"></script>
+  <script src="assets/js/erd-context-menu.js"></script>
+  <script src="assets/js/keyboard-shortcuts.js"></script>
+  <script src="assets/js/performance-monitor.js"></script>
+  <script src="assets/js/main.js" type="module"></script>    <script>
+        // Initialize Mermaid with professional theme
+        mermaid.initialize({ 
+            startOnLoad: true, 
+            theme: 'default', 
+            themeVariables: {
+                primaryColor: '#e7f0ff', 
+                primaryTextColor: '#111827', 
+                primaryBorderColor: '#1976d2',
+                lineColor: '#374151', 
+                sectionBkgColor: '#f8fafc', 
+                altSectionBkgColor: '#ffffff', 
+                gridColor: '#e5e7eb'
+            }
+        });
+
+        let mermaidPanZoom = null;
+        let keyboard = null;
+
+        // Enhanced setup for Mermaid diagrams
+        function ensureViewBox(svg){
+            if(!svg.getAttribute('viewBox')){
+                const w = svg.width && svg.width.baseVal ? svg.width.baseVal.value : 2000;
+                const h = svg.height && svg.height.baseVal ? svg.height.baseVal.value : 1200;
+                svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+            }
+        }
+
+        function setupAdvancedPanZoom(){
+            const svg = document.querySelector('#mmd svg');
+            if(!svg) {
+                console.warn('Mermaid SVG not found, retrying...');
+                setTimeout(setupAdvancedPanZoom, 100);
+                return;
+            }
+            
+            ensureViewBox(svg);
+            
+            // Initialize ultra-advanced pan/zoom for Mermaid SVG
+            mermaidPanZoom = new UltraAdvancedPanZoom(svg, {
+                enablePan: true,
+                enableZoom: true,
+                enableAutoFit: true,
+                enableSmoothing: true,
+                enableAutoPan: false,
+                enableInertia: true,
+                enableBoundaries: true,
+                rightClickPan: true,
+                smoothingFactor: 0.08,
+                zoomStep: 0.12,
+                maxZoom: 15,
+                minZoom: 0.03,
+                inertia: 0.96,
+                friction: 0.82,
+                edgePanSpeed: 35,
+                edgePanMargin: 80,
+                doubleClickZoom: true,
+                mouseWheelZoom: true,
+                touchSupport: true,
+                showCursor: true,
+                cursorTransition: true
+            });
+            
+            // Initialize smooth interaction engine
+            const smoothEngine = new SmoothInteractionEngine(svg, mermaidPanZoom);
+            
+            // Initialize context menu
+            const contextMenu = new ERDContextMenu(svg, mermaidPanZoom);
+            
+            // Initialize keyboard shortcuts
+            keyboard = new KeyboardShortcuts(mermaidPanZoom);
+            
+            // Ultra-enhanced status bar updates with performance monitoring
+            const statusBar = document.getElementById('statusBar');
+            let lastUpdate = Date.now();
+            function updateStatus() {
+                const now = Date.now();
+                if (now - lastUpdate < 33) return; // Throttle to 30 FPS for smoothness
+                lastUpdate = now;
+                
+                if (!mermaidPanZoom) return;
+                const zoom = Math.round(mermaidPanZoom.state.scale * 100);
+                const x = Math.round(mermaidPanZoom.state.x);
+                const y = Math.round(mermaidPanZoom.state.y);
+                const fps = mermaidPanZoom.performanceMetrics?.fps || 60;
+                const isInteracting = smoothEngine.getInteractionStats().isInteracting ? '🎯' : '📊';
+                
+                statusBar.textContent = `${isInteracting} Zoom: ${zoom}% | Posición: (${x}, ${y}) | FPS: ${fps} | Right-click para opciones | Alt+H para ayuda`;
+            }
+            
+            // Smooth status updates
+            function animate() {
+                updateStatus();
+                requestAnimationFrame(animate);
+            }
+            animate();
+            
+            // Success notification
+            window.BibliotecaERD?.showNotification(
+                'Diagrama Crow\'s Foot cargado con navegación avanzada', 
+                'success', 
+                3000,
+                'Sistema Listo'
+            );
+            
+            console.log('🎯 Mermaid ERD initialized with advanced pan/zoom');
+        }
+
+        // Enhanced toolbar functionality
+        function setupToolbar() {
+            // Auto-fit button
+            document.getElementById('btnAutoFit').addEventListener('click', () => {
+                if (mermaidPanZoom) {
+                    mermaidPanZoom.autoFit();
+                    window.BibliotecaERD?.showNotification('Vista ajustada automáticamente', 'success', 2000);
+                }
+            });
+            
+            // Zoom buttons
+            document.getElementById('zoomIn').addEventListener('click', () => {
+                if (mermaidPanZoom) {
+                    mermaidPanZoom.zoomIn();
+                    window.BibliotecaERD?.showNotification(`Zoom: ${Math.round(mermaidPanZoom.state.scale * 100)}%`, 'info', 1500);
+                }
+            });
+            
+            document.getElementById('zoomOut').addEventListener('click', () => {
+                if (mermaidPanZoom) {
+                    mermaidPanZoom.zoomOut();
+                    window.BibliotecaERD?.showNotification(`Zoom: ${Math.round(mermaidPanZoom.state.scale * 100)}%`, 'info', 1500);
+                }
+            });
+            
+            // Reset button
+            document.getElementById('reset').addEventListener('click', () => {
+                if (mermaidPanZoom) {
+                    mermaidPanZoom.reset();
+                    window.BibliotecaERD?.showNotification('Vista restablecida a configuración inicial', 'info', 2000);
+                }
+            });
+            
+            // Auto-pan toggle
+            const autoPanCheckbox = document.getElementById('autoPan');
+            autoPanCheckbox.addEventListener('change', (e) => {
+                if (mermaidPanZoom) {
+                    mermaidPanZoom.options.enableAutoPan = e.target.checked;
+                    const message = e.target.checked ? 
+                        'Auto-pan activado: mueve el cursor a los bordes para navegar' : 
+                        'Auto-pan desactivado';
+                    const type = e.target.checked ? 'success' : 'info';
+                    window.BibliotecaERD?.showNotification(message, type, 3000);
+                }
+            });
+            
+            // Enhanced PDF Export
+            document.getElementById('btnPdf').addEventListener('click', async () => {
+                const svg = document.querySelector('#mmd svg');
+                if (!svg || !window.exportSvgToPdf) {
+                    window.BibliotecaERD?.showNotification('Error: Exportación PDF no disponible', 'error', 5000);
+                    return;
+                }
+                
+                const loadingId = window.BibliotecaERD?.showNotification(
+                    'Preparando exportación PDF... Por favor espera', 
+                    'info', 
+                    0, 
+                    'Generando PDF'
+                );
+                
+                try {
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    await window.exportSvgToPdf(svg, 'ERD_Logico_Biblioteca_Profesional.pdf', { 
+                        format: 'a3',
+                        quality: 'high',
+                        margin: 20
+                    });
+                    
+                    if (loadingId) window.BibliotecaERD?.notifications?.remove(loadingId);
+                    window.BibliotecaERD?.showNotification(
+                        'PDF exportado exitosamente con calidad profesional', 
+                        'success', 
+                        4000, 
+                        'Exportación Completa'
+                    );
+                } catch (error) {
+                    console.error('PDF export error:', error);
+                    if (loadingId) window.BibliotecaERD?.notifications?.remove(loadingId);
+                    window.BibliotecaERD?.showNotification(
+                        'Error durante la exportación. Inténtalo nuevamente', 
+                        'error', 
+                        5000
+                    );
+                }
+            });
+            
+            // Double-click auto-fit
+            const container = document.getElementById('diagramContainer');
+            container.addEventListener('dblclick', (e) => {
+                e.preventDefault();
+                if (mermaidPanZoom) {
+                    mermaidPanZoom.autoFit();
+                    window.BibliotecaERD?.showNotification('Vista ajustada por doble clic', 'info', 1500);
+                }
+            });
+        }
+
+        // Wait for Mermaid to render and then setup everything
+        function initializeWhenReady() {
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            
+            const checkMermaid = () => {
+                const svg = document.querySelector('#mmd svg');
+                if (svg) {
+                    // Hide loading indicator
+                    loadingIndicator.style.display = 'none';
+                    
+                    setupAdvancedPanZoom();
+                    setupToolbar();
+                    
+                    // Welcome message
+                    setTimeout(() => {
+                        window.BibliotecaERD?.showNotification(
+                            'Usa Alt+H para ver todos los atajos de teclado disponibles', 
+                            'info', 
+                            5000,
+                            'Tip Profesional'
+                        );
+                    }, 3000);
+                    
+                    // Expose for debugging
+                    window.mermaidPanZoom = mermaidPanZoom;
+                    
+                    console.log('🎯 Mermaid ERD Diagram initialized successfully');
+                    console.log('📊 Features: Advanced Pan/Zoom, Keyboard Shortcuts, PDF Export, Auto-Pan');
+                    console.log('⌨️ Press Alt+H for keyboard shortcuts');
+                } else {
+                    setTimeout(checkMermaid, 100);
+                }
+            };
+            
+            checkMermaid();
+        }
+
+        // Initialize everything when DOM is ready
+        document.addEventListener('DOMContentLoaded', initializeWhenReady);
+    </script>
+</body>
+</html>

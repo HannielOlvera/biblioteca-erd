@@ -1,120 +1,217 @@
 <!DOCTYPE html>
-<html lang="e                <a href="erd_chen_new.html" class="btn btn--ghost" aria-label="Ver diagrama conceptual Chen mejorado">🚀 Chen Mejorado</a>
-                <a href="erd_logico_mermaid_new.html" class="btn btn--ghost" aria-label="Ver diagrama lógico Crow's Foot mejorado">🔗 Lógico Mejorado</a>>
+<html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Biblioteca – Diagramas ER (Chen y Crow's Foot) con vistas previas interactivas, exportación a PDF y navegación profesional." />
-    <meta name="keywords" content="diagrama ER, base de datos, biblioteca, Chen, Crow's Foot, modelado de datos" />
-    <meta name="author" content="HannielOlvera" />
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ctext y='14' font-size='14'%3E📚%3C/text%3E%3C/svg%3E" />
-    <title>Biblioteca – Diagramas ER Profesionales</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sistema Biblioteca - Diagramas ERD</title>
+    <meta name="description" content="Diagramas Entidad-Relación del sistema de biblioteca universitaria">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ctext y='14' font-size='14'%3E📚%3C/text%3E%3C/svg%3E">
     
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    
-    <!-- Styles -->
-    <link rel="stylesheet" href="assets/css/styles.css" />
-    
-    <!-- Preload critical resources -->
-    <link rel="modulepreload" href="assets/js/main.js" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #1f2937;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .header {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            color: #6b7280;
+            margin-bottom: 2rem;
+        }
+        
+        .diagrams-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .diagram-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .diagram-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+        
+        .diagram-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        .diagram-card h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+        
+        .diagram-card p {
+            color: #6b7280;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+        
+        .info-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .info-section h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+        
+        .info-section ul {
+            color: #6b7280;
+            padding-left: 1.5rem;
+        }
+        
+        .info-section li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .footer a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .header {
+                padding: 2rem 1rem;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .diagrams-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .diagram-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <header class="page">
-            <div>
-                <h1 class="title">📚 Sistema de Biblioteca - Diagramas ER</h1>
-                <p class="lead">Modelos Conceptual (Chen) y Lógico (Crow's Foot) con navegación interactiva y exportación profesional.</p>
-            </div>
-            <nav class="links">
-                <a href="erd_chen.html" class="btn btn--ghost" aria-label="Ver diagrama conceptual Chen">📊 Ver Chen</a>
-                <a href="erd_logico_mermaid.html" class="btn btn--accent" aria-label="Ver diagrama lógico Crow's Foot">🔗 Ver Lógico</a>
-            </nav>
+        <header class="header">
+            <h1>📚 Sistema de Biblioteca</h1>
+            <p>Diagramas Entidad-Relación para sistema universitario</p>
         </header>
-
-        <section class="notice">
-            <h3>🎯 Sobre este proyecto</h3>
-            <p>Dos enfoques profesionales para modelar la base de datos de una biblioteca universitaria. Incluye navegación interactiva, zoom/pan fluido y exportación a PDF de alta calidad.</p>
-            <ul>
-                <li><strong>Navegación natural:</strong> Arrastra para mover, rueda para zoom, atajos de teclado</li>
-                <li><strong>Exportación profesional:</strong> PDF de alta calidad con fondo blanco</li>
-                <li><strong>Diseño responsive:</strong> Optimizado para todos los dispositivos</li>
-            </ul>
-        </section>
-
-        <section class="grid" role="main">
-            <article class="card">
-                <h3>📊 Diagrama Entidad-Relación (Chen)</h3>
-                <p>Modelo conceptual tradicional con entidades, atributos y relaciones. Navegación fluida con zoom/pan avanzado y exportación a PDF profesional.</p>
-                <a href="erd_chen_new.html" class="btn" aria-label="Ver diagrama Chen completo mejorado">🚀 Ver Diagrama Mejorado</a>
-                <div class="preview">
-                    <iframe 
-                        data-src="erd_chen_new.html" 
-                        title="Vista previa del diagrama ER Chen del sistema de biblioteca"
-                        loading="lazy"
-                        aria-label="Vista previa interactiva del diagrama Chen">
-                    </iframe>
-                </div>
-            </article>
-
-            <article class="card">
-                <h3>🔗 Diagrama Lógico (Crow's Foot)</h3>
-                <p>Modelo lógico con llaves primarias/foráneas y cardinalidades específicas. Generado con Mermaid y optimizado para implementación de base de datos.</p>
-                <a href="erd_logico_mermaid.html" class="btn" aria-label="Ver diagrama lógico completo">Ver Diagrama Completo</a>
-                <div class="preview">
-                    <iframe 
-                        data-src="erd_logico_mermaid.html" 
-                        title="Vista previa del diagrama lógico Crow's Foot del sistema de biblioteca"
-                        loading="lazy"
-                        aria-label="Vista previa interactiva del diagrama lógico">
-                    </iframe>
-                </div>
-            </article>
-        </section>
-
-        <section class="notice">
-            <h3>🚀 Características Avanzadas del Sistema</h3>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
-                <div>
-                    <h4>👥 Gestión Integral de Usuarios</h4>
-                    <ul>
-                        <li>Diferenciación entre estudiantes y profesores</li>
-                        <li>Límites personalizados de préstamo</li>
-                        <li>Sistema automatizado de multas</li>
-                        <li>Historial completo de transacciones</li>
-                    </ul>
-                </div>
-                <div>
-                    <h4>📚 Catálogo Avanzado</h4>
-                    <ul>
-                        <li>Metadatos completos (ISBN, editorial, idioma)</li>
-                        <li>Gestión de múltiples autores por libro</li>
-                        <li>Control de disponibilidad en tiempo real</li>
-                        <li>Clasificación por géneros y tipos</li>
-                    </ul>
-                </div>
-                <div>
-                    <h4>🔄 Sistema de Préstamos</h4>
-                    <ul>
-                        <li>Fechas automáticas de préstamo/devolución</li>
-                        <li>Control inteligente de multas</li>
-                        <li>Estados detallados de ejemplares</li>
-                        <li>Reportes y estadísticas avanzadas</li>
-                    </ul>
-                </div>
+        
+        <div class="diagrams-grid">
+            <div class="diagram-card">
+                <span class="diagram-icon">🔗</span>
+                <h2>Diagrama ERD Mermaid</h2>
+                <p>Diagrama interactivo con notación Crow's Foot. Navegación fluida con zoom, pan y exportación PDF.</p>
+                <a href="erd_mermaid.html" class="btn">Ver Diagrama Mermaid</a>
             </div>
-        </section>
-
+            
+            <div class="diagram-card">
+                <span class="diagram-icon">📊</span>
+                <h2>Diagrama ERD Chen</h2>
+                <p>Representación clásica con notación Chen. Ideal para análisis académico y documentación formal.</p>
+                <a href="erd_chen.html" class="btn">Ver Diagrama Chen</a>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h3>� Características del Sistema</h3>
+            <ul>
+                <li><strong>Gestión de Usuarios:</strong> Estudiantes, profesores y administrativos</li>
+                <li><strong>Catálogo Completo:</strong> Libros, autores, géneros y editoriales</li>
+                <li><strong>Control de Inventario:</strong> Ejemplares con códigos únicos</li>
+                <li><strong>Sistema de Préstamos:</strong> Control automático de fechas y multas</li>
+                <li><strong>Reservas:</strong> Sistema de apartado de libros</li>
+            </ul>
+        </div>
+        
         <footer class="footer">
-            <p>© 2025 Sistema de Biblioteca ERD • Desarrollado por <a href="https://github.com/HannielOlvera" target="_blank" rel="noopener">HannielOlvera</a> • Publicado con GitHub Pages</p>
-            <p style="margin-top: 0.5rem; font-size: 0.8rem; opacity: 0.7;">
-                Presiona <kbd style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">Alt + H</kbd> en las páginas de diagramas para ver atajos de teclado
-            </p>
+            <p>© 2025 Sistema Biblioteca ERD • Por <a href="https://github.com/HannielOlvera" target="_blank">HannielOlvera</a></p>
         </footer>
     </div>
-
-    <script src="assets/js/main.js" type="module"></script>
 </body>
 </html>
