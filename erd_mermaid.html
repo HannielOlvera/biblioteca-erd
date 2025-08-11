@@ -522,8 +522,17 @@ erDiagram
         }
 
         async function exportPDF() {
-            if (!svg || !window.jsPDF || !window.svg2pdf) {
-                showNotification('Error: PDF no disponible', 'error');
+            // Verificar librerías nuevamente al intentar exportar
+            if (!window.jsPDF) {
+                showNotification('Error: jsPDF no está cargado. Recarga la página.', 'error');
+                return;
+            }
+            if (!window.svg2pdf) {
+                showNotification('Error: svg2pdf no está cargado. Recarga la página.', 'error');
+                return;
+            }
+            if (!svg) {
+                showNotification('Error: Diagrama no está listo', 'error');
                 return;
             }
             
@@ -539,7 +548,7 @@ erDiagram
                 showNotification('PDF exportado exitosamente');
             } catch (error) {
                 console.error('Error exportando PDF:', error);
-                showNotification('Error al exportar PDF', 'error');
+                showNotification('Error al exportar PDF: ' + error.message, 'error');
             }
         }
 
@@ -558,6 +567,15 @@ erDiagram
 
         // Inicializar cuando esté listo
         document.addEventListener('DOMContentLoaded', () => {
+            // Verificar si las librerías PDF están disponibles
+            if (!window.jsPDF || !window.svg2pdf) {
+                console.warn('Librerías PDF no cargadas, reintentando...');
+                setTimeout(() => {
+                    if (!window.jsPDF || !window.svg2pdf) {
+                        showNotification('Advertencia: Funcionalidad PDF no disponible', 'error');
+                    }
+                }, 3000);
+            }
             setTimeout(initDiagram, 1000);
         });
     </script>

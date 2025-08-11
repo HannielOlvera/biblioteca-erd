@@ -458,7 +458,8 @@
       container.addEventListener('dblclick', autoFit);
       document.addEventListener('keydown', handleKeyboard);
 
-      setTimeout(autoFit, 400);
+      // Auto-fit inicial removido para evitar que se ejecute automáticamente
+      // setTimeout(autoFit, 400);
     }
 
     function startDrag(e){ isDragging = true; startX = e.clientX - currentX; startY = e.clientY - currentY; }
