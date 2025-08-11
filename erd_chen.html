@@ -155,6 +155,286 @@
         <text class="small" x="2650" y="520">N:1</text>
 
         <!-- ...continúa el diagrama con la misma lógica para el resto de entidades y relaciones... -->
+        
+        <!-- BANDA 2: USUARIOS Y CONTACTO -->
+        <!-- TipoUsuario -->
+        <g id="TipoUsuario">
+          <rect class="box" x="500" y="2000" width="340" height="60" rx="4"/>
+          <text class="label" x="670" y="2040" text-anchor="middle">TipoUsuario</text>
+          <ellipse class="oval" cx="560" cy="1900" rx="90" ry="24"/>
+          <text class="mini" x="560" y="1904" text-anchor="middle">ID_tipoUsuario</text>
+          <ellipse class="oval" cx="760" cy="1900" rx="90" ry="24"/>
+          <text class="mini" x="760" y="1904" text-anchor="middle">Nombre</text>
+        </g>
+        <!-- Usuario -->
+        <g id="Usuario">
+          <rect class="box" x="1200" y="2000" width="400" height="60" rx="4"/>
+          <text class="label" x="1400" y="2040" text-anchor="middle">Usuario</text>
+          <ellipse class="oval" cx="1260" cy="1900" rx="90" ry="24"/>
+          <text class="mini" x="1260" y="1904" text-anchor="middle">ID_usuario</text>
+          <ellipse class="oval" cx="1460" cy="1900" rx="90" ry="24"/>
+          <text class="mini" x="1460" y="1904" text-anchor="middle">Nombre</text>
+          <ellipse class="oval" cx="1340" cy="2150" rx="90" ry="24"/>
+          <text class="mini" x="1340" y="2154" text-anchor="middle">ApellidoPaterno</text>
+          <ellipse class="oval" cx="1460" cy="2250" rx="90" ry="24"/>
+          <text class="mini" x="1460" y="2254" text-anchor="middle">ApellidoMaterno</text>
+          <ellipse class="oval" cx="1580" cy="2150" rx="90" ry="24"/>
+          <text class="mini" x="1580" y="2154" text-anchor="middle">Correo</text>
+          <ellipse class="oval" cx="1400" cy="2350" rx="90" ry="24"/>
+          <text class="mini" x="1400" y="2354" text-anchor="middle">ID_tipoUsuario</text>
+          <ellipse class="oval" cx="1400" cy="2450" rx="90" ry="24"/>
+          <text class="mini" x="1400" y="2454" text-anchor="middle">ID_direccion</text>
+        </g>
+        <!-- Relación Usuario-TipoUsuario -->
+        <g id="R_Usuario_TipoUsuario">
+          <polygon class="diamond" points="950,2030 990,2000 1030,2030 990,2060"/>
+          <text class="small" x="990" y="2040" text-anchor="middle">Es</text>
+        </g>
+        <path class="edge" d="M840 2030 Q900 2030 950 2030" />
+        <path class="edge" d="M1030 2030 Q1100 2030 1200 2030" />
+        <text class="small" x="1100" y="2020">N:1</text>
+        <!-- Relación Usuario-Direccion -->
+        <g id="R_Usuario_Direccion">
+          <polygon class="diamond" points="1700,2030 1740,2000 1780,2030 1740,2060"/>
+          <text class="small" x="1740" y="2040" text-anchor="middle">ViveEn</text>
+        </g>
+        <path class="edge" d="M1600 2030 Q1650 2030 1700 2030" />
+        <path class="edge" d="M1780 2030 Q2000 2030 2800 530" />
+        <text class="small" x="1900" y="1980">N:1</text>
+        <!-- Telefono -->
+        <g id="Telefono">
+          <rect class="box" x="2200" y="2000" width="340" height="60" rx="4"/>
+          <text class="label" x="2370" y="2040" text-anchor="middle">Teléfono</text>
+          <ellipse class="oval" cx="2260" cy="1900" rx="90" ry="24"/>
+          <text class="mini" x="2260" y="1904" text-anchor="middle">ID_telefono</text>
+          <ellipse class="oval" cx="2460" cy="1900" rx="90" ry="24"/>
+          <text class="mini" x="2460" y="1904" text-anchor="middle">Numero</text>
+          <ellipse class="oval" cx="2370" cy="2150" rx="90" ry="24"/>
+          <text class="mini" x="2370" y="2154" text-anchor="middle">ID_usuario</text>
+        </g>
+        <!-- Relación Usuario-Telefono -->
+        <g id="R_Usuario_Telefono">
+          <polygon class="diamond" points="1900,2030 1940,2000 1980,2030 1940,2060"/>
+          <text class="small" x="1940" y="2040" text-anchor="middle">Tiene</text>
+        </g>
+        <path class="edge" d="M1600 2030 Q1750 2100 1900 2030" />
+        <path class="edge" d="M1980 2030 Q2100 2030 2200 2030" />
+        <text class="small" x="2050" y="2020">1:N</text>
+        
+        <!-- BANDA 3: LIBROS Y RELACIONADOS -->
+        <!-- Editorial -->
+        <g id="Editorial">
+          <rect class="box" x="500" y="3500" width="340" height="60" rx="4"/>
+          <text class="label" x="670" y="3540" text-anchor="middle">Editorial</text>
+          <ellipse class="oval" cx="560" cy="3400" rx="90" ry="24"/>
+          <text class="mini" x="560" y="3404" text-anchor="middle">ID_editorial</text>
+          <ellipse class="oval" cx="760" cy="3400" rx="90" ry="24"/>
+          <text class="mini" x="760" y="3404" text-anchor="middle">Nombre</text>
+        </g>
+        <!-- Libro -->
+        <g id="Libro">
+          <rect class="box" x="1200" y="3500" width="400" height="60" rx="4"/>
+          <text class="label" x="1400" y="3540" text-anchor="middle">Libro</text>
+          <ellipse class="oval" cx="1260" cy="3400" rx="90" ry="24"/>
+          <text class="mini" x="1260" y="3404" text-anchor="middle">ID_libro</text>
+          <ellipse class="oval" cx="1460" cy="3400" rx="90" ry="24"/>
+          <text class="mini" x="1460" y="3404" text-anchor="middle">Titulo</text>
+          <ellipse class="oval" cx="1340" cy="3650" rx="90" ry="24"/>
+          <text class="mini" x="1340" y="3654" text-anchor="middle">Anio</text>
+          <ellipse class="oval" cx="1460" cy="3750" rx="90" ry="24"/>
+          <text class="mini" x="1460" y="3754" text-anchor="middle">ISBN</text>
+          <ellipse class="oval" cx="1580" cy="3650" rx="90" ry="24"/>
+          <text class="mini" x="1580" y="3654" text-anchor="middle">ID_editorial</text>
+        </g>
+        <!-- Relación Libro-Editorial -->
+        <g id="R_Libro_Editorial">
+          <polygon class="diamond" points="950,3530 990,3500 1030,3530 990,3560"/>
+          <text class="small" x="990" y="3540" text-anchor="middle">EditadoPor</text>
+        </g>
+        <path class="edge" d="M840 3530 Q900 3530 950 3530" />
+        <path class="edge" d="M1030 3530 Q1100 3530 1200 3530" />
+        <text class="small" x="1100" y="3520">N:1</text>
+        <!-- Autor -->
+        <g id="Autor">
+          <rect class="box" x="2200" y="3500" width="340" height="60" rx="4"/>
+          <text class="label" x="2370" y="3540" text-anchor="middle">Autor</text>
+          <ellipse class="oval" cx="2260" cy="3400" rx="90" ry="24"/>
+          <text class="mini" x="2260" y="3404" text-anchor="middle">ID_autor</text>
+          <ellipse class="oval" cx="2460" cy="3400" rx="90" ry="24"/>
+          <text class="mini" x="2460" y="3404" text-anchor="middle">Nombre</text>
+        </g>
+        <!-- Libro_Autor (tabla puente) -->
+        <g id="Libro_Autor">
+          <rect class="box" x="1700" y="3900" width="340" height="60" rx="4"/>
+          <text class="label" x="1870" y="3940" text-anchor="middle">Libro_Autor</text>
+          <ellipse class="oval" cx="1760" cy="3800" rx="90" ry="24"/>
+          <text class="mini" x="1760" y="3804" text-anchor="middle">ID_libro</text>
+          <ellipse class="oval" cx="1960" cy="3800" rx="90" ry="24"/>
+          <text class="mini" x="1960" y="3804" text-anchor="middle">ID_autor</text>
+        </g>
+        <!-- Relación Libro-Libro_Autor -->
+        <g id="R_Libro_LibroAutor">
+          <polygon class="diamond" points="1500,3700 1540,3670 1580,3700 1540,3730"/>
+          <text class="small" x="1540" y="3710" text-anchor="middle">EscritoPor</text>
+        </g>
+        <path class="edge" d="M1580 3670 Q1600 3750 1700 3900" />
+        <path class="edge" d="M1400 3560 Q1450 3700 1500 3700" />
+        <text class="small" x="1550" y="3690">N:M</text>
+        <!-- Relación Autor-Libro_Autor -->
+        <g id="R_Autor_LibroAutor">
+          <polygon class="diamond" points="2100,3700 2140,3670 2180,3700 2140,3730"/>
+          <text class="small" x="2140" y="3710" text-anchor="middle">Participa</text>
+        </g>
+        <path class="edge" d="M2370 3560 Q2250 3700 2180 3700" />
+        <path class="edge" d="M2260 3670 Q2000 3750 1960 3800" />
+        <text class="small" x="2200" y="3690">N:M</text>
+        <!-- Genero -->
+        <g id="Genero">
+          <rect class="box" x="3000" y="3500" width="340" height="60" rx="4"/>
+          <text class="label" x="3170" y="3540" text-anchor="middle">Género</text>
+          <ellipse class="oval" cx="3060" cy="3400" rx="90" ry="24"/>
+          <text class="mini" x="3060" y="3404" text-anchor="middle">ID_genero</text>
+          <ellipse class="oval" cx="3260" cy="3400" rx="90" ry="24"/>
+          <text class="mini" x="3260" y="3404" text-anchor="middle">Nombre</text>
+        </g>
+        <!-- Libro_Genero (tabla puente) -->
+        <g id="Libro_Genero">
+          <rect class="box" x="2700" y="3900" width="340" height="60" rx="4"/>
+          <text class="label" x="2870" y="3940" text-anchor="middle">Libro_Género</text>
+          <ellipse class="oval" cx="2760" cy="3800" rx="90" ry="24"/>
+          <text class="mini" x="2760" y="3804" text-anchor="middle">ID_libro</text>
+          <ellipse class="oval" cx="2960" cy="3800" rx="90" ry="24"/>
+          <text class="mini" x="2960" y="3804" text-anchor="middle">ID_genero</text>
+        </g>
+        <!-- Relación Libro-Libro_Genero -->
+        <g id="R_Libro_LibroGenero">
+          <polygon class="diamond" points="1700,3560 1740,3530 1780,3560 1740,3590"/>
+          <text class="small" x="1740" y="3570" text-anchor="middle">ClasificadoComo</text>
+        </g>
+        <path class="edge" d="M1580 3530 Q2000 3530 2700 3900" />
+        <path class="edge" d="M1400 3560 Q1450 3700 1700 3560" />
+        <text class="small" x="1800" y="3550">N:M</text>
+        <!-- Relación Genero-Libro_Genero -->
+        <g id="R_Genero_LibroGenero">
+          <polygon class="diamond" points="3300,3700 3340,3670 3380,3700 3340,3730"/>
+          <text class="small" x="3340" y="3710" text-anchor="middle">Incluye</text>
+        </g>
+        <path class="edge" d="M3170 3560 Q3200 3700 3300 3700" />
+        <path class="edge" d="M3260 3670 Q3000 3750 2960 3800" />
+        <text class="small" x="3250" y="3690">N:M</text>
+        
+        <!-- BANDA 4: PRÉSTAMOS Y EJEMPLARES -->
+        <!-- Prestamo -->
+        <g id="Prestamo">
+          <rect class="box" x="500" y="5000" width="340" height="60" rx="4"/>
+          <text class="label" x="670" y="5040" text-anchor="middle">Préstamo</text>
+          <ellipse class="oval" cx="560" cy="4900" rx="90" ry="24"/>
+          <text class="mini" x="560" y="4904" text-anchor="middle">ID_prestamo</text>
+          <ellipse class="oval" cx="760" cy="4900" rx="90" ry="24"/>
+          <text class="mini" x="760" y="4904" text-anchor="middle">Fecha</text>
+          <ellipse class="oval" cx="670" cy="5150" rx="90" ry="24"/>
+          <text class="mini" x="670" y="5154" text-anchor="middle">ID_usuario</text>
+        </g>
+        <!-- Prestamo_Detalle -->
+        <g id="Prestamo_Detalle">
+          <rect class="box" x="1200" y="5400" width="400" height="60" rx="4"/>
+          <text class="label" x="1400" y="5440" text-anchor="middle">Prestamo_Detalle</text>
+          <ellipse class="oval" cx="1260" cy="5300" rx="90" ry="24"/>
+          <text class="mini" x="1260" y="5304" text-anchor="middle">ID_prestamo</text>
+          <ellipse class="oval" cx="1460" cy="5300" rx="90" ry="24"/>
+          <text class="mini" x="1460" y="5304" text-anchor="middle">ID_ejemplar</text>
+          <ellipse class="oval" cx="1340" cy="5550" rx="90" ry="24"/>
+          <text class="mini" x="1340" y="5554" text-anchor="middle">FechaDevolucion</text>
+          <ellipse class="oval" cx="1460" cy="5650" rx="90" ry="24"/>
+          <text class="mini" x="1460" y="5654" text-anchor="middle">Estado</text>
+        </g>
+        <!-- Relación Prestamo-Prestamo_Detalle -->
+        <g id="R_Prestamo_PrestamoDetalle">
+          <polygon class="diamond" points="950,5430 990,5400 1030,5430 990,5460"/>
+          <text class="small" x="990" y="5440" text-anchor="middle">Incluye</text>
+        </g>
+        <path class="edge" d="M840 5430 Q900 5430 950 5430" />
+        <path class="edge" d="M1030 5430 Q1100 5430 1200 5430" />
+        <text class="small" x="1100" y="5420">1:N</text>
+        <!-- Ejemplar -->
+        <g id="Ejemplar">
+          <rect class="box" x="2200" y="5000" width="340" height="60" rx="4"/>
+          <text class="label" x="2370" y="5040" text-anchor="middle">Ejemplar</text>
+          <ellipse class="oval" cx="2260" cy="4900" rx="90" ry="24"/>
+          <text class="mini" x="2260" y="4904" text-anchor="middle">ID_ejemplar</text>
+          <ellipse class="oval" cx="2460" cy="4900" rx="90" ry="24"/>
+          <text class="mini" x="2460" y="4904" text-anchor="middle">CodigoBarras</text>
+          <ellipse class="oval" cx="2370" cy="5150" rx="90" ry="24"/>
+          <text class="mini" x="2370" y="5154" text-anchor="middle">ID_libro</text>
+        </g>
+        <!-- Relación Ejemplar-Prestamo_Detalle -->
+        <g id="R_Ejemplar_PrestamoDetalle">
+          <polygon class="diamond" points="1900,5430 1940,5400 1980,5430 1940,5460"/>
+          <text class="small" x="1940" y="5440" text-anchor="middle">PrestadoEn</text>
+        </g>
+        <path class="edge" d="M2200 5430 Q2100 5430 1980 5430" />
+        <path class="edge" d="M2370 5060 Q2100 5400 1940 5400" />
+        <text class="small" x="2050" y="5420">1:N</text>
+        <!-- Relación Ejemplar-Libro -->
+        <g id="R_Ejemplar_Libro">
+          <polygon class="diamond" points="2700,5040 2740,5010 2780,5040 2740,5070"/>
+          <text class="small" x="2740" y="5050" text-anchor="middle">PerteneceA</text>
+        </g>
+        <path class="edge" d="M2540 5040 Q2600 5040 2700 5040" />
+        <path class="edge" d="M2780 5040 Q2900 5040 3170 3560" />
+        <text class="small" x="2850" y="5030">N:1</text>
+        
+        <!-- BANDA 5: SANCIONES Y RESERVAS -->
+        <!-- Sancion -->
+        <g id="Sancion">
+          <rect class="box" x="500" y="6500" width="340" height="60" rx="4"/>
+          <text class="label" x="670" y="6540" text-anchor="middle">Sanción</text>
+          <ellipse class="oval" cx="560" cy="6400" rx="90" ry="24"/>
+          <text class="mini" x="560" y="6404" text-anchor="middle">ID_sancion</text>
+          <ellipse class="oval" cx="760" cy="6400" rx="90" ry="24"/>
+          <text class="mini" x="760" y="6404" text-anchor="middle">Motivo</text>
+          <ellipse class="oval" cx="670" cy="6650" rx="90" ry="24"/>
+          <text class="mini" x="670" y="6654" text-anchor="middle">Fecha</text>
+          <ellipse class="oval" cx="670" cy="6750" rx="90" ry="24"/>
+          <text class="mini" x="670" y="6754" text-anchor="middle">ID_usuario</text>
+        </g>
+        <!-- Relación Sancion-Usuario -->
+        <g id="R_Sancion_Usuario">
+          <polygon class="diamond" points="950,6530 990,6500 1030,6530 990,6560"/>
+          <text class="small" x="990" y="6540" text-anchor="middle">ImponeA</text>
+        </g>
+        <path class="edge" d="M840 6530 Q900 6530 950 6530" />
+        <path class="edge" d="M1030 6530 Q1100 6530 1200 2450" />
+        <text class="small" x="1100" y="6520">N:1</text>
+        <!-- Reserva -->
+        <g id="Reserva">
+          <rect class="box" x="1200" y="7000" width="400" height="60" rx="4"/>
+          <text class="label" x="1400" y="7040" text-anchor="middle">Reserva</text>
+          <ellipse class="oval" cx="1260" cy="6900" rx="90" ry="24"/>
+          <text class="mini" x="1260" y="6904" text-anchor="middle">ID_reserva</text>
+          <ellipse class="oval" cx="1460" cy="6900" rx="90" ry="24"/>
+          <text class="mini" x="1460" y="6904" text-anchor="middle">Fecha</text>
+          <ellipse class="oval" cx="1340" cy="7150" rx="90" ry="24"/>
+          <text class="mini" x="1340" y="7154" text-anchor="middle">ID_usuario</text>
+          <ellipse class="oval" cx="1460" cy="7250" rx="90" ry="24"/>
+          <text class="mini" x="1460" y="7254" text-anchor="middle">ID_ejemplar</text>
+        </g>
+        <!-- Relación Reserva-Usuario -->
+        <g id="R_Reserva_Usuario">
+          <polygon class="diamond" points="950,7030 990,7000 1030,7030 990,7060"/>
+          <text class="small" x="990" y="7040" text-anchor="middle">ReservadoPor</text>
+        </g>
+        <path class="edge" d="M840 7030 Q900 7030 950 7030" />
+        <path class="edge" d="M1030 7030 Q1100 7030 1200 2450" />
+        <text class="small" x="1100" y="7020">N:1</text>
+        <!-- Relación Reserva-Ejemplar -->
+        <g id="R_Reserva_Ejemplar">
+          <polygon class="diamond" points="1700,7030 1740,7000 1780,7030 1740,7060"/>
+          <text class="small" x="1740" y="7040" text-anchor="middle">ReservaEjemplar</text>
+        </g>
+        <path class="edge" d="M1600 7030 Q1650 7030 1700 7030" />
+        <path class="edge" d="M1780 7030 Q2000 7030 2200 5150" />
+        <text class="small" x="1900" y="7020">N:1</text>
       </svg>
     </div>
 
