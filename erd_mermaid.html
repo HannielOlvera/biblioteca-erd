@@ -184,11 +184,6 @@
             background: #ef4444;
         }
         
-        /* Oculta el texto Mermaid hasta que sea procesado */
-        .mermaid {
-            visibility: visible !important;
-        }
-        
         @keyframes slideIn {
             from { transform: translateX(100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
@@ -253,143 +248,119 @@
         <div id="diagram">
             <div class="mermaid">
 erDiagram
-  Estado {
-    int ID_estado PK
-    string Nombre
-  }
-
-  Ciudad {
-    int ID_ciudad PK
-    string Nombre
-    int ID_estado FK
-  }
-
-  Colonia {
-    int ID_colonia PK
-    string Nombre
-    string CP
-    int ID_ciudad FK
-  }
-
-  Direccion {
-    int ID_direccion PK
-    string Calle
-    string NumeroExterior
-    string NumeroInterior
-    string Referencia
-    int ID_colonia FK
-  }
-
-  Tipo_Usuario {
-    int ID_tipousu PK
-    string Descripcion
-  }
-
-  Usuario {
-    int ID_usu PK
-    string Nombre
-    string Apellido
-    string FechaNac
-    string Email
-    string Telefono
-    string Genero
-    int ID_tipousu FK
-    int ID_direccion FK
-  }
-
-  Editorial {
-    int ID_editorial PK
-    string Nombre
-  }
-
-  Genero {
-    int ID_genero PK
-    string Descripcion
-  }
-
-  Tipo_Libro {
-    int ID_tipolibro PK
-    string Descripcion
-  }
-
-  Idioma {
-    int ID_idioma PK
-    string Descripcion
-  }
-
-  Libro {
-    int ID_libro PK
-    string Titulo
-    string Subtitulo
-    string ISBN13
-    string ISBN10
-    int ID_editorial FK
-    int ID_tipolibro FK
-    int ID_idioma FK
-    int Edicion
-    int AnioPublicacion
-  }
-
-  Autor {
-    int ID_autor PK
-    string Nombre
-    string Apellido
-  }
-
-  Libro_Autor {
-    int ID_libro PK
-    int ID_autor PK
-  }
-
-  Libro_Genero {
-    int ID_libro PK
-    int ID_genero PK
-  }
-
-  Ejemplar {
-    int ID_ejemplar PK
-    int ID_libro FK
-    string CodigoBarras
-    string Ubicacion
-    string EstadoEjemplar
-  }
-
-  Prestamo {
-    int ID_prestamo PK
-    int ID_usu FK
-    string FechaPrestamo
-    string FechaDevolucionEsperada
-    string FechaDevolucionReal
-    string Status
-  }
-
-  Prestamo_Detalle {
-    int ID_prestamo PK
-    int ID_ejemplar PK
-  }
-
-  Estado ||--o{ Ciudad : tiene
-  Ciudad ||--o{ Colonia : tiene
-  Colonia ||--o{ Direccion : tiene
-  Direccion ||--o{ Usuario : ubica
-
-  Tipo_Usuario ||--o{ Usuario : clasifica
-  Usuario ||--o{ Prestamo : realiza
-
-  Editorial ||--o{ Libro : publica
-  Tipo_Libro ||--o{ Libro : clasifica
-  Idioma ||--o{ Libro : idioma_de
-
-  Libro ||--o{ Ejemplar : tiene
-
-  Libro ||--o{ Libro_Autor : relaciona
-  Autor ||--o{ Libro_Autor : relaciona
-
-  Libro ||--o{ Libro_Genero : clasifica
-  Genero ||--o{ Libro_Genero : clasifica
-
-  Prestamo ||--o{ Prestamo_Detalle : incluye
-  Ejemplar ||--o{ Prestamo_Detalle : incluido_en
+    Estado {
+        int ID_estado PK
+        varchar Nombre
+    }
+    
+    Ciudad {
+        int ID_ciudad PK
+        varchar Nombre
+        int ID_estado FK
+    }
+    
+    Colonia {
+        int ID_colonia PK
+        varchar Nombre
+        char CP
+        int ID_ciudad FK
+    }
+    
+    Direccion {
+        int ID_direccion PK
+        varchar Calle
+        varchar NumeroExterior
+        varchar NumeroInterior
+        varchar Referencia
+        int ID_colonia FK
+    }
+    
+    Tipo_Usuario {
+        int ID_tipousu PK
+        varchar Descripcion
+    }
+    
+    Usuario {
+        int ID_usu PK
+        varchar Nombre
+        varchar Apellido
+        varchar FechaNac
+        varchar Email
+        varchar Telefono
+        varchar Genero
+        int ID_tipousu FK
+        int ID_direccion FK
+    }
+    
+    Editorial {
+        int ID_editorial PK
+        varchar Nombre
+    }
+    
+    Genero {
+        int ID_genero PK
+        varchar Descripcion
+    }
+    
+    Tipo_Libro {
+        int ID_tipolibro PK
+        varchar Descripcion
+    }
+    
+    Idioma {
+        int ID_idioma PK
+        varchar Descripcion
+    }
+    
+    Libro {
+        int ID_libro PK
+        varchar Titulo
+        varchar Subtitulo
+        char ISBN13
+        char ISBN10
+        int ID_editorial FK
+        int ID_tipolibro FK
+        int ID_idioma FK
+        int Edicion
+        int AnioPublicacion
+    }
+    
+    Autor {
+        int ID_autor PK
+        varchar Nombre
+        varchar Apellido
+    }
+    
+    Ejemplar {
+        int ID_ejemplar PK
+        int ID_libro FK
+        varchar CodigoBarras
+        varchar Ubicacion
+        varchar EstadoEjemplar
+    }
+    
+    Prestamo {
+        int ID_prestamo PK
+        int ID_usu FK
+        varchar FechaPrestamo
+        varchar FechaDevolucionEsperada
+        varchar FechaDevolucionReal
+        varchar Status
+    }
+    
+    Estado ||--o{ Ciudad : tiene
+    Ciudad ||--o{ Colonia : tiene
+    Colonia ||--o{ Direccion : tiene
+    Direccion ||--o{ Usuario : ubica
+    Tipo_Usuario ||--o{ Usuario : clasifica
+    Usuario ||--o{ Prestamo : realiza
+    Editorial ||--o{ Libro : publica
+    Tipo_Libro ||--o{ Libro : clasifica
+    Idioma ||--o{ Libro : idioma_de
+    Libro ||--o{ Ejemplar : tiene
+    Libro }o--o{ Autor : escrito_por
+    Libro }o--o{ Genero : pertenece_a
+    Prestamo }o--o{ Ejemplar : contiene
             </div>
         </div>
         
@@ -398,7 +369,197 @@ erDiagram
         </div>
     </div>
 
-    <!-- JS externo que replica el manejo del Chen -->
-    <script src="./erd_mermaid.js"></script>
+    <script>
+        // Variables simples para navegación
+        let currentScale = 1;
+        let currentX = 0;
+        let currentY = 0;
+        let isDragging = false;
+        let startX, startY;
+        let svg = null;
+
+        // Configuración de Mermaid
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#e7f0ff',
+                primaryTextColor: '#1f2937',
+                primaryBorderColor: '#3b82f6'
+            }
+        });
+
+        // Buscar SVG y configurar navegación
+        function initDiagram() {
+            svg = document.querySelector('#diagram svg');
+            if (svg) {
+                document.getElementById('loading').style.display = 'none';
+                setupNavigation();
+                setTimeout(autoFit, 500);
+            } else {
+                setTimeout(initDiagram, 100);
+            }
+        }
+
+        function setupNavigation() {
+            const container = document.getElementById('diagram');
+            
+            container.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                startX = e.clientX - currentX;
+                startY = e.clientY - currentY;
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                e.preventDefault();
+                currentX = e.clientX - startX;
+                currentY = e.clientY - startY;
+                updateTransform();
+            });
+
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+
+            container.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const delta = e.deltaY > 0 ? 0.9 : 1.1;
+                const rect = container.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+
+                const newScale = Math.max(0.1, Math.min(3, currentScale * delta));
+                const ratio = newScale / currentScale;
+
+                currentX = mouseX - (mouseX - currentX) * ratio;
+                currentY = mouseY - (mouseY - currentY) * ratio;
+                currentScale = newScale;
+                updateTransform();
+            });
+
+            container.addEventListener('dblclick', autoFit);
+        }
+
+        function updateTransform() {
+            if (svg) {
+                svg.style.transform = `translate(${currentX}px, ${currentY}px) scale(${currentScale})`;
+                svg.style.transformOrigin = '0 0';
+                updateStatus();
+            }
+        }
+
+        function updateStatus() {
+            const status = document.getElementById('status');
+            if (status) {
+                const zoom = Math.round(currentScale * 100);
+                status.textContent = `📊 Zoom: ${zoom}% | Posición: (${Math.round(currentX)}, ${Math.round(currentY)}) | Arrastra para navegar`;
+            }
+        }
+
+        function autoFit() {
+            if (!svg) return;
+            try {
+                const container = document.getElementById('diagram');
+                const bbox = svg.getBBox();
+                const containerRect = container.getBoundingClientRect();
+                
+                const scaleX = (containerRect.width - 40) / bbox.width;
+                const scaleY = (containerRect.height - 40) / bbox.height;
+                const scale = Math.min(scaleX, scaleY, 1.5);
+                
+                currentScale = scale;
+                currentX = (containerRect.width - bbox.width * scale) / 2 - bbox.x * scale;
+                currentY = (containerRect.height - bbox.height * scale) / 2 - bbox.y * scale;
+                
+                updateTransform();
+                showNotification('Vista ajustada automáticamente');
+            } catch (e) {
+                resetView();
+            }
+        }
+
+        function zoomIn() {
+            const container = document.getElementById('diagram');
+            const rect = container.getBoundingClientRect();
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const newScale = Math.min(3, currentScale * 1.2);
+            const ratio = newScale / currentScale;
+            
+            currentX = centerX - (centerX - currentX) * ratio;
+            currentY = centerY - (centerY - currentY) * ratio;
+            currentScale = newScale;
+            
+            updateTransform();
+            showNotification(`Zoom: ${Math.round(currentScale * 100)}%`);
+        }
+
+        function zoomOut() {
+            const container = document.getElementById('diagram');
+            const rect = container.getBoundingClientRect();
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const newScale = Math.max(0.1, currentScale * 0.8);
+            const ratio = newScale / currentScale;
+            
+            currentX = centerX - (centerX - currentX) * ratio;
+            currentY = centerY - (centerY - currentY) * ratio;
+            currentScale = newScale;
+            
+            updateTransform();
+            showNotification(`Zoom: ${Math.round(currentScale * 100)}%`);
+        }
+
+        function resetView() {
+            currentScale = 1;
+            currentX = 0;
+            currentY = 0;
+            updateTransform();
+            showNotification('Vista restablecida');
+        }
+
+        async function exportPDF() {
+            if (!svg || !window.jsPDF || !window.svg2pdf) {
+                showNotification('Error: PDF no disponible', 'error');
+                return;
+            }
+            
+            try {
+                showNotification('Generando PDF...');
+                const pdf = new window.jsPDF('l', 'pt', 'a3');
+                await window.svg2pdf(svg, pdf, {
+                    xOffset: 50,
+                    yOffset: 50,
+                    scale: 0.8
+                });
+                pdf.save('Sistema_Biblioteca_ERD_Mermaid.pdf');
+                showNotification('PDF exportado exitosamente');
+            } catch (error) {
+                console.error('Error exportando PDF:', error);
+                showNotification('Error al exportar PDF', 'error');
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type === 'error' ? 'error' : ''}`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Inicializar cuando esté listo
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(initDiagram, 1000);
+        });
+    </script>
 </body>
 </html>
