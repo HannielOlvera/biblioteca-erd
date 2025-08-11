@@ -271,6 +271,26 @@ erDiagram
         int ID_ciudad FK
     }
     
+            <div class="mermaid">
+erDiagram
+    Estado {
+        int ID_estado PK
+        varchar Nombre
+    }
+    
+    Ciudad {
+        int ID_ciudad PK
+        varchar Nombre
+        int ID_estado FK
+    }
+    
+    Colonia {
+        int ID_colonia PK
+        varchar Nombre
+        char CP
+        int ID_ciudad FK
+    }
+    
     Direccion {
         int ID_direccion PK
         varchar Calle
@@ -348,71 +368,24 @@ erDiagram
         int ID_prestamo PK
         int ID_usu FK
         varchar FechaPrestamo
-                e.preventDefault();
-                currentX = e.clientX - startX;
-                currentY = e.clientY - startY;
-                updateTransform();
-            });
-
-            document.addEventListener('mouseup', () => {
-                isDragging = false;
-            });
-
-            container.addEventListener('wheel', (e) => {
-                e.preventDefault();
-                const delta = e.deltaY > 0 ? 0.9 : 1.1;
-                const rect = container.getBoundingClientRect();
-                const mouseX = e.clientX - rect.left;
-                const mouseY = e.clientY - rect.top;
-
-                const newScale = Math.max(0.1, Math.min(3, currentScale * delta));
-                const ratio = newScale / currentScale;
-
-                currentX = mouseX - (mouseX - currentX) * ratio;
-                currentY = mouseY - (mouseY - currentY) * ratio;
-                currentScale = newScale;
-                updateTransform();
-            });
-
-            container.addEventListener('dblclick', autoFit);
-        }
-
-        // Actualizar transformación
-        function updateTransform() {
-            if (svg) {
-                svg.style.transform = `translate(${currentX}px, ${currentY}px) scale(${currentScale})`;
-                svg.style.transformOrigin = '0 0';
-                updateStatus();
-            }
-        }
-
-        // Actualizar estado
-        function updateStatus() {
-            const status = document.getElementById('status');
-            if (status) {
-                const zoom = Math.round(currentScale * 100);
-                status.textContent = `📊 Zoom: ${zoom}% | Posición: (${Math.round(currentX)}, ${Math.round(currentY)}) | Arrastra para navegar`;
-            }
-        }
-
-        // Auto ajustar
-        function autoFit() {
-            if (!svg) return;
-            try {
-                const container = document.getElementById('diagram');
-                const bbox = svg.getBBox();
-                const containerRect = container.getBoundingClientRect();
-                
-                const scaleX = (containerRect.width - 40) / bbox.width;
-                const scaleY = (containerRect.height - 40) / bbox.height;
-                const scale = Math.min(scaleX, scaleY, 1.5);
-                
-                currentScale = scale;
-                currentX = (containerRect.width - bbox.width * scale) / 2 - bbox.x * scale;
-                currentY = (containerRect.height - bbox.height * scale) / 2 - bbox.y * scale;
-                
-                updateTransform();
-                showToast('🎯 Vista ajustada automáticamente');
+    }
+    
+    %% RELACIONES AQUÍ (ejemplo):
+    Estado ||--o{ Ciudad : "tiene"
+    Ciudad ||--o{ Colonia : "tiene"
+    Colonia ||--o{ Direccion : "tiene"
+    Direccion }o--|| Usuario : "es de"
+    Tipo_Usuario ||--o{ Usuario : "clasifica"
+    Editorial ||--o{ Libro : "publica"
+    Genero ||--o{ Libro : "clasifica"
+    Tipo_Libro ||--o{ Libro : "clasifica"
+    Idioma ||--o{ Libro : "clasifica"
+    Libro ||--o{ Ejemplar : "tiene"
+    Autor ||--o{ Libro : "escribe"
+    Usuario ||--o{ Prestamo : "realiza"
+    Ejemplar ||--o{ Prestamo : "incluye"
+            </div>
+        </div>
             } catch (e) {
                 resetView();
             }
