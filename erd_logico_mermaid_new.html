@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Diagrama Lógico (Crow's Foot) del sistema Biblioteca con navegación intuitiva y exportación profesional." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ctext y='14' font-size='14'%3E🔗%3C/text%3E%3C/svg%3E" />
+    <title>ERD Lógico (Crow's Foot) – Biblioteca Profesional</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Mermaid CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="assets/css/styles.css" />
+    
+    <style>
+        body {
+            margin: 0;
+            font-family: var(--font-sans);
+            background: linear-gradient(135deg, var(--bg-start) 0%, var(--bg-end) 100%);
+            background-attachment: fixed;
+            color: var(--text);
+            min-height: 100vh;
+        }
+        
+        .page-header {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: var(--space-md) var(--space-lg);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--space-lg);
+            flex-wrap: wrap;
+        }
+        
+        .page-title {
+            font-size: clamp(1.25rem, 3vw, 1.75rem);
+            font-weight: 700;
+            margin: 0;
+            background: linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.8) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--space-lg);
+        }
+        
+        .diagram-wrapper {
+            background: #fff;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-2xl);
+            overflow: hidden;
+            position: relative;
+            min-height: 70vh;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .diagram-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-600), var(--accent), var(--primary-600));
+            z-index: 10;
+        }
+        
+        .diagram-container {
+            width: 100%;
+            height: 75vh;
+            min-height: 500px;
+            overflow: hidden;
+            position: relative;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #mermaid-diagram {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #mermaid-diagram svg {
+            max-width: none !important;
+            max-height: none !important;
+            width: auto !important;
+            height: auto !important;
+        }
+        
+        /* Toolbar mejorado */
+        .enhanced-toolbar {
+            position: absolute;
+            top: var(--space-md);
+            right: var(--space-md);
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-sm);
+            z-index: 100;
+            background: rgba(255,255,255,0.95);
+            padding: var(--space-sm);
+            border-radius: var(--radius-lg);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0,0,0,0.1);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .enhanced-toolbar .btn {
+            color: #374151;
+            font-size: 0.85rem;
+            padding: var(--space-sm) var(--space-md);
+            background: rgba(255,255,255,0.8);
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            font-weight: 500;
+        }
+        
+        .enhanced-toolbar .btn:hover {
+            background: rgba(255,255,255,1);
+            color: #111827;
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+        
+        .status-bar {
+            position: absolute;
+            bottom: var(--space-md);
+            left: var(--space-md);
+            right: var(--space-md);
+            background: rgba(0,0,0,0.85);
+            color: white;
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-md);
+            font-size: 0.8rem;
+            font-family: var(--font-mono);
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+        }
+        
+        /* Instrucciones para usuarios */
+        .instructions {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: var(--radius-lg);
+            padding: var(--space-md);
+            margin-bottom: var(--space-lg);
+            text-align: center;
+        }
+        
+        .instructions h3 {
+            margin: 0 0 var(--space-sm) 0;
+            color: #1d4ed8;
+            font-size: 1.1rem;
+        }
+        
+        .instructions p {
+            margin: 0;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: var(--space-md);
+            }
+            
+            .enhanced-toolbar {
+                position: static;
+                margin-bottom: var(--space-md);
+                justify-content: center;
+                max-width: 100%;
+                overflow-x: auto;
+            }
+            
+            .diagram-container {
+                height: 60vh;
+                min-height: 400px;
+            }
+            
+            .status-bar {
+                font-size: 0.7rem;
+                padding: var(--space-xs) var(--space-sm);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="page-header">
+        <div class="header-content">
+            <div style="display: flex; align-items: center; gap: var(--space-md);">
+                <a href="index.html" class="btn btn--ghost" aria-label="Volver al índice">← Volver</a>
+                <h1 class="page-title">🔗 Diagrama Lógico (Crow's Foot) - Biblioteca</h1>
+            </div>
+            
+            <div class="enhanced-toolbar">
+                <button class="btn" id="btn-autofit" data-tooltip="Ajustar a pantalla completa">🎯 Auto-fit</button>
+                <button class="btn" id="btn-zoom-in" data-tooltip="Acercar zoom">🔍+</button>
+                <button class="btn" id="btn-zoom-out" data-tooltip="Alejar zoom">🔍−</button>
+                <button class="btn" id="btn-reset" data-tooltip="Restablecer vista">↻ Reset</button>
+                <button class="btn" id="btn-pdf" data-tooltip="Exportar a PDF">📄 PDF</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="instructions">
+            <h3>📖 Instrucciones de Navegación</h3>
+            <p><strong>Arrastrar:</strong> Haz clic y arrastra para mover • <strong>Zoom:</strong> Rueda del mouse • <strong>Auto-fit:</strong> Doble clic • <strong>Teclado:</strong> Flechas para mover, +/- para zoom, F para auto-fit</p>
+        </div>
+        
+        <div class="diagram-wrapper">
+            <div class="diagram-container" id="diagram-container">
+                <div id="mermaid-diagram">
+                    <div class="mermaid" id="mermaid-content">
+erDiagram
+    %% ===== ENTIDADES PRINCIPALES =====
+    
+    TIPO_USUARIO {
+        int ID_tipousu PK "Clave primaria"
+        string Descripcion "Estudiante, Profesor, Administrativo"
+    }
+    
+    ESTADO {
+        int ID_estado PK "Clave primaria"
+        string Nombre "Nombre del estado"
+    }
+    
+    CIUDAD {
+        int ID_ciudad PK "Clave primaria"
+        string Nombre "Nombre de la ciudad"
+        int ID_estado FK "Estado al que pertenece"
+    }
+    
+    COLONIA {
+        int ID_colonia PK "Clave primaria"
+        string Nombre "Nombre de la colonia"
+        string CP "Código postal"
+        int ID_ciudad FK "Ciudad a la que pertenece"
+    }
+    
+    DIRECCION {
+        int ID_direccion PK "Clave primaria"
+        string Calle "Nombre de la calle"
+        string NumeroExterior "Número exterior"
+        string NumeroInterior "Número interior (opcional)"
+        string Referencia "Referencias adicionales"
+        int ID_colonia FK "Colonia donde se ubica"
+    }
+    
+    USUARIO {
+        int ID_usu PK "Clave primaria"
+        string Nombre "Nombre del usuario"
+        string Apellido "Apellido del usuario"
+        string Telefono "Número de teléfono"
+        string Email "Correo electrónico"
+        date FechaNac "Fecha de nacimiento"
+        string Genero "Género del usuario"
+        int ID_tipousu FK "Tipo de usuario"
+        int ID_direccion FK "Dirección del usuario"
+    }
+    
+    EDITORIAL {
+        int ID_editorial PK "Clave primaria"
+        string Nombre "Nombre de la editorial"
+    }
+    
+    IDIOMA {
+        int ID_idioma PK "Clave primaria"
+        string Descripcion "Español, Inglés, Francés, etc."
+    }
+    
+    TIPO_LIBRO {
+        int ID_tipolibro PK "Clave primaria"
+        string Descripcion "Ficción, No ficción, Referencia, etc."
+    }
+    
+    LIBRO {
+        int ID_libro PK "Clave primaria"
+        string Titulo "Título del libro"
+        string Subtitulo "Subtítulo (opcional)"
+        string ISBN13 "ISBN de 13 dígitos"
+        string ISBN10 "ISBN de 10 dígitos"
+        int AnioPublicacion "Año de publicación"
+        string Edicion "Número de edición"
+        int ID_editorial FK "Editorial que lo publica"
+        int ID_idioma FK "Idioma del libro"
+        int ID_tipolibro FK "Tipo de libro"
+    }
+    
+    AUTOR {
+        int ID_autor PK "Clave primaria"
+        string Nombre "Nombre del autor"
+        string Apellido "Apellido del autor"
+    }
+    
+    GENERO {
+        int ID_genero PK "Clave primaria"
+        string Descripcion "Drama, Comedia, Terror, etc."
+    }
+    
+    EJEMPLAR {
+        int ID_ejemplar PK "Clave primaria"
+        string CodigoBarras "Código de barras único"
+        string Ubicacion "Ubicación física en biblioteca"
+        string EstadoEjemplar "Disponible, Prestado, Dañado, etc."
+        int ID_libro FK "Libro al que corresponde"
+    }
+    
+    PRESTAMO {
+        int ID_prestamo PK "Clave primaria"
+        date FechaPrestamo "Fecha del préstamo"
+        date FechaDevolucionEsperada "Fecha esperada de devolución"
+        date FechaDevolucionReal "Fecha real de devolución"
+        string Status "Activo, Devuelto, Vencido"
+        int ID_usu FK "Usuario que realizó el préstamo"
+    }
+    
+    %% ===== TABLAS DE RELACIÓN N:M =====
+    
+    LIBRO_AUTOR {
+        int ID_libro FK "Libro"
+        int ID_autor FK "Autor"
+    }
+    
+    LIBRO_GENERO {
+        int ID_libro FK "Libro"
+        int ID_genero FK "Género"
+    }
+    
+    PRESTAMO_EJEMPLAR {
+        int ID_prestamo FK "Préstamo"
+        int ID_ejemplar FK "Ejemplar"
+    }
+    
+    %% ===== RELACIONES =====
+    
+    %% Geografía y Direcciones (1:N)
+    ESTADO ||--o{ CIUDAD : "contiene"
+    CIUDAD ||--o{ COLONIA : "contiene"
+    COLONIA ||--o{ DIRECCION : "contiene"
+    
+    %% Usuarios (1:N)
+    TIPO_USUARIO ||--o{ USUARIO : "clasifica"
+    DIRECCION ||--o{ USUARIO : "reside_en"
+    
+    %% Libros y Catálogo (1:N)
+    EDITORIAL ||--o{ LIBRO : "publica"
+    IDIOMA ||--o{ LIBRO : "escrito_en"
+    TIPO_LIBRO ||--o{ LIBRO : "categoriza"
+    LIBRO ||--o{ EJEMPLAR : "tiene_ejemplares"
+    
+    %% Relaciones Muchos a Muchos (N:M)
+    LIBRO ||--o{ LIBRO_AUTOR : "escrito_por"
+    AUTOR ||--o{ LIBRO_AUTOR : "escribe"
+    
+    LIBRO ||--o{ LIBRO_GENERO : "pertenece_a"
+    GENERO ||--o{ LIBRO_GENERO : "incluye"
+    
+    %% Préstamos (1:N y N:M)
+    USUARIO ||--o{ PRESTAMO : "realiza"
+    PRESTAMO ||--o{ PRESTAMO_EJEMPLAR : "incluye"
+    EJEMPLAR ||--o{ PRESTAMO_EJEMPLAR : "prestado_en"
+                    </div>
+                </div>
+            </div>
+            
+            <div class="status-bar" id="status-bar">
+                📊 Zoom: 100% | Posición: (0, 0) | Usa los controles arriba o arrastra para navegar
+            </div>
+        </div>
+    </main>
+
+    <!-- Librerías esenciales -->
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/svg2pdf.js@2.2.1/dist/svg2pdf.umd.min.js"></script>
+    
+    <!-- Sistema simplificado y robusto -->
+    <script src="assets/js/enhanced-ui.js"></script>
+    <script src="assets/js/simple-smooth-zoom.js"></script>
+    <script src="assets/js/pdf-export.js"></script>
+
+    <script>
+        // Variables globales
+        let zoomSystem = null;
+        let mermaidSvg = null;
+        
+        // Configuración de Mermaid mejorada
+        mermaid.initialize({ 
+            startOnLoad: true, 
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#e7f0ff',
+                primaryTextColor: '#111827',
+                primaryBorderColor: '#3b82f6',
+                lineColor: '#374151',
+                sectionBkgColor: '#f8fafc',
+                altSectionBkgColor: '#ffffff',
+                gridColor: '#e5e7eb',
+                background: '#ffffff',
+                mainBkg: '#ffffff'
+            },
+            erDiagram: {
+                diagramMarginX: 20,
+                diagramMarginY: 20,
+                entityPadding: 15,
+                strokeWidth: 2
+            }
+        });
+
+        // Función para configurar el sistema de zoom cuando Mermaid esté listo
+        function setupZoomSystem() {
+            mermaidSvg = document.querySelector('#mermaid-diagram svg');
+            
+            if (!mermaidSvg) {
+                console.log('⏳ Esperando que Mermaid genere el SVG...');
+                setTimeout(setupZoomSystem, 200);
+                return;
+            }
+            
+            console.log('✅ SVG de Mermaid encontrado, configurando zoom...');
+            
+            // Asegurar que el SVG tenga viewBox
+            if (!mermaidSvg.getAttribute('viewBox')) {
+                const bbox = mermaidSvg.getBBox();
+                mermaidSvg.setAttribute('viewBox', `${bbox.x - 20} ${bbox.y - 20} ${bbox.width + 40} ${bbox.height + 40}`);
+            }
+            
+            // Inicializar sistema de zoom
+            zoomSystem = new SimpleSmoothZoom(mermaidSvg, {
+                minZoom: 0.1,
+                maxZoom: 3,
+                zoomStep: 0.15,
+                enablePan: true,
+                enableZoom: true,
+                enableDoubleClick: true,
+                enableKeyboard: true
+            });
+            
+            // Configurar status bar
+            window.updateStatusBar = function(state) {
+                const statusBar = document.getElementById('status-bar');
+                const zoom = Math.round(state.scale * 100);
+                const x = Math.round(state.x);
+                const y = Math.round(state.y);
+                statusBar.textContent = `📊 Zoom: ${zoom}% | Posición: (${x}, ${y}) | Arrastra para mover • Rueda para zoom • Doble clic para auto-fit`;
+            };
+            
+            // Eventos del status bar
+            mermaidSvg.parentElement.addEventListener('zoomchange', (e) => {
+                window.updateStatusBar(e.detail);
+            });
+            
+            // Auto-fit inicial
+            setTimeout(() => {
+                zoomSystem.autoFit();
+                window.enhancedUI.showNotification(
+                    'Diagrama Crow\'s Foot cargado correctamente. Usa los controles o arrastra para navegar.',
+                    'success',
+                    4000,
+                    '🎯 Sistema Listo'
+                );
+            }, 500);
+            
+            console.log('✅ Sistema de zoom configurado correctamente');
+        }
+        
+        // Configurar toolbar
+        function setupToolbar() {
+            // Auto-fit
+            document.getElementById('btn-autofit').addEventListener('click', () => {
+                if (zoomSystem) {
+                    zoomSystem.autoFit();
+                    window.enhancedUI.showNotification('Vista ajustada automáticamente', 'success', 2000);
+                }
+            });
+            
+            // Zoom in
+            document.getElementById('btn-zoom-in').addEventListener('click', () => {
+                if (zoomSystem) {
+                    zoomSystem.zoomIn();
+                    window.enhancedUI.showNotification(`Zoom: ${zoomSystem.getZoomPercent()}%`, 'info', 1500);
+                }
+            });
+            
+            // Zoom out
+            document.getElementById('btn-zoom-out').addEventListener('click', () => {
+                if (zoomSystem) {
+                    zoomSystem.zoomOut();
+                    window.enhancedUI.showNotification(`Zoom: ${zoomSystem.getZoomPercent()}%`, 'info', 1500);
+                }
+            });
+            
+            // Reset
+            document.getElementById('btn-reset').addEventListener('click', () => {
+                if (zoomSystem) {
+                    zoomSystem.reset();
+                    window.enhancedUI.showNotification('Vista restablecida', 'info', 2000);
+                }
+            });
+            
+            // PDF Export
+            document.getElementById('btn-pdf').addEventListener('click', async () => {
+                if (!mermaidSvg || !window.exportSvgToPdf) {
+                    window.enhancedUI.showNotification('Error: Exportación PDF no disponible', 'error', 3000);
+                    return;
+                }
+                
+                const notification = window.enhancedUI.showNotification(
+                    'Generando PDF profesional...', 
+                    'info', 
+                    0, 
+                    'Exportando'
+                );
+                
+                try {
+                    await window.exportSvgToPdf(mermaidSvg, 'ERD_Logico_Biblioteca_Profesional.pdf', { 
+                        format: 'a3',
+                        quality: 'high',
+                        margin: 30
+                    });
+                    
+                    window.enhancedUI.removeNotification(notification);
+                    window.enhancedUI.showNotification(
+                        'PDF exportado exitosamente con calidad profesional', 
+                        'success', 
+                        4000, 
+                        '✅ Exportación Completa'
+                    );
+                } catch (error) {
+                    console.error('Error exportando PDF:', error);
+                    window.enhancedUI.removeNotification(notification);
+                    window.enhancedUI.showNotification(
+                        'Error durante la exportación. Inténtalo nuevamente', 
+                        'error', 
+                        5000
+                    );
+                }
+            });
+        }
+        
+        // Inicializar todo cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 Iniciando sistema de diagramas...');
+            
+            // Configurar UI
+            window.enhancedUI.addTooltips();
+            
+            // Configurar toolbar
+            setupToolbar();
+            
+            // Esperar a que Mermaid renderice y configurar zoom
+            setTimeout(setupZoomSystem, 1000);
+            
+            // Mensaje de bienvenida
+            setTimeout(() => {
+                window.enhancedUI.showNotification(
+                    'Usa F para auto-fit, +/- para zoom, o arrastra para navegar', 
+                    'info', 
+                    5000,
+                    '💡 Tip de Navegación'
+                );
+            }, 6000);
+        });
+        
+        // Exponer para debugging
+        window.diagramSystem = {
+            zoom: () => zoomSystem,
+            svg: () => mermaidSvg,
+            autoFit: () => zoomSystem?.autoFit(),
+            reset: () => zoomSystem?.reset()
+        };
+        
+        console.log('📊 Sistema de diagramas ERD Lógico cargado');
+    </script>
+</body>
+</html>
