@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Diagrama ERD Mermaid - Sistema Biblioteca</title>
+    <meta name="description" content="Diagrama Entidad-Relación del sistema de biblioteca con navegación simple">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ctext y='14' font-size='14'%3E🔗%3C/text%3E%3C/svg%3E">
+    
+    <!-- Mermaid -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+    
+    <!-- PDF Export -->
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/svg2pdf.js@2.2.1/dist/svg2pdf.umd.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            color: #1f2937;
+        }
+        
+        .header {
+            background: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+        
+        .btn:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+        
+        .btn-secondary {
+            background: #6b7280;
+        }
+        
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+        
+        .container {
+            position: relative;
+            height: calc(100vh - 80px);
+            overflow: hidden;
+            background: white;
+            margin: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        #diagram {
+            width: 100%;
+            height: 100%;
+            cursor: grab;
+            overflow: hidden;
+        }
+        
+        #diagram:active {
+            cursor: grabbing;
+        }
+        
+        #diagram svg {
+            max-width: none !important;
+            max-height: none !important;
+        }
+        
+        .instructions {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 8px;
+            padding: 1rem;
+            max-width: 300px;
+            z-index: 10;
+        }
+        
+        .instructions h3 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #1d4ed8;
+            margin-bottom: 0.5rem;
+        }
+        
+        .instructions p {
+            font-size: 0.75rem;
+            color: #374151;
+            line-height: 1.4;
+        }
+        
+        .status {
+            position: absolute;
+            bottom: 1rem;
+            left: 1rem;
+            right: 1rem;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.75rem;
+            text-align: center;
+            z-index: 10;
+        }
+        
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 5;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e5e7eb;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            animation: slideIn 0.3s ease;
+        }
+        
+        .notification.error {
+            background: #ef4444;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .controls {
+                justify-content: center;
+            }
+            
+            .container {
+                margin: 0.5rem;
+                height: calc(100vh - 120px);
+            }
+            
+            .instructions {
+                position: static;
+                margin: 1rem;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>🔗 Diagrama ERD Mermaid - Sistema Biblioteca</h1>
+        <div class="controls">
+            <button class="btn" onclick="autoFit()">🎯 Auto-fit</button>
+            <button class="btn" onclick="zoomIn()">🔍+</button>
+            <button class="btn" onclick="zoomOut()">🔍−</button>
+            <button class="btn" onclick="resetView()">↻ Reset</button>
+            <button class="btn btn-secondary" onclick="exportPDF()">📄 PDF</button>
+            <a href="index.html" class="btn btn-secondary">← Volver</a>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Generando diagrama...</p>
+        </div>
+        
+        <div class="instructions">
+            <h3>📖 Navegación</h3>
+            <p><strong>Arrastrar:</strong> Clic y arrastra<br>
+            <strong>Zoom:</strong> Rueda del mouse<br>
+            <strong>Auto-fit:</strong> Doble clic<br>
+            <strong>Teclado:</strong> Flechas, +/-</p>
+        </div>
+        
+        <div id="diagram">
+            <div class="mermaid">
+erDiagram
+    %% Entidades principales del sistema biblioteca
+    
+    USUARIO {
+        int ID_usuario PK "Clave primaria"
+        string nombre "Nombre completo"
+        string email "Correo electrónico"
+        string telefono "Teléfono de contacto"
+        date fecha_registro "Fecha de registro"
+        string tipo "Estudiante, Profesor, Admin"
+        string estado "Activo, Inactivo, Suspendido"
+    }
+    
+    LIBRO {
+        int ID_libro PK "Clave primaria"
+        string titulo "Título del libro"
+        string isbn "ISBN único"
+        int año_publicacion "Año de publicación"
+        string idioma "Idioma del libro"
+        int total_ejemplares "Cantidad total"
+        int disponibles "Ejemplares disponibles"
+    }
+    
+    AUTOR {
+        int ID_autor PK "Clave primaria"
+        string nombre "Nombre del autor"
+        string apellido "Apellido del autor"
+        string nacionalidad "País de origen"
+        date fecha_nacimiento "Fecha de nacimiento"
+    }
+    
+    EDITORIAL {
+        int ID_editorial PK "Clave primaria"
+        string nombre "Nombre de la editorial"
+        string pais "País de la editorial"
+        string sitio_web "Sitio web oficial"
+    }
+    
+    GENERO {
+        int ID_genero PK "Clave primaria"
+        string nombre "Nombre del género"
+        string descripcion "Descripción del género"
+    }
+    
+    EJEMPLAR {
+        int ID_ejemplar PK "Clave primaria"
+        string codigo_barras "Código de barras único"
+        string ubicacion "Ubicación física"
+        string estado "Disponible, Prestado, Dañado"
+        date fecha_adquisicion "Fecha de compra"
+        int ID_libro FK "Referencia al libro"
+    }
+    
+    PRESTAMO {
+        int ID_prestamo PK "Clave primaria"
+        date fecha_prestamo "Fecha del préstamo"
+        date fecha_vencimiento "Fecha de vencimiento"
+        date fecha_devolucion "Fecha real de devolución"
+        string estado "Activo, Devuelto, Vencido"
+        decimal multa "Monto de multa"
+        int ID_usuario FK "Usuario que solicita"
+        int ID_ejemplar FK "Ejemplar prestado"
+    }
+    
+    RESERVA {
+        int ID_reserva PK "Clave primaria"
+        date fecha_reserva "Fecha de la reserva"
+        date fecha_vencimiento "Vencimiento de reserva"
+        string estado "Pendiente, Confirmada, Cancelada"
+        int ID_usuario FK "Usuario que reserva"
+        int ID_libro FK "Libro reservado"
+    }
+    
+    %% Relaciones del sistema
+    
+    USUARIO ||--o{ PRESTAMO : "realiza"
+    USUARIO ||--o{ RESERVA : "hace"
+    
+    LIBRO ||--o{ EJEMPLAR : "tiene"
+    LIBRO ||--o{ RESERVA : "es_reservado"
+    LIBRO }o--o{ AUTOR : "escrito_por"
+    LIBRO }o--|| EDITORIAL : "publicado_por"
+    LIBRO }o--o{ GENERO : "pertenece_a"
+    
+    EJEMPLAR ||--o{ PRESTAMO : "prestado_en"
+    
+    AUTOR ||--o{ LIBRO : "escribe"
+    EDITORIAL ||--o{ LIBRO : "publica"
+    GENERO ||--o{ LIBRO : "categoriza"
+            </div>
+        </div>
+        
+        <div class="status" id="status">
+            📊 Zoom: 100% | Posición: (0, 0) | Arrastra para navegar
+        </div>
+    </div>
+
+    <script>
+        // Variables globales simples
+        let currentScale = 1;
+        let currentX = 0;
+        let currentY = 0;
+        let isDragging = false;
+        let startX, startY;
+        let svg = null;
+        
+        // Configurar Mermaid
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#e7f0ff',
+                primaryTextColor: '#1f2937',
+                primaryBorderColor: '#3b82f6',
+                lineColor: '#374151',
+                background: '#ffffff'
+            }
+        });
+        
+        // Esperar a que Mermaid termine de renderizar
+        function waitForMermaid() {
+            svg = document.querySelector('#diagram svg');
+            if (svg) {
+                setupDiagram();
+            } else {
+                setTimeout(waitForMermaid, 100);
+            }
+        }
+        
+        // Configurar el diagrama una vez cargado
+        function setupDiagram() {
+            document.getElementById('loading').style.display = 'none';
+            
+            // Asegurar viewBox
+            if (!svg.getAttribute('viewBox')) {
+                const bbox = svg.getBBox();
+                svg.setAttribute('viewBox', `${bbox.x-20} ${bbox.y-20} ${bbox.width+40} ${bbox.height+40}`);
+            }
+            
+            // Eventos de navegación
+            const container = document.getElementById('diagram');
+            
+            // Mouse events
+            container.addEventListener('mousedown', startDrag);
+            container.addEventListener('mousemove', drag);
+            container.addEventListener('mouseup', endDrag);
+            container.addEventListener('mouseleave', endDrag);
+            
+            // Wheel zoom
+            container.addEventListener('wheel', handleWheel);
+            
+            // Double click auto-fit
+            container.addEventListener('dblclick', autoFit);
+            
+            // Keyboard
+            document.addEventListener('keydown', handleKeyboard);
+            
+            // Auto-fit inicial
+            setTimeout(autoFit, 500);
+            
+            console.log('✅ Diagrama ERD Mermaid cargado y listo');
+        }
+        
+        // Funciones de navegación simples
+        function startDrag(e) {
+            isDragging = true;
+            startX = e.clientX - currentX;
+            startY = e.clientY - currentY;
+            document.getElementById('diagram').style.cursor = 'grabbing';
+        }
+        
+        function drag(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+            currentX = e.clientX - startX;
+            currentY = e.clientY - startY;
+            updateTransform();
+        }
+        
+        function endDrag() {
+            isDragging = false;
+            document.getElementById('diagram').style.cursor = 'grab';
+        }
+        
+        function handleWheel(e) {
+            e.preventDefault();
+            const delta = e.deltaY > 0 ? 0.9 : 1.1;
+            
+            // Obtener posición del mouse
+            const rect = e.currentTarget.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            
+            // Zoom centrado en el mouse
+            const newScale = Math.max(0.1, Math.min(5, currentScale * delta));
+            const scaleRatio = newScale / currentScale;
+            
+            currentX = mouseX - (mouseX - currentX) * scaleRatio;
+            currentY = mouseY - (mouseY - currentY) * scaleRatio;
+            currentScale = newScale;
+            
+            updateTransform();
+        }
+        
+        function handleKeyboard(e) {
+            if (e.target.tagName === 'INPUT') return;
+            
+            const step = 50;
+            switch(e.key) {
+                case 'ArrowUp': currentY += step; break;
+                case 'ArrowDown': currentY -= step; break;
+                case 'ArrowLeft': currentX += step; break;
+                case 'ArrowRight': currentX -= step; break;
+                case '+': zoomIn(); return;
+                case '-': zoomOut(); return;
+                case ' ': case 'f': autoFit(); e.preventDefault(); return;
+                case 'r': resetView(); return;
+                default: return;
+            }
+            e.preventDefault();
+            updateTransform();
+        }
+        
+        function updateTransform() {
+            if (svg) {
+                svg.style.transform = `translate(${currentX}px, ${currentY}px) scale(${currentScale})`;
+                updateStatus();
+            }
+        }
+        
+        function updateStatus() {
+            const zoom = Math.round(currentScale * 100);
+            const x = Math.round(currentX);
+            const y = Math.round(currentY);
+            document.getElementById('status').textContent = 
+                `📊 Zoom: ${zoom}% | Posición: (${x}, ${y}) | Arrastra para navegar`;
+        }
+        
+        // Funciones públicas para botones
+        function autoFit() {
+            if (!svg) return;
+            
+            try {
+                const container = document.getElementById('diagram');
+                const bbox = svg.getBBox();
+                const containerRect = container.getBoundingClientRect();
+                
+                const scaleX = (containerRect.width - 40) / bbox.width;
+                const scaleY = (containerRect.height - 40) / bbox.height;
+                const scale = Math.min(scaleX, scaleY, 2);
+                
+                currentScale = scale;
+                currentX = (containerRect.width - bbox.width * scale) / 2 - bbox.x * scale;
+                currentY = (containerRect.height - bbox.height * scale) / 2 - bbox.y * scale;
+                
+                updateTransform();
+                showNotification('Vista ajustada automáticamente');
+            } catch (e) {
+                resetView();
+            }
+        }
+        
+        function zoomIn() {
+            const container = document.getElementById('diagram');
+            const rect = container.getBoundingClientRect();
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const newScale = Math.min(5, currentScale * 1.2);
+            const scaleRatio = newScale / currentScale;
+            
+            currentX = centerX - (centerX - currentX) * scaleRatio;
+            currentY = centerY - (centerY - currentY) * scaleRatio;
+            currentScale = newScale;
+            
+            updateTransform();
+            showNotification(`Zoom: ${Math.round(currentScale * 100)}%`);
+        }
+        
+        function zoomOut() {
+            const container = document.getElementById('diagram');
+            const rect = container.getBoundingClientRect();
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const newScale = Math.max(0.1, currentScale * 0.8);
+            const scaleRatio = newScale / currentScale;
+            
+            currentX = centerX - (centerX - currentX) * scaleRatio;
+            currentY = centerY - (centerY - currentY) * scaleRatio;
+            currentScale = newScale;
+            
+            updateTransform();
+            showNotification(`Zoom: ${Math.round(currentScale * 100)}%`);
+        }
+        
+        function resetView() {
+            currentScale = 1;
+            currentX = 0;
+            currentY = 0;
+            updateTransform();
+            showNotification('Vista restablecida');
+        }
+        
+        // Exportar PDF simple
+        async function exportPDF() {
+            if (!svg || !window.jsPDF || !window.svg2pdf) {
+                showNotification('Error: PDF no disponible', 'error');
+                return;
+            }
+            
+            showNotification('Generando PDF...');
+            
+            try {
+                const pdf = new window.jsPDF('l', 'pt', 'a3');
+                await window.svg2pdf(svg, pdf, {
+                    xOffset: 50,
+                    yOffset: 50,
+                    scale: 0.8
+                });
+                pdf.save('Sistema_Biblioteca_ERD_Mermaid.pdf');
+                showNotification('PDF exportado exitosamente');
+            } catch (error) {
+                console.error('Error exportando PDF:', error);
+                showNotification('Error al exportar PDF', 'error');
+            }
+        }
+        
+        // Notificaciones simples
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type === 'error' ? 'error' : ''}`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+        
+        // Inicializar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(waitForMermaid, 1000);
+        });
+        
+        console.log('📚 Sistema de diagrama ERD Mermaid inicializado');
+    </script>
+</body>
+</html>
