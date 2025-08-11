@@ -5,195 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Diagrama ERD Mermaid - Sistema Biblioteca</title>
     <meta name="description" content="Diagrama Entidad-Relación del sistema de biblioteca con navegación simple">
-    <link rel="icon" href="data:image/svg+xml        <div class="controls">
-            <button class="btn" onclick="autoFit()">🎯 Auto-fit</button>
-            <button class="btn" onclick="zoomIn()">🔍+</button>
-            <button class="btn" onclick="zoomOut()">🔍−</button>
-            <button class="btn" onclick="resetView()">↻ Reset</button>
-            <button class="btn btn-secondary" onclick="exportPDF()">🖨️ Imprimir</button>
-            <button class="btn btn-secondary" onclick="simpleDownloadPNG()">💾 Descargar PNG</button>
-            <button class="btn btn-secondary" onclick="showSVGCode()">📄 Ver SVG</button>
-            <button class="btn btn-secondary" onclick="captureScreen()">📸 Capturar</button>
-            <a href="index.html" class="btn btn-secondary">← Volver</a>
-        </div>ns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ctext y='14' font-size='14'%3E🔗%3C/text%3E%3C/svg%3E">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ctext y='14' font-size='14'%3E🔗%3C/text%3E%3C/svg%3E">
     
-    <!-- Mermaid - CDN confiable para GitHub Pages -->
+    <!-- Mermaid CDN -->
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
     
-    <!-- PDF Export - Solución nativa del navegador para GitHub Pages -->
-    <script>
-        // Implementación simple que usa las capacidades nativas del navegador
-        window.generatePDF = function() {
-            return new Promise((resolve, reject) => {
-                try {
-                    // Usar window.print() que es más confiable
-                    const originalTitle = document.title;
-                    document.title = 'Sistema_Biblioteca_ERD_Mermaid';
-                    
-                    // Crear estilos para impresión
-                    const printStyles = document.createElement('style');
-                    printStyles.innerHTML = `
-                        @media print {
-                            body * { visibility: hidden; }
-                            #diagram, #diagram * { visibility: visible; }
-                            #diagram { 
-                                position: absolute; 
-                                left: 0; 
-                                top: 0; 
-                                width: 100% !important; 
-                                height: 100% !important; 
-                                transform: none !important;
-                                background: white;
-                            }
-                            #diagram svg {
-                                width: 100% !important;
-                                height: auto !important;
-                                max-width: none !important;
-                                max-height: none !important;
-                                transform: none !important;
-                            }
-                            .instructions, .status, .loading { display: none !important; }
-                        }
-                    `;
-                    document.head.appendChild(printStyles);
-                    
-                    // Abrir diálogo de impresión
-                    window.print();
-                    
-                    // Limpiar estilos después
-                    setTimeout(() => {
-                        document.head.removeChild(printStyles);
-                        document.title = originalTitle;
-                        resolve();
-                    }, 1000);
-                    
-                } catch (error) {
-                    reject(error);
-                }
-            });
-        };
-        
-        // Función básica y confiable para descargar PNG
-        window.simpleDownloadPNG = function(svg, filename = 'diagrama.png') {
-            try {
-                // Obtener el SVG como string
-                const svgString = new XMLSerializer().serializeToString(svg);
-                
-                // Crear un canvas
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                
-                // Configurar tamaño (usar dimensiones del SVG)
-                const rect = svg.getBoundingClientRect();
-                canvas.width = rect.width * 2; // Doble resolución
-                canvas.height = rect.height * 2;
-                
-                // Crear imagen desde SVG
-                const img = new Image();
-                const svgBlob = new Blob([svgString], {type: 'image/svg+xml;charset=utf-8'});
-                const url = URL.createObjectURL(svgBlob);
-                
-                img.onload = function() {
-                    // Fondo blanco
-                    ctx.fillStyle = 'white';
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
-                    
-                    // Dibujar imagen
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    
-                    // Convertir a data URL
-                    const dataURL = canvas.toDataURL('image/png');
-                    
-                    // Crear enlace de descarga
-                    const link = document.createElement('a');
-                    link.download = filename;
-                    link.href = dataURL;
-                    
-                    // Simular clic
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    
-                    // Limpiar
-                    URL.revokeObjectURL(url);
-                };
-                
-                img.onerror = function() {
-                    console.error('Error cargando imagen SVG');
-                    alert('Error al generar imagen. Intenta con otra opción.');
-                };
-                
-                img.src = url;
-                
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Error al generar imagen: ' + error.message);
-            }
-        };
-        
-        // Función para mostrar el código SVG en una ventana
-        window.showSVGCode = function(svg) {
-            try {
-                const svgClone = svg.cloneNode(true);
-                const bbox = svg.getBBox();
-                
-                // Configurar SVG
-                svgClone.setAttribute('viewBox', `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height}`);
-                svgClone.setAttribute('width', bbox.width);
-                svgClone.setAttribute('height', bbox.height);
-                svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-                
-                const svgString = new XMLSerializer().serializeToString(svgClone);
-                
-                // Abrir ventana con el código
-                const newWindow = window.open('', '_blank');
-                newWindow.document.write(`
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <title>Código SVG - Sistema Biblioteca ERD</title>
-                        <style>
-                            body { font-family: monospace; margin: 20px; }
-                            textarea { width: 100%; height: 400px; }
-                            button { margin: 10px 5px; padding: 10px 20px; font-size: 16px; }
-                        </style>
-                    </head>
-                    <body>
-                        <h2>Código SVG del Diagrama</h2>
-                        <p>Puedes copiar este código y guardarlo como archivo .svg</p>
-                        <textarea id="svgCode">${svgString}</textarea>
-                        <br>
-                        <button onclick="document.getElementById('svgCode').select(); document.execCommand('copy'); alert('Código copiado al portapapeles');">Copiar Todo</button>
-                        <button onclick="window.close();">Cerrar</button>
-                    </body>
-                    </html>
-                `);
-                newWindow.document.close();
-                
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Error al mostrar código SVG: ' + error.message);
-            }
-        };
-        
-        // Función para capturar pantalla del diagrama
-        window.captureScreen = function() {
-            try {
-                // Mostrar instrucciones
-                alert('Instrucciones:\n1. Ajusta el diagrama como quieras\n2. Presiona F12 para abrir herramientas de desarrollador\n3. Ve a la pestaña "Console"\n4. Escribe: document.querySelector("#diagram svg")\n5. Clic derecho en el resultado > "Copy element"\n6. Pega en un editor de texto y guarda como .svg');
-                
-                // Abrir herramientas de desarrollador
-                console.log('📋 Para capturar el diagrama:');
-                console.log('1. Copia este comando: document.querySelector("#diagram svg")');
-                console.log('2. Ejecútalo en la consola');
-                console.log('3. Clic derecho en el resultado > "Copy element"');
-                console.log('4. Pega en un archivo .svg');
-                
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        };
-    </script>
+    <!-- html2canvas para captura de pantalla -->
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     
     <style>
         * {
@@ -227,7 +45,7 @@
         
         .controls {
             display: flex;
-            gap: 0.75rem;
+            gap: 0.5rem;
             flex-wrap: wrap;
         }
         
@@ -235,14 +53,15 @@
             background: #3b82f6;
             color: white;
             border: none;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
+            padding: 0.6rem 0.8rem;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 500;
             transition: all 0.2s ease;
             text-decoration: none;
-            min-width: 100px;
+            min-width: 80px;
+            white-space: nowrap;
         }
         
         .btn:hover {
@@ -258,9 +77,17 @@
             background: #4b5563;
         }
         
+        .btn-success {
+            background: #10b981;
+        }
+        
+        .btn-success:hover {
+            background: #059669;
+        }
+        
         .container {
             position: relative;
-            height: calc(100vh - 80px);
+            height: calc(100vh - 100px);
             overflow: hidden;
             background: white;
             margin: 1rem;
@@ -348,6 +175,34 @@
             100% { transform: rotate(360deg); }
         }
         
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            animation: slideIn 0.3s ease;
+        }
+        
+        .toast.error {
+            background: #ef4444;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+        
         @media (max-width: 768px) {
             .header {
                 padding: 1rem;
@@ -359,15 +214,10 @@
                 justify-content: center;
             }
             
-            .container {
-                margin: 0.5rem;
-                height: calc(100vh - 120px);
-            }
-            
-            .instructions {
-                position: static;
-                margin: 1rem;
-                max-width: none;
+            .btn {
+                min-width: 70px;
+                font-size: 0.8rem;
+                padding: 0.5rem 0.6rem;
             }
         }
     </style>
@@ -380,10 +230,10 @@
             <button class="btn" onclick="zoomIn()">🔍+</button>
             <button class="btn" onclick="zoomOut()">🔍−</button>
             <button class="btn" onclick="resetView()">↻ Reset</button>
-            <button class="btn btn-secondary" onclick="exportPDF()">🖨️ Imprimir</button>
-            <button class="btn btn-secondary" onclick="downloadHighResPNG()">📄 PNG HD</button>
-            <button class="btn btn-secondary" onclick="downloadCanvasImage()">🖼️ Imagen</button>
-            <button class="btn btn-secondary" onclick="copySVGCode()">� Copiar SVG</button>
+            <button class="btn btn-secondary" onclick="printDiagram()">🖨️ PDF</button>
+            <button class="btn btn-success" onclick="downloadImage()">📥 IMG</button>
+            <button class="btn btn-success" onclick="downloadSVG()">📄 SVG</button>
+            <button class="btn btn-secondary" onclick="showHelp()">❓ Ayuda</button>
             <a href="index.html" class="btn btn-secondary">← Volver</a>
         </div>
     </header>
@@ -527,7 +377,7 @@ erDiagram
     </div>
 
     <script>
-        // Variables simples para navegación
+        // Variables globales
         let currentScale = 1;
         let currentX = 0;
         let currentY = 0;
@@ -535,7 +385,7 @@ erDiagram
         let startX, startY;
         let svg = null;
 
-        // Configuración de Mermaid
+        // Configurar Mermaid
         mermaid.initialize({
             startOnLoad: true,
             theme: 'default',
@@ -546,18 +396,36 @@ erDiagram
             }
         });
 
-        // Buscar SVG y configurar navegación
+        // Función para mostrar toast
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    if (toast.parentNode) toast.parentNode.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+
+        // Inicializar diagrama
         function initDiagram() {
             svg = document.querySelector('#diagram svg');
             if (svg) {
                 document.getElementById('loading').style.display = 'none';
                 setupNavigation();
                 setTimeout(autoFit, 500);
+                showToast('✅ Diagrama cargado correctamente');
+                console.log('✅ Diagrama listo');
             } else {
                 setTimeout(initDiagram, 100);
             }
         }
 
+        // Configurar navegación
         function setupNavigation() {
             const container = document.getElementById('diagram');
             
@@ -598,6 +466,7 @@ erDiagram
             container.addEventListener('dblclick', autoFit);
         }
 
+        // Actualizar transformación
         function updateTransform() {
             if (svg) {
                 svg.style.transform = `translate(${currentX}px, ${currentY}px) scale(${currentScale})`;
@@ -606,6 +475,7 @@ erDiagram
             }
         }
 
+        // Actualizar estado
         function updateStatus() {
             const status = document.getElementById('status');
             if (status) {
@@ -614,6 +484,7 @@ erDiagram
             }
         }
 
+        // Auto ajustar
         function autoFit() {
             if (!svg) return;
             try {
@@ -630,11 +501,13 @@ erDiagram
                 currentY = (containerRect.height - bbox.height * scale) / 2 - bbox.y * scale;
                 
                 updateTransform();
+                showToast('🎯 Vista ajustada automáticamente');
             } catch (e) {
                 resetView();
             }
         }
 
+        // Zoom in
         function zoomIn() {
             const container = document.getElementById('diagram');
             const rect = container.getBoundingClientRect();
@@ -651,6 +524,7 @@ erDiagram
             updateTransform();
         }
 
+        // Zoom out
         function zoomOut() {
             const container = document.getElementById('diagram');
             const rect = container.getBoundingClientRect();
@@ -667,40 +541,215 @@ erDiagram
             updateTransform();
         }
 
+        // Reset vista
         function resetView() {
             currentScale = 1;
             currentX = 0;
             currentY = 0;
             updateTransform();
+            showToast('↻ Vista restablecida');
         }
 
-        async function exportPDF() {
-            if (!svg) return;
+        // Imprimir PDF
+        function printDiagram() {
+            if (!svg) {
+                showToast('❌ Espera a que el diagrama termine de cargar', 'error');
+                return;
+            }
+
+            showToast('🖨️ Abriendo diálogo de impresión...');
+
+            const originalTitle = document.title;
+            document.title = 'Sistema_Biblioteca_ERD_Mermaid';
+            
+            // Crear estilos para impresión
+            const printStyles = document.createElement('style');
+            printStyles.innerHTML = `
+                @media print {
+                    body * { visibility: hidden; }
+                    #diagram, #diagram * { visibility: visible; }
+                    #diagram { 
+                        position: absolute; 
+                        left: 0; 
+                        top: 0; 
+                        width: 100% !important; 
+                        height: 100% !important; 
+                        transform: none !important;
+                        background: white;
+                    }
+                    #diagram svg {
+                        width: 100% !important;
+                        height: auto !important;
+                        max-width: none !important;
+                        max-height: none !important;
+                        transform: none !important;
+                    }
+                    .instructions, .status, .loading { display: none !important; }
+                }
+            `;
+            document.head.appendChild(printStyles);
+            
+            // Abrir diálogo de impresión
+            window.print();
+            
+            // Limpiar después
+            setTimeout(() => {
+                document.head.removeChild(printStyles);
+                document.title = originalTitle;
+            }, 1000);
+        }
+
+        // Descargar imagen usando html2canvas
+        async function downloadImage() {
+            if (!svg) {
+                showToast('❌ Espera a que el diagrama termine de cargar', 'error');
+                return;
+            }
+
             try {
-                await window.generatePDF();
+                showToast('📸 Generando imagen...');
+                
+                const container = document.getElementById('diagram');
+                
+                // Usar html2canvas para capturar
+                const canvas = await html2canvas(container, {
+                    backgroundColor: '#ffffff',
+                    scale: 2, // Alta resolución
+                    useCORS: true,
+                    allowTaint: true,
+                    logging: false
+                });
+                
+                // Convertir a blob y descargar
+                canvas.toBlob((blob) => {
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = 'Sistema_Biblioteca_ERD_Mermaid.png';
+                    link.click();
+                    
+                    URL.revokeObjectURL(url);
+                    showToast('✅ Imagen descargada correctamente');
+                }, 'image/png', 1.0);
+                
             } catch (error) {
                 console.error('Error:', error);
+                showToast('❌ Error al generar imagen', 'error');
+                
+                // Método de respaldo
+                fallbackImageDownload();
             }
         }
 
-        function simpleDownloadPNG() {
-            if (!svg) return;
-            window.simpleDownloadPNG(svg, 'Sistema_Biblioteca_ERD.png');
+        // Método de respaldo para descarga de imagen
+        function fallbackImageDownload() {
+            try {
+                const svgData = new XMLSerializer().serializeToString(svg);
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                const rect = svg.getBoundingClientRect();
+                canvas.width = rect.width * 2;
+                canvas.height = rect.height * 2;
+                
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                const img = new Image();
+                img.onload = function() {
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    
+                    const link = document.createElement('a');
+                    link.download = 'Sistema_Biblioteca_ERD_Mermaid_Fallback.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    
+                    showToast('✅ Imagen descargada (método alternativo)');
+                };
+                
+                const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+                img.src = URL.createObjectURL(svgBlob);
+                
+            } catch (error) {
+                showToast('❌ Error en método alternativo', 'error');
+            }
         }
 
-        function showSVGCode() {
-            if (!svg) return;
-            window.showSVGCode(svg);
+        // Descargar SVG
+        function downloadSVG() {
+            if (!svg) {
+                showToast('❌ Espera a que el diagrama termine de cargar', 'error');
+                return;
+            }
+
+            try {
+                showToast('📄 Generando archivo SVG...');
+                
+                // Clonar y configurar SVG
+                const svgClone = svg.cloneNode(true);
+                const bbox = svg.getBBox();
+                
+                svgClone.setAttribute('viewBox', `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height}`);
+                svgClone.setAttribute('width', bbox.width);
+                svgClone.setAttribute('height', bbox.height);
+                svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+                
+                const svgCode = new XMLSerializer().serializeToString(svgClone);
+                
+                // Crear blob y descargar
+                const blob = new Blob([svgCode], {type: 'image/svg+xml'});
+                const url = URL.createObjectURL(blob);
+                
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'Sistema_Biblioteca_ERD_Mermaid.svg';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                URL.revokeObjectURL(url);
+                showToast('✅ Archivo SVG descargado correctamente');
+                
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('❌ Error al descargar SVG', 'error');
+            }
         }
 
-        function captureScreen() {
-            window.captureScreen();
+        // Mostrar ayuda
+        function showHelp() {
+            const helpText = `🆘 MÉTODOS DE DESCARGA DISPONIBLES:
+
+📥 IMG: Descarga imagen PNG de alta calidad
+📄 SVG: Descarga archivo vectorial SVG
+🖨️ PDF: Imprime o guarda como PDF
+
+📋 MÉTODOS ALTERNATIVOS:
+• Clic derecho en diagrama → "Guardar imagen como..."
+• Captura de pantalla: Win + Shift + S
+• F12 → Console → document.querySelector("#diagram svg")
+• Ctrl + P → "Guardar como PDF"
+
+🎯 NAVEGACIÓN:
+• Arrastrar: Mover diagrama
+• Rueda: Zoom in/out
+• Doble clic: Auto-ajustar
+• Flechas: Mover con teclado
+
+¡Múltiples opciones para asegurar que funcione! 💪`;
+
+            alert(helpText);
         }
 
-        // Inicializar cuando esté listo
+        // Iniciar cuando esté listo
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('✅ Funciones de exportación disponibles');
+            console.log('🚀 Iniciando diagrama ERD...');
             setTimeout(initDiagram, 1000);
+        });
+
+        // Log para debug
+        window.addEventListener('load', () => {
+            console.log('✅ Página cargada completamente');
         });
     </script>
 </body>
