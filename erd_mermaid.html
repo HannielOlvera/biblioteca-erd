@@ -5,7 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Diagrama ERD Mermaid - Sistema Biblioteca</title>
     <meta name="description" content="Diagrama Entidad-Relación del sistema de biblioteca con navegación simple">
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ctext y='14' font-size='14'%3E🔗%3C/text%3E%3C/svg%3E">
+    <link rel="icon" href="data:image/svg+xml        <div class="controls">
+            <button class="btn" onclick="autoFit()">🎯 Auto-fit</button>
+            <button class="btn" onclick="zoomIn()">🔍+</button>
+            <button class="btn" onclick="zoomOut()">🔍−</button>
+            <button class="btn" onclick="resetView()">↻ Reset</button>
+            <button class="btn btn-secondary" onclick="exportPDF()">🖨️ Imprimir</button>
+            <button class="btn btn-secondary" onclick="simpleDownloadPNG()">💾 Descargar PNG</button>
+            <button class="btn btn-secondary" onclick="showSVGCode()">📄 Ver SVG</button>
+            <button class="btn btn-secondary" onclick="captureScreen()">📸 Capturar</button>
+            <a href="index.html" class="btn btn-secondary">← Volver</a>
+        </div>ns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ctext y='14' font-size='14'%3E🔗%3C/text%3E%3C/svg%3E">
     
     <!-- Mermaid - CDN confiable para GitHub Pages -->
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
@@ -63,136 +73,124 @@
             });
         };
         
-        // Función mejorada para PNG de alta resolución
-        window.downloadHighResPNG = function(svg, filename = 'diagrama.png') {
-            return new Promise((resolve, reject) => {
-                try {
-                    const svgData = new XMLSerializer().serializeToString(svg);
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    
-                    // Obtener dimensiones del SVG
-                    const bbox = svg.getBBox();
-                    
-                    // Escala alta para mejor resolución (4x)
-                    const scale = 4;
-                    canvas.width = bbox.width * scale;
-                    canvas.height = bbox.height * scale;
-                    
-                    // Configurar el contexto para mejor calidad
-                    ctx.imageSmoothingEnabled = true;
-                    ctx.imageSmoothingQuality = 'high';
-                    
-                    const img = new Image();
-                    img.onload = function() {
-                        // Fondo blanco
-                        ctx.fillStyle = 'white';
-                        ctx.fillRect(0, 0, canvas.width, canvas.height);
-                        
-                        // Dibujar la imagen escalada
-                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        
-                        // Crear y descargar
-                        canvas.toBlob(function(blob) {
-                            const url = URL.createObjectURL(blob);
-                            const a = document.createElement('a');
-                            a.href = url;
-                            a.download = filename;
-                            a.style.display = 'none';
-                            document.body.appendChild(a);
-                            a.click();
-                            document.body.removeChild(a);
-                            URL.revokeObjectURL(url);
-                            resolve();
-                        }, 'image/png', 1.0); // Calidad máxima
-                    };
-                    
-                    img.onerror = () => reject(new Error('Error al procesar imagen'));
-                    
-                    // Convertir SVG a data URL
-                    const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
-                    const url = URL.createObjectURL(svgBlob);
-                    img.src = url;
-                    
-                } catch (error) {
-                    reject(error);
-                }
-            });
-        };
-        
-        // Función alternativa: capturar canvas directo
-        window.downloadCanvasImage = function(svg, filename = 'diagrama.png') {
+        // Función básica y confiable para descargar PNG
+        window.simpleDownloadPNG = function(svg, filename = 'diagrama.png') {
             try {
-                const container = document.getElementById('diagram');
-                const rect = container.getBoundingClientRect();
+                // Obtener el SVG como string
+                const svgString = new XMLSerializer().serializeToString(svg);
                 
-                // Crear canvas del tamaño visible
+                // Crear un canvas
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
                 
+                // Configurar tamaño (usar dimensiones del SVG)
+                const rect = svg.getBoundingClientRect();
                 canvas.width = rect.width * 2; // Doble resolución
                 canvas.height = rect.height * 2;
                 
-                // Fondo blanco
-                ctx.fillStyle = 'white';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                
-                // Dibujar el SVG actual (con sus transformaciones)
-                const svgData = new XMLSerializer().serializeToString(svg);
+                // Crear imagen desde SVG
                 const img = new Image();
+                const svgBlob = new Blob([svgString], {type: 'image/svg+xml;charset=utf-8'});
+                const url = URL.createObjectURL(svgBlob);
                 
                 img.onload = function() {
+                    // Fondo blanco
+                    ctx.fillStyle = 'white';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    
+                    // Dibujar imagen
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                     
-                    // Descargar
-                    canvas.toBlob(function(blob) {
-                        const url = URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = filename;
-                        a.click();
-                        URL.revokeObjectURL(url);
-                    }, 'image/png', 1.0);
+                    // Convertir a data URL
+                    const dataURL = canvas.toDataURL('image/png');
+                    
+                    // Crear enlace de descarga
+                    const link = document.createElement('a');
+                    link.download = filename;
+                    link.href = dataURL;
+                    
+                    // Simular clic
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    // Limpiar
+                    URL.revokeObjectURL(url);
                 };
                 
-                const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
-                img.src = URL.createObjectURL(svgBlob);
+                img.onerror = function() {
+                    console.error('Error cargando imagen SVG');
+                    alert('Error al generar imagen. Intenta con otra opción.');
+                };
+                
+                img.src = url;
                 
             } catch (error) {
-                console.error('Error en canvas:', error);
+                console.error('Error:', error);
+                alert('Error al generar imagen: ' + error.message);
             }
         };
         
-        // Función para copiar SVG al portapapeles
-        window.copySVGCode = function(svg) {
+        // Función para mostrar el código SVG en una ventana
+        window.showSVGCode = function(svg) {
             try {
                 const svgClone = svg.cloneNode(true);
                 const bbox = svg.getBBox();
                 
+                // Configurar SVG
                 svgClone.setAttribute('viewBox', `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height}`);
                 svgClone.setAttribute('width', bbox.width);
                 svgClone.setAttribute('height', bbox.height);
                 svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
                 
-                const serializer = new XMLSerializer();
-                const svgString = serializer.serializeToString(svgClone);
+                const svgString = new XMLSerializer().serializeToString(svgClone);
                 
-                // Copiar al portapapeles
-                navigator.clipboard.writeText(svgString).then(() => {
-                    console.log('SVG copiado al portapapeles');
-                }).catch(() => {
-                    // Método alternativo
-                    const textarea = document.createElement('textarea');
-                    textarea.value = svgString;
-                    document.body.appendChild(textarea);
-                    textarea.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(textarea);
-                    console.log('SVG copiado (método alternativo)');
-                });
+                // Abrir ventana con el código
+                const newWindow = window.open('', '_blank');
+                newWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>Código SVG - Sistema Biblioteca ERD</title>
+                        <style>
+                            body { font-family: monospace; margin: 20px; }
+                            textarea { width: 100%; height: 400px; }
+                            button { margin: 10px 5px; padding: 10px 20px; font-size: 16px; }
+                        </style>
+                    </head>
+                    <body>
+                        <h2>Código SVG del Diagrama</h2>
+                        <p>Puedes copiar este código y guardarlo como archivo .svg</p>
+                        <textarea id="svgCode">${svgString}</textarea>
+                        <br>
+                        <button onclick="document.getElementById('svgCode').select(); document.execCommand('copy'); alert('Código copiado al portapapeles');">Copiar Todo</button>
+                        <button onclick="window.close();">Cerrar</button>
+                    </body>
+                    </html>
+                `);
+                newWindow.document.close();
                 
             } catch (error) {
-                console.error('Error copiando SVG:', error);
+                console.error('Error:', error);
+                alert('Error al mostrar código SVG: ' + error.message);
+            }
+        };
+        
+        // Función para capturar pantalla del diagrama
+        window.captureScreen = function() {
+            try {
+                // Mostrar instrucciones
+                alert('Instrucciones:\n1. Ajusta el diagrama como quieras\n2. Presiona F12 para abrir herramientas de desarrollador\n3. Ve a la pestaña "Console"\n4. Escribe: document.querySelector("#diagram svg")\n5. Clic derecho en el resultado > "Copy element"\n6. Pega en un editor de texto y guarda como .svg');
+                
+                // Abrir herramientas de desarrollador
+                console.log('📋 Para capturar el diagrama:');
+                console.log('1. Copia este comando: document.querySelector("#diagram svg")');
+                console.log('2. Ejecútalo en la consola');
+                console.log('3. Clic derecho en el resultado > "Copy element"');
+                console.log('4. Pega en un archivo .svg');
+                
+            } catch (error) {
+                console.error('Error:', error);
             }
         };
     </script>
@@ -685,23 +683,18 @@ erDiagram
             }
         }
 
-        async function downloadHighResPNG() {
+        function simpleDownloadPNG() {
             if (!svg) return;
-            try {
-                await window.downloadHighResPNG(svg, 'Sistema_Biblioteca_ERD_HD.png');
-            } catch (error) {
-                console.error('Error:', error);
-            }
+            window.simpleDownloadPNG(svg, 'Sistema_Biblioteca_ERD.png');
         }
 
-        function downloadCanvasImage() {
+        function showSVGCode() {
             if (!svg) return;
-            window.downloadCanvasImage(svg, 'Sistema_Biblioteca_ERD_Canvas.png');
+            window.showSVGCode(svg);
         }
 
-        function copySVGCode() {
-            if (!svg) return;
-            window.copySVGCode(svg);
+        function captureScreen() {
+            window.captureScreen();
         }
 
         // Inicializar cuando esté listo
